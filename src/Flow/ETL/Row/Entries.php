@@ -58,7 +58,7 @@ final class Entries implements \Countable
     public function remove(string $name) : self
     {
         if ($this->has($name) === false) {
-            throw InvalidLogicException::because(\sprintf('Entry "%s" already exist', $name));
+            throw InvalidLogicException::because(\sprintf('Entry "%s" does not exist', $name));
         }
 
         return $this->filter(
