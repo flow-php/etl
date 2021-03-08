@@ -14,6 +14,9 @@
     </report>
   </coverage>
   <logging/>
+  <php>
+    <ini name="XDEBUG_MODE" value="coverage" />
+  </php>
   <testsuites>
     <testsuite name="unit">
       <directory suffix=".php">tests/Flow/ETL/Tests/Unit</directory>
