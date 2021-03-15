@@ -87,6 +87,9 @@ final class CollectionEntry implements Entry
         return $this->mapEntries(fn (Entries $entries) : array => $entries->toArray());
     }
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function is(string $name) : bool
     {
         return $this->key === \mb_strtolower($name);
