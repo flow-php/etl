@@ -101,8 +101,7 @@ final class CollectionEntry implements Entry
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
-     * @psalm-param callable(Entries) : bool $filter
+     * @psalm-param pure-callable(Entries) : bool $filter
      */
     public function filterEntries(callable $filter) : self
     {

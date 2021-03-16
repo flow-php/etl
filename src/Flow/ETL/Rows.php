@@ -87,7 +87,7 @@ final class Rows
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
+     * @psalm-param pure-callable(Row) : bool $callable
      * @psalm-suppress MixedArgumentTypeCoercion
      *
      * @param callable(Row) : bool $callable
@@ -98,7 +98,7 @@ final class Rows
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
+     * @psalm-param pure-callable(Row) : Row $callable
      * @psalm-suppress MixedArgument Psalm doesn't understand that array_map will return array<int, Row>
      *
      * @param callable(Row) : Row $callable
@@ -109,7 +109,7 @@ final class Rows
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
+     * @psalm-param pure-callable(Row) : Row $callable
      *
      * @param callable(Row) : Row $callable
      */
@@ -119,7 +119,7 @@ final class Rows
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
+     * @psalm-param pure-callable(mixed, Row) : mixed $callable
      * @psalm-suppress MixedAssignment
      *
      * @param callable(mixed, Row) : mixed $callable
