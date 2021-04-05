@@ -93,6 +93,14 @@ final class Entries implements \Countable
             ->add($entry->append($entries));
     }
 
+    public function sort() : self
+    {
+        $entries = $this->entries;
+        \usort($entries, fn (Entry $a, Entry $b) => $a->name() <=> $b->name());
+
+        return new self(...$entries);
+    }
+
     public function count() : int
     {
         return \count($this->entries);

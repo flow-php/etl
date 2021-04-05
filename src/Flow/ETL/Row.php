@@ -120,4 +120,9 @@ final class Row
     {
         return new self($this->entries->add($entry));
     }
+
+    public function sortEntries() : self
+    {
+        return new self($this->entries->sort());
+    }
 }
