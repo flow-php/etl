@@ -264,7 +264,6 @@ final class Rows
         );
     }
 
-    // fixme test
     public function merge(self $rows) : self
     {
         return new self(
