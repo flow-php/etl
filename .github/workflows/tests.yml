@@ -25,7 +25,6 @@ jobs:
           - "8.0"
         operating-system:
           - "ubuntu-latest"
-          - "windows-latest"
 
     steps:
       - name: "Checkout"
