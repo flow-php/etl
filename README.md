@@ -40,7 +40,6 @@ This is a perfect scenario for ETL.
 * [DateEntry](src/Flow/ETL/Row/Entry/DateEntry.php)
 * [DateTimeEntry](src/Flow/ETL/Row/Entry/DateTimeEntry.php)
 * [IntegerEntry](src/Flow/ETL/Row/Entry/IntegerEntry.php)
-* [XMLEntry](src/Flow/ETL/Row/Entry/XMLEntry.php)
 * [NullEntry](src/Flow/ETL/Row/Entry/NullEntry.php)
 * [ObjectEntryEntry](src/Flow/ETL/Row/Entry/ObjectEntry.php)
 * [StringEntry](src/Flow/ETL/Row/Entry/StringEntry.php)
@@ -59,7 +58,7 @@ Adapters provides Extractors and Transformers for popular data storages or abstr
 * [Elasticsearch](https://github.com/flow-php/etl-adapter-elasticsearch)
 * [CSV](https://github.com/flow-php/etl-adapter-csv)
 * [JSON](https://github.com/flow-php/etl-adapter-json)
-* XML - TODO
+* [XML](https://github.com/flow-php/etl-adapter-xml)
 
 **❗ If adapter that you are looking for is missing and you are willing to work on one, feel free to create one as a standalone repository.**
 **Well designed and documented adapters can be pulled into `flow-php` organization that will give them maintenance and security support from the organization.** 
