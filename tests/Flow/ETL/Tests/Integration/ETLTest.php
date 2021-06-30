@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Tests\Unit;
+namespace Flow\ETL\Tests\Integration;
 
-use Flow\ETL\ErrorHandler\ContinueHandler;
-use Flow\ETL\ErrorHandler\ThrowHandler;
+use Flow\ETL\ErrorHandler\IgnoreError;
+use Flow\ETL\ErrorHandler\ThrowError;
 use Flow\ETL\ETL;
 use Flow\ETL\Extractor;
 use Flow\ETL\Loader;
@@ -70,7 +70,7 @@ final class ETLTest extends TestCase
         };
 
         ETL::extract($extractor)
-            ->onError(new ContinueHandler())
+            ->onError(new IgnoreError())
             ->transform($addStampStringEntry)
             ->transform(new class implements Transformer {
                 public function transform(Rows $rows) : Rows
@@ -128,7 +128,7 @@ final class ETLTest extends TestCase
                 yield new Rows(Row::create(new IntegerEntry('id', 3)));
             }
         })
-            ->onError(new ThrowHandler())
+            ->onError(new ThrowError())
             ->load(new class($callback) implements Loader {
                 private int $index = 0;
 

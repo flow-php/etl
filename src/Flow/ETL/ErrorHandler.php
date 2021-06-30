@@ -4,11 +4,7 @@ namespace Flow\ETL;
 
 interface ErrorHandler
 {
-    /**
-     * @param \Throwable $error
-     * @param Rows $rows
-     *
-     * @throws \Throwable
-     */
-    public function handle(\Throwable $error, Rows $rows) : void;
+    public function throw(\Throwable $error, Rows $rows) : bool;
+
+    public function skipRows(\Throwable $error, Rows $rows) : bool;
 }
