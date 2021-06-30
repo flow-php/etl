@@ -217,6 +217,16 @@ There are 3 build in ErrorHandlers (look for more in adapters):
 * [SkipRows](src/Flow/ETL/ErrorHandler/SkipRows.php)
 * [ThrowError](src/Flow/ETL/ErrorHandler/ThrowError.php)
 
+Error Handling can be set directly at ETL:
+
+```php
+
+ETL::extract($extractor)
+    ->onError(new IgnoreError())
+    ->transform($transformer)
+    ->load($loader);
+```
+
 ## Development
 
 In order to install dependencies please, launch following commands:
