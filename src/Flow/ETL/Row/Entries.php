@@ -13,22 +13,30 @@ use Flow\ETL\Exception\RuntimeException;
  * @implements \IteratorAggregate<string, Entry>
  * @psalm-immutable
  */
-final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
+final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
-     * @var Entry[]
+     * @var array<string, Entry>
      */
     private array $entries;
 
     public function __construct(Entry ...$entries)
     {
-        $names = \array_map(fn (Entry $entry) => $entry->name(), $entries);
+        $names = [];
+
+        foreach ($entries as $entry) {
+            $names[] = $entry->name();
+        }
 
         if (\count($names) !== \count(\array_unique($names))) {
             throw InvalidArgumentException::because(\sprintf('Entry names must be unique, given: [%s]', \implode(', ', $names)));
         }
 
-        $this->entries = $entries;
+        $this->entries = [];
+
+        foreach ($entries as $entry) {
+            $this->entries[\strtolower($entry->name())] = $entry;
+        }
     }
 
     /**
@@ -87,12 +95,12 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function getIterator() : \Iterator
     {
-        return new \ArrayIterator($this->entries);
+        return new \ArrayIterator($this->all());
     }
 
     public function has(string $name) : bool
     {
-        return $this->find($name) !== null;
+        return \array_key_exists(\strtolower($name), $this->entries);
     }
 
     /**
@@ -115,7 +123,7 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
             throw InvalidLogicException::because(\sprintf('Entry "%s" already exist', $entry->name()));
         }
 
-        return new self(...$this->entries, ...[$entry]);
+        return new self(...\array_values($this->entries), ...[$entry]);
     }
 
     public function remove(string $name) : self
@@ -124,9 +132,11 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
             throw InvalidLogicException::because(\sprintf('Entry "%s" does not exist', $name));
         }
 
-        return $this->filter(
-            fn (Entry $entry) : bool => !$entry->is($name)
-        );
+        $entries = $this->entries;
+
+        unset($entries[\strtolower($name)]);
+
+        return new self(...\array_values($entries));
     }
 
     public function set(Entry $entry) : self
@@ -142,7 +152,7 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
 
     public function sort() : self
     {
-        $entries = $this->entries;
+        $entries = \array_values($this->entries);
         \usort($entries, fn (Entry $a, Entry $b) => $a->name() <=> $b->name());
 
         return new self(...$entries);
@@ -164,7 +174,13 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function map(callable $callable) : array
     {
-        return \array_map($callable, $this->entries);
+        $returnValues = [];
+
+        foreach ($this->entries as $entry) {
+            $returnValues[] = $callable($entry);
+        }
+
+        return $returnValues;
     }
 
     /**
@@ -175,7 +191,15 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function filter(callable $callable) : self
     {
-        return new self(...\array_filter($this->entries, $callable));
+        $entries = [];
+
+        foreach ($this->entries as $entry) {
+            if ($callable($entry)) {
+                $entries[] = $entry;
+            }
+        }
+
+        return new self(...$entries);
     }
 
     /**
@@ -218,15 +242,13 @@ final class Entries  implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function all() : array
     {
-        return $this->entries;
+        return \array_values($this->entries);
     }
 
     private function find(string $name) : ?Entry
     {
-        foreach ($this->entries as $entry) {
-            if ($entry->is($name)) {
-                return $entry;
-            }
+        if ($this->has($name)) {
+            return $this->entries[\strtolower($name)];
         }
 
         return null;
