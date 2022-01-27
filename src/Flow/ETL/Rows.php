@@ -374,10 +374,10 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
         return new self(...$differentRows);
     }
 
-    public function add(Row $row) : self
+    public function add(Row ...$rows) : self
     {
         return new self(
-            ...\array_merge($this->rows, [$row])
+            ...\array_merge($this->rows, $rows)
         );
     }
 
