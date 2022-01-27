@@ -146,4 +146,39 @@ final class ETLTest extends TestCase
                 }
             })->run();
     }
+
+    public function test_etl_with_collecting() : void
+    {
+        ETL::extract(
+            new class implements Extractor {
+                /**
+                 * @return \Generator<int, Rows, mixed, void>
+                 */
+                public function extract() : \Generator
+                {
+                    yield new Rows(Row::create(new IntegerEntry('id', 1)));
+                    yield new Rows(Row::create(new IntegerEntry('id', 2)));
+                    yield new Rows(Row::create(new IntegerEntry('id', 3)));
+                }
+            }
+        )
+            ->transform(
+                new class implements Transformer {
+                    public function transform(Rows $rows) : Rows
+                    {
+                        return $rows->map(fn (Row $row) => $row->rename('id', 'new_id'));
+                    }
+                }
+            )
+            ->collect()
+            ->load(
+                new class implements Loader {
+                    public function load(Rows $rows) : void
+                    {
+                        Assert::assertCount(3, $rows);
+                    }
+                }
+            )
+            ->run();
+    }
 }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL;
 
-use Flow\ETL\Pipeline\Element;
+use Flow\ETL\Pipeline\CollectingPipeline;
+use Flow\ETL\Pipeline\SynchronousPipeline;
 
 final class ETL
 {
@@ -32,20 +33,31 @@ final class ETL
 
     public function transform(Transformer $transformer) : self
     {
-        $this->pipeline->register(Element::transformer($transformer));
+        $this->pipeline->registerTransformer($transformer);
 
         return $this;
     }
 
     public function load(Loader $loader) : self
     {
-        $this->pipeline->register(Element::loader($loader));
+        $this->pipeline->registerLoader($loader);
+
+        return $this;
+    }
+
+    /**
+     * Keep extracting rows and passing them through all transformers up to this point.
+     * From here all transformed all collected and merged together.
+     */
+    public function collect() : self
+    {
+        $this->pipeline = new CollectingPipeline($this->pipeline);
 
         return $this;
     }
 
     public function run() : void
     {
-        $this->pipeline->process($this->extractor->extract());
+        \iterator_to_array($this->pipeline->process($this->extractor->extract()));
     }
 }
