@@ -27,6 +27,18 @@ final class EntriesTest extends TestCase
         );
     }
 
+    public function test_case_insensitive_entry_names() : void
+    {
+        $entries = new Entries(
+            new StringEntry('entry-name', 'just a string'),
+            new IntegerEntry('entry-Name', 100)
+        );
+
+        $this->assertCount(2, $entries);
+        $this->assertTrue($entries->has('entry-name'));
+        $this->assertTrue($entries->has('entry-Name'));
+    }
+
     public function test_add_entry() : void
     {
         $newEntry = new StringEntry('entry-name', 'new string entry');
