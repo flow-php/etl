@@ -176,6 +176,8 @@ final class ETLTest extends TestCase
                     public function load(Rows $rows) : void
                     {
                         Assert::assertCount(3, $rows);
+                        Assert::assertTrue($rows->isFirst());
+                        Assert::assertTrue($rows->isLast());
                     }
                 }
             )

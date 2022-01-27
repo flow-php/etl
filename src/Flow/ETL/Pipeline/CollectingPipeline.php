@@ -40,6 +40,7 @@ final class CollectingPipeline implements Pipeline
     public function process(\Generator $generator) : \Generator
     {
         $rows = (new Rows())->merge(...\iterator_to_array($this->pipeline->process($generator)));
+        $rows = $rows->makeFirst()->makeLast();
 
         foreach ($this->nextPipeline->process($this->generate($rows)) as $nextRows) {
             yield $nextRows;
