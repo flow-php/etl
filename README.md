@@ -228,6 +228,62 @@ ETL::extract($extractor)
     ->load($loader);
 ```
 
+## Collect/Parallelize 
+
+Flow PHP ETL is designed to keep memory consumption constant. This can be achieved by processing
+only one chunk of data at time. 
+
+It's `Extrator` responsibility to define how big those chunks are, for example when processing CSV file with 10k 
+lines, extractor might want to read only 1k lines at once. 
+
+Those 1k lines will be represented as an instance of `Rows`. This means that through ETL pipeline we are
+going to push 10 rows, 1k row each. 
+
+Main purpose of methods `ETL::collect()` and `ETL::parallelize()` is to adjust number of rows in the middle of processing.
+
+This means that Extractor can still extract 1k rows at once, but before using loader we can use `ETL::collect` which
+will wait for all rows to get extracted, then it will merge them and pass total 10k rows into `Loader`. 
+
+Parallelize method is exactly opposite, it will not wait for all Rows in order to collect them, instead it will
+take any incoming Rows instance and split it into smaller chunks according to `ETL::parallelize(int $chunks)` method `chunks` argument.
+
+## Performance 
+
+The most important thing about performance to remember is that creating custom Loaders/Transformers might have negative impact to 
+processing performance.
+
+#### ETL::collect() 
+
+Using collect on a large number of rows might end up without of memory exception, but it can also significantly increase
+loading time into datasink. It might be cheaper to do one big insert than multiple smaller inserts.
+
+#### Bulk Transformations 
+
+In order to let Flow ETL decide when to merge transformers in order to reduce number of iterations 
+pass multiple transformers into `ETL::transform(Transformer ...$transformers) : self` method.
+
+Example:
+
+```php
+<?php 
+
+ETL::extract(...)
+    ->transform(
+        new Transformer(),
+        new Transformer(),
+        new Transformer(),
+        new Transformer(),
+    )
+```
+
+This way ETL will try to execute all transformations during single iteration through `Rows`.
+
+Normally, each Transformer iterates through `Rows`, having 5 transformers, extracting 10 `Rows`, each with 1k `Row` 
+ETL must perform `10 * 1k * 5 = 50k` iterations in total. 
+
+Bulk transformation will reduce that number 5 times, merging all transforming operation into single iteration through 
+all rows, so `10 * 1k = 10k`. 
+
 ## Development
 
 In order to install dependencies please, launch following commands:

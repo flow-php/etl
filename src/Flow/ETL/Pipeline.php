@@ -11,9 +11,9 @@ interface Pipeline
      */
     public function clean() : self;
 
-    public function registerTransformer(Transformer $transformer) : void;
+    public function registerTransformer(Transformer ...$transformers) : void;
 
-    public function registerLoader(Loader $loader) : void;
+    public function registerLoader(Loader ...$loaders) : void;
 
     /**
      * @param \Generator<int, Rows, mixed, void> $generator

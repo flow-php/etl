@@ -39,14 +39,30 @@ final class SynchronousPipeline implements Pipeline
         $this->errorHandler = $errorHandler;
     }
 
-    public function registerTransformer(Transformer $transformer) : void
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    public function registerTransformer(Transformer ...$transformers) : void
     {
-        $this->elements[] = $transformer;
+        $bulkRead = true;
+
+        foreach ($transformers as $transformer) {
+            if (!$transformer instanceof Transformer\RowTransformer) {
+                $bulkRead = false;
+
+                break;
+            }
+        }
+
+        $this->elements = ($bulkRead === true)
+            /** @phpstan-ignore-next-line  */
+            ? \array_merge($this->elements, [new Transformer\BulkTransformer(...$transformers)])
+            : \array_merge($this->elements, $transformers);
     }
 
-    public function registerLoader(Loader $loader) : void
+    public function registerLoader(Loader ...$loaders) : void
     {
-        $this->elements[] = $loader;
+        $this->elements = \array_merge($this->elements, $loaders);
     }
 
     /**

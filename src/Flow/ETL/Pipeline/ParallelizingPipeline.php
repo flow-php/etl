@@ -35,14 +35,14 @@ final class ParallelizingPipeline implements Pipeline
         return new self($this->pipeline, $this->parallel);
     }
 
-    public function registerTransformer(Transformer $transformer) : void
+    public function registerTransformer(Transformer ...$transformers) : void
     {
-        $this->nextPipeline->registerTransformer($transformer);
+        $this->nextPipeline->registerTransformer(...$transformers);
     }
 
-    public function registerLoader(Loader $loader) : void
+    public function registerLoader(Loader ...$loaders) : void
     {
-        $this->nextPipeline->registerLoader($loader);
+        $this->nextPipeline->registerLoader(...$loaders);
     }
 
     public function process(\Generator $generator) : \Generator
