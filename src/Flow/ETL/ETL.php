@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flow\ETL;
 
 use Flow\ETL\Pipeline\CollectingPipeline;
+use Flow\ETL\Pipeline\ParallelizingPipeline;
 use Flow\ETL\Pipeline\SynchronousPipeline;
 
 final class ETL
@@ -47,11 +48,24 @@ final class ETL
 
     /**
      * Keep extracting rows and passing them through all transformers up to this point.
-     * From here all transformed all collected and merged together.
+     * From here all transformed Rows are collected and merged together before pushing them forward.
      */
     public function collect() : self
     {
         $this->pipeline = new CollectingPipeline($this->pipeline);
+
+        return $this;
+    }
+
+    /**
+     * Keep extracting rows and passing them through all transformers up to this point.
+     * From here each transformed Row is divided and pushed forward to following pipeline elements.
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    public function parallelize(int $chunks) : self
+    {
+        $this->pipeline = new ParallelizingPipeline($this->pipeline, $chunks);
 
         return $this;
     }
