@@ -47,7 +47,6 @@ final class ParallelizingPipeline implements Pipeline
 
     public function process(\Generator $generator) : \Generator
     {
-        /** @var Rows $rows */
         foreach ($this->pipeline->process($generator) as $rows) {
             foreach ($rows->chunks($this->parallel) as $chunk) {
                 foreach ($this->nextPipeline->process($this->generate($chunk)) as $nextRows) {
