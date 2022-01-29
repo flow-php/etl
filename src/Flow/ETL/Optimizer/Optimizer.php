@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Optimizer;
 
+use Flow\ETL\Loader;
 use Flow\ETL\Transformer;
 
 interface Optimizer
 {
     /**
-     * @param Transformer ...$transformers
+     * @param array<Transformer|Loader> elements
      *
-     * @return array<Transformer>
+     * @return array<Transformer|Loader>
      */
-    public function optimizeTransformers(Transformer ...$transformers) : array;
+    public function optimizePipeline(array $elements) : array;
 }

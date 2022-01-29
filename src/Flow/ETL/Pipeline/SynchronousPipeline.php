@@ -43,17 +43,14 @@ final class SynchronousPipeline implements Pipeline
         $this->errorHandler = $errorHandler;
     }
 
-    /**
-     * @psalm-suppress ArgumentTypeCoercion
-     */
-    public function registerTransformer(Transformer ...$transformers) : void
+    public function registerTransformer(Transformer $transformer) : void
     {
-        $this->elements = \array_merge($this->elements, $this->optimizer->optimizeTransformers(...$transformers));
+        $this->elements[] = $transformer;
     }
 
-    public function registerLoader(Loader ...$loaders) : void
+    public function registerLoader(Loader $loader) : void
     {
-        $this->elements = \array_merge($this->elements, $loaders);
+        $this->elements[] = $loader;
     }
 
     /**
@@ -65,6 +62,8 @@ final class SynchronousPipeline implements Pipeline
      */
     public function process(\Generator $generator) : \Generator
     {
+        $this->elements = $this->optimizer->optimizePipeline($this->elements);
+
         $index = 0;
 
         while ($generator->valid()) {

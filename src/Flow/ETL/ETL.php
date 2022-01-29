@@ -32,16 +32,16 @@ final class ETL
         return $this;
     }
 
-    public function transform(Transformer ...$transformers) : self
+    public function transform(Transformer $transformer) : self
     {
-        $this->pipeline->registerTransformer(...$transformers);
+        $this->pipeline->registerTransformer($transformer);
 
         return $this;
     }
 
-    public function load(Loader ...$loaders) : self
+    public function load(Loader $loader) : self
     {
-        $this->pipeline->registerLoader(...$loaders);
+        $this->pipeline->registerLoader($loader);
 
         return $this;
     }

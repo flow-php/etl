@@ -8,7 +8,7 @@ use Flow\ETL\Transformer;
 /**
  * @psalm-immutable
  */
-interface RowTransformer extends Transformer
+interface MergeableTransformer extends Transformer
 {
-    public function transformRow(Row $row) : Row;
+    public function transformOne(Row $row) : Row;
 }

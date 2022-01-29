@@ -5,76 +5,46 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformer;
 
 use Flow\ETL\Row;
-use Flow\ETL\Row\Entry;
 use Flow\ETL\Rows;
 
 /**
  * @psalm-immutable
  */
-final class BulkTransformer implements EntryTransformer
+final class BulkTransformer implements MergeableTransformer
 {
     /**
-     * @var array<EntryTransformer|RowTransformer>
+     * @var array<MergeableTransformer>
      */
     private array $transformers;
 
-    /**
-     * @param array<EntryTransformer|RowTransformer> $rowTransformers
-     */
-    private function __construct(array $rowTransformers = [])
+    public function __construct(MergeableTransformer ...$transformers)
     {
-        $this->transformers = $rowTransformers;
+        $this->transformers = $transformers;
     }
 
     public static function empty() : self
     {
-        return new self([]);
+        return new self();
     }
 
-    public static function rows(RowTransformer ...$rowTransformers) : self
+    public function add(MergeableTransformer $rowTransformer) : self
     {
-        return new self($rowTransformers);
-    }
-
-    public static function entries(EntryTransformer ...$entryTransformers) : self
-    {
-        return new self($entryTransformers);
-    }
-
-    public function addRow(RowTransformer $rowTransformer) : self
-    {
-        return new self(\array_merge($this->transformers, [$rowTransformer]));
-    }
-
-    public function addEntry(EntryTransformer $entryTransformer) : self
-    {
-        return new self(\array_merge($this->transformers, [$entryTransformer]));
+        return new self(...\array_merge($this->transformers, [$rowTransformer]));
     }
 
     public function transform(Rows $rows) : Rows
     {
         /** @psalm-suppress InvalidArgument */
-        return $rows->map([$this, 'transformRow']);
+        return $rows->map([$this, 'transformOne']);
     }
 
-    public function transformRow(Row $row) : Row
+    public function transformOne(Row $row) : Row
     {
         foreach ($this->transformers as $transformer) {
-            $row = $transformer->transformRow($row);
+            $row = $transformer->transformOne($row);
         }
 
-        return $row->map([$this, 'transformEntry']);
-    }
-
-    public function transformEntry(Entry $entry) : Entry
-    {
-        foreach ($this->transformers as $transformer) {
-            if ($transformer instanceof EntryTransformer) {
-                $entry = $transformer->transformEntry($entry);
-            }
-        }
-
-        return $entry;
+        return $row;
     }
 
     public function isEmpty() : bool

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Double;
 
 use Flow\ETL\Row;
-use Flow\ETL\Row\Entry;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\EntryTransformer;
+use Flow\ETL\Transformer\MergeableTransformer;
 
-final class EntryTransformerStub implements EntryTransformer
+final class MergeableTransformerStub implements MergeableTransformer
 {
     private string $id;
 
@@ -23,13 +22,8 @@ final class EntryTransformerStub implements EntryTransformer
         return $rows;
     }
 
-    public function transformRow(Row $row) : Row
+    public function transformOne(Row $row) : Row
     {
         return $row;
-    }
-
-    public function transformEntry(Entry $entry) : Entry
-    {
-        return $entry;
     }
 }

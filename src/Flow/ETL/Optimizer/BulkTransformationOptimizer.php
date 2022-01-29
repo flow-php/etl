@@ -4,63 +4,50 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Optimizer;
 
+use Flow\ETL\Loader;
 use Flow\ETL\Transformer;
 
 final class BulkTransformationOptimizer implements Optimizer
 {
-    public function optimizeTransformers(Transformer ...$transformers) : array
+    public function optimizePipeline(array $elements) : array
     {
-        $transformersArray = $transformers;
+        $elementsArray = $elements;
         /**
-         * @var array<Transformer> $optimizedTransformers
+         * @var array<Transformer|Loader> $optimizedPipeline
          */
-        $optimizedTransformers = [];
+        $optimizedPipeline = [];
         $bulkTransformer = Transformer\BulkTransformer::empty();
         /**
-         * @var ?Transformer $previousTransformer
+         * @var ?Transformer|Loader $previousElement
          */
-        $previousTransformer = null;
+        $previousElement = null;
 
-        while (\count($transformersArray)) {
-            $transformer = \array_shift($transformersArray);
+        while (\count($elementsArray)) {
+            $element = \array_shift($elementsArray);
 
-            if (!$this->isBulkTransformer($transformer)) {
+            if ($element instanceof Loader || !$element instanceof Transformer\MergeableTransformer) {
                 if (!$bulkTransformer->isEmpty()) {
-                    $optimizedTransformers[] = $bulkTransformer;
+                    $optimizedPipeline[] = $bulkTransformer;
                     $bulkTransformer = Transformer\BulkTransformer::empty();
                 }
 
-                $optimizedTransformers[] = $transformer;
+                $optimizedPipeline[] = $element;
             } else {
-                if ($previousTransformer !== null && !$this->isBulkTransformer($previousTransformer) && !$bulkTransformer->isEmpty()) {
-                    $optimizedTransformers[] = $bulkTransformer;
+                if ($previousElement !== null && !$previousElement instanceof Transformer\MergeableTransformer && !$bulkTransformer->isEmpty()) {
+                    $optimizedPipeline[] = $bulkTransformer;
                     $bulkTransformer = Transformer\BulkTransformer::empty();
                 }
 
-                if ($transformer instanceof Transformer\EntryTransformer) {
-                    $bulkTransformer = $bulkTransformer->addEntry($transformer);
-                } elseif ($transformer instanceof Transformer\RowTransformer) {
-                    $bulkTransformer = $bulkTransformer->addRow($transformer);
-                }
+                $bulkTransformer = $bulkTransformer->add($element);
             }
 
-            $previousTransformer = $transformer;
+            $previousElement = $element;
         }
 
         if (!$bulkTransformer->isEmpty()) {
-            return \array_merge($optimizedTransformers, [$bulkTransformer]);
+            return \array_merge($optimizedPipeline, [$bulkTransformer]);
         }
 
-        return $optimizedTransformers;
-    }
-
-    /**
-     * @param Transformer $transformer
-     *
-     * @return bool
-     */
-    private function isBulkTransformer(Transformer $transformer) : bool
-    {
-        return $transformer instanceof Transformer\EntryTransformer || $transformer instanceof Transformer\RowTransformer;
+        return $optimizedPipeline;
     }
 }
