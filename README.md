@@ -259,7 +259,7 @@ loading time into datasink. It might be cheaper to do one big insert than multip
 
 #### Bulk Transformations 
 
-In order to let Flow ETL decide when to merge transformers in order to reduce number of iterations 
+In order to let Flow ETL decide when to merge transformers, to reduce number of iterations, 
 pass multiple transformers into `ETL::transform(Transformer ...$transformers) : self` method.
 
 Example:
@@ -283,6 +283,9 @@ ETL must perform `10 * 1k * 5 = 50k` iterations in total.
 
 Bulk transformation will reduce that number 5 times, merging all transforming operation into single iteration through 
 all rows, so `10 * 1k = 10k`. 
+
+Optimization is even more efficient when transformers implement `EntryTransformer` interface by reducing
+number of iterations across Row Entries.
 
 ## Development
 

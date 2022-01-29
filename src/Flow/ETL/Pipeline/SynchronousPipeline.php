@@ -7,6 +7,7 @@ namespace Flow\ETL\Pipeline;
 use Flow\ETL\ErrorHandler;
 use Flow\ETL\ErrorHandler\ThrowError;
 use Flow\ETL\Loader;
+use Flow\ETL\Optimizer\Optimizer;
 use Flow\ETL\Pipeline;
 use Flow\ETL\Rows;
 use Flow\ETL\Transformer;
@@ -20,10 +21,13 @@ final class SynchronousPipeline implements Pipeline
 
     private ErrorHandler $errorHandler;
 
-    public function __construct()
+    private Optimizer $optimizer;
+
+    public function __construct(Optimizer $optimizer = null)
     {
         $this->elements = [];
         $this->errorHandler = new ThrowError();
+        $this->optimizer = $optimizer ?? new \Flow\ETL\Optimizer\BulkTransformationOptimizer();
     }
 
     public function clean() : Pipeline
@@ -44,20 +48,7 @@ final class SynchronousPipeline implements Pipeline
      */
     public function registerTransformer(Transformer ...$transformers) : void
     {
-        $bulkRead = true;
-
-        foreach ($transformers as $transformer) {
-            if (!$transformer instanceof Transformer\RowTransformer) {
-                $bulkRead = false;
-
-                break;
-            }
-        }
-
-        $this->elements = ($bulkRead === true)
-            /** @phpstan-ignore-next-line  */
-            ? \array_merge($this->elements, [new Transformer\BulkTransformer(...$transformers)])
-            : \array_merge($this->elements, $transformers);
+        $this->elements = \array_merge($this->elements, $this->optimizer->optimizeTransformers(...$transformers));
     }
 
     public function registerLoader(Loader ...$loaders) : void
