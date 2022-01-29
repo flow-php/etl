@@ -18,7 +18,7 @@ final class BulkTransformerTest extends TestCase
             new class implements MergeableTransformer {
                 public function transform(Rows $rows) : Rows
                 {
-                    throw new \RuntimeException('should not be used!');
+                    return $rows->map([$this, 'transformOne']);
                 }
 
                 public function transformOne(Row $row) : Row
@@ -29,7 +29,7 @@ final class BulkTransformerTest extends TestCase
             new class implements MergeableTransformer {
                 public function transform(Rows $rows) : Rows
                 {
-                    throw new \RuntimeException('should not be used!');
+                    return $rows->map([$this, 'transformOne']);
                 }
 
                 public function transformOne(Row $row) : Row
@@ -40,7 +40,7 @@ final class BulkTransformerTest extends TestCase
             new class implements MergeableTransformer {
                 public function transform(Rows $rows) : Rows
                 {
-                    throw new \RuntimeException('should not be used!');
+                    return $rows->map([$this, 'transformOne']);
                 }
 
                 public function transformOne(Row $row) : Row

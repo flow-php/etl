@@ -12,7 +12,7 @@ use Flow\ETL\Transformer;
 /**
  * @psalm-immutable
  */
-final class AddStampToStringEntryTransformer implements Transformer
+final class AddStampToStringEntryTransformer implements Transformer\MergeableTransformer
 {
     private string $entryName;
 
@@ -34,12 +34,15 @@ final class AddStampToStringEntryTransformer implements Transformer
 
     public function transform(Rows $rows) : Rows
     {
-        return $rows->map(
-            fn (Row $row) : Row => $row->set(
-                new StringEntry(
-                    $this->entryName,
-                    \sprintf('%s%s%s', $row->get($this->entryName)->value(), $this->divider, $this->stamp)
-                )
+        return $rows->map([$this, 'transformOne']);
+    }
+
+    public function transformOne(Row $row) : Row
+    {
+        return $row->set(
+            new StringEntry(
+                $this->entryName,
+                \sprintf('%s%s%s', $row->get($this->entryName)->value(), $this->divider, $this->stamp)
             )
         );
     }

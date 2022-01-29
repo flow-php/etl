@@ -7,6 +7,7 @@ namespace Flow\ETL\Pipeline;
 use Flow\ETL\ErrorHandler;
 use Flow\ETL\ErrorHandler\ThrowError;
 use Flow\ETL\Loader;
+use Flow\ETL\Optimizer\BulkTransformationOptimizer;
 use Flow\ETL\Optimizer\Optimizer;
 use Flow\ETL\Pipeline;
 use Flow\ETL\Rows;
@@ -27,7 +28,7 @@ final class SynchronousPipeline implements Pipeline
     {
         $this->elements = [];
         $this->errorHandler = new ThrowError();
-        $this->optimizer = $optimizer ?? new \Flow\ETL\Optimizer\BulkTransformationOptimizer();
+        $this->optimizer = $optimizer ?? new BulkTransformationOptimizer();
     }
 
     public function clean() : Pipeline
