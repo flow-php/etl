@@ -9,16 +9,21 @@ use Flow\ETL\Transformer;
 
 final class BulkTransformationOptimizer implements Optimizer
 {
+    /**
+     * @param array<Loader|Transformer> $elements
+     *
+     * @return array<Loader|Transformer>
+     */
     public function optimizePipeline(array $elements) : array
     {
         $elementsArray = $elements;
         /**
-         * @var array<Transformer|Loader> $optimizedPipeline
+         * @var array<Loader|Transformer> $optimizedPipeline
          */
         $optimizedPipeline = [];
         $bulkTransformer = Transformer\BulkTransformer::empty();
         /**
-         * @var ?Transformer|Loader $previousElement
+         * @var null|Loader|Transformer $previousElement
          */
         $previousElement = null;
 

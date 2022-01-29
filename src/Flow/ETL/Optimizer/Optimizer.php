@@ -10,9 +10,9 @@ use Flow\ETL\Transformer;
 interface Optimizer
 {
     /**
-     * @param array<Transformer|Loader> elements
+     * @param array<Loader|Transformer> $elements
      *
-     * @return array<Transformer|Loader>
+     * @return array<Loader|Transformer>
      */
     public function optimizePipeline(array $elements) : array;
 }
