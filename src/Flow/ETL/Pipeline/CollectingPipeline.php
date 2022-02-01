@@ -43,8 +43,9 @@ final class CollectingPipeline implements Pipeline
     public function process(\Generator $generator, callable $callback = null) : void
     {
         $rows = [];
+
         while ($generator->valid()) {
-            $this->pipeline->process($generator, function (Rows $processed) use (&$rows): void {
+            $this->pipeline->process($generator, function (Rows $processed) use (&$rows) : void {
                 $rows[] = $processed;
             });
         }
