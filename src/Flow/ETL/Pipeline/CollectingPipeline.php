@@ -45,15 +45,16 @@ final class CollectingPipeline implements Pipeline
         $rows = [];
 
         while ($generator->valid()) {
-            $this->pipeline->process($generator, function (Rows $processed) use (&$rows) : void {
-                $rows[] = $processed;
+            $this->pipeline->process($generator, function (Rows $nextRows) use (&$rows) : void {
+                /** @psalm-suppress MixedArrayAssignment */
+                $rows[] = $nextRows;
             });
         }
 
-        $rows = (new Rows())->merge(...$rows);
-        $rows = $rows->makeFirst()->makeLast();
+        /** @var array<Rows> $rows */
+        $mergedRows = (new Rows())->merge(...$rows)->makeFirst()->makeLast();
 
-        $this->nextPipeline->process($this->generate($rows), $callback);
+        $this->nextPipeline->process($this->generate($mergedRows), $callback);
     }
 
     public function onError(ErrorHandler $errorHandler) : void
