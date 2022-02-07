@@ -30,11 +30,11 @@ final class ETLTest extends TestCase
         $collectedRows = ETL::process(
             $rows = new Rows(
                 Row::create(
-                        new IntegerEntry('id', 101),
-                        new BooleanEntry('deleted', false),
-                        new DateTimeEntry('expiration-date', new \DateTimeImmutable('2020-08-24')),
-                        new NullEntry('phase')
-                    )
+                    new IntegerEntry('id', 101),
+                    new BooleanEntry('deleted', false),
+                    new DateTimeEntry('expiration-date', new \DateTimeImmutable('2020-08-24')),
+                    new NullEntry('phase')
+                )
             )
         )
             ->fetch();
