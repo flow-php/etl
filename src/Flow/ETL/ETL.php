@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flow\ETL;
 
 use Flow\ETL\Exception\InvalidArgumentException;
+use Flow\ETL\Formatter\AsciiTableFormatter;
 use Flow\ETL\Pipeline\CollectingPipeline;
 use Flow\ETL\Pipeline\ParallelizingPipeline;
 use Flow\ETL\Pipeline\SynchronousPipeline;
@@ -95,6 +96,13 @@ final class ETL
 
         /** @var Rows $rows */
         return $rows;
+    }
+
+    public function display(int $limit = 20, Formatter $formatter = null) : string
+    {
+        $formatter = $formatter ?? new AsciiTableFormatter();
+
+        return $formatter->format($this->fetch($limit));
     }
 
     public function run() : void
