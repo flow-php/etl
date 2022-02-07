@@ -258,7 +258,7 @@ $output = ETL::extract($extractor)
     ->transform($transformer2)
     ->transform($transformer3)
     ->transform($transformer4)
-    ->display(5);
+    ->display($limit = 5, $truncate = 0);
     
 echo $output;
 ```
