@@ -16,7 +16,7 @@ final class AsciiTableFormatter implements Formatter
      * @psalm-suppress MixedArrayAssignment
      * @psalm-suppress MixedArgument
      */
-    public function format(Rows $rows) : string
+    public function format(Rows $rows, int $truncate = 20) : string
     {
         if ($rows->count() === 0) {
             return '';
@@ -34,7 +34,7 @@ final class AsciiTableFormatter implements Formatter
             $array[] = $rowsArray;
         });
 
-        return (new ASCIITable())->makeTable($array)
+        return (new ASCIITable())->makeTable($array, $truncate)
             . "{$rows->count()} rows";
     }
 }

@@ -98,11 +98,20 @@ final class ETL
         return $rows;
     }
 
-    public function display(int $limit = 20, Formatter $formatter = null) : string
+    /**
+     * @param int $limit maximum numbers of rows to display
+     * @param int $truncate if set to 0 columns are not truncated
+     * @param null|Formatter $formatter
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return string
+     */
+    public function display(int $limit = 20, int $truncate = 20, Formatter $formatter = null) : string
     {
         $formatter = $formatter ?? new AsciiTableFormatter();
 
-        return $formatter->format($this->fetch($limit));
+        return $formatter->format($this->fetch($limit), $truncate);
     }
 
     public function run() : void

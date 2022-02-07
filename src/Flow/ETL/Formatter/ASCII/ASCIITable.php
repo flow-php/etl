@@ -36,7 +36,7 @@ final class ASCIITable
      *
      * @return string
      */
-    public function makeTable(array $array) : string
+    public function makeTable(array $array, int $truncate = 20) : string
     {
         $autoAlignCells = true;
 
@@ -78,7 +78,7 @@ final class ASCIITable
         $array = $modifiedArray;
 
         // Now we need to get some details prepared.
-        $this->getColWidths($array);
+        $this->getColWidths($array, $truncate);
         $this->getColTypes($array);
 
         // If we have a blank array then we don't need to output anything else
@@ -87,13 +87,13 @@ final class ASCIITable
             $table .= $this->makeDivider();
 
             // Output the header row
-            $table .= $this->makeHeaders($autoAlignCells);
+            $table .= $this->makeHeaders();
 
             // Another divider line
             $table .= $this->makeDivider();
 
             // Add the table data in
-            $table .= $this->makeRows($array, $autoAlignCells);
+            $table .= $this->makeRows($array, $truncate);
 
             // The final divider line.
             $table .= $this->makeDivider();
@@ -107,13 +107,15 @@ final class ASCIITable
      *
      * @param array $array the multi-dimensional array you are building the ASCII Table from
      */
-    private function getColWidths(array $array) : void
+    private function getColWidths(array $array, int $truncate) : void
     {
         // If we have some array data loop through each row, then through each cell
         if (isset($array[0])) {
             foreach (\array_keys($array[0]) as $col) {
-                // Get the longest col value and compare with the col name to get the longest
-                $this->colWidths[$col] = \max(\max(\array_map([$this, 'len'], $this->arrCol($array, $col))), $this->len($col));
+                $length = \max(\max(\array_map([$this, 'len'], $this->arrCol($array, $col))), $this->len($col));
+                $this->colWidths[$col] = $truncate === 0
+                    ? $length
+                    : \min($length, $truncate);
             }
         }
     }
@@ -179,9 +181,9 @@ final class ASCIITable
         // were going to start with a simple union piece
         $divider = '+';
 
-        // Loop through the table, adding lines of the appropriate length (remembering the +2 for the spacers), and a union piece at the end
+        // Loop through the table, adding lines of the appropriate length, and a union piece at the end
         foreach ($this->colWidths as $col => $length) {
-            $divider .= \str_repeat('-', $length + 2) . '+';
+            $divider .= \str_repeat('-', $length) . '+';
         }
 
         // return it
@@ -191,11 +193,9 @@ final class ASCIITable
     /**
      * This will look through the $col_widths array and make a column header for each one.
      *
-     * @param bool $autoalignCells if True, columns with numeric data types will be aligned to the right of the cell
-     *
      * @return string the row of the table header
      */
-    private function makeHeaders(bool $autoalignCells) : string
+    private function makeHeaders() : string
     {
         // This time were going to start with a simple bar;
         $row = '|';
@@ -203,8 +203,8 @@ final class ASCIITable
         // Loop though the col widths, adding the cleaned title and needed padding
         foreach ($this->colWidths as $col => $length) {
             // Add title
-            $alignment = $autoalignCells && isset($this->colTypes[$col]) && $this->colTypes[$col] == 'numeric' ? STR_PAD_LEFT : STR_PAD_RIGHT;
-            $row .= ' ' . \str_pad($col, $this->colWidths[$col], ' ', $alignment) . ' ';
+            $alignment = STR_PAD_LEFT;
+            $row .= \str_pad($col, $this->colWidths[$col], ' ', $alignment);
 
             // Add the right hand bar
             $row .= '|';
@@ -218,11 +218,10 @@ final class ASCIITable
      * This makes the actual table rows.
      *
      * @param array $array the multi-dimensional array you are building the ASCII Table from
-     * @param bool $autoalignCells if True, column values with numeric data types will be aligned to the right of the cell
      *
      * @return string the rows of the table
      */
-    private function makeRows(array $array, bool $autoalignCells) : string
+    private function makeRows(array $array, int $trucate) : string
     {
         // Just prep the variable
         $rows = '';
@@ -235,8 +234,22 @@ final class ASCIITable
             // Loop through the columns
             foreach ($data as $col => $value) {
                 // Add the value to the table
-                $alignment = $autoalignCells && isset($this->colTypes[$col]) && $this->colTypes[$col] == 'numeric' ? STR_PAD_LEFT : STR_PAD_RIGHT;
-                $rows .= ' ' . \str_pad($value, $this->colWidths[$col], ' ', $alignment) . ' ';
+                $alignment = STR_PAD_LEFT;
+
+                if ($trucate === 0) {
+                    $rows .= \str_pad($value, $this->colWidths[$col], ' ', $alignment);
+                } else {
+                    if (self::len($value) > $trucate) {
+                        $rows .= \str_pad(
+                            self::substr($value, 0, $trucate - 3) . '...',
+                            $this->colWidths[$col],
+                            ' ',
+                            $alignment
+                        );
+                    } else {
+                        $rows .= \str_pad($value, $this->colWidths[$col], ' ', $alignment);
+                    }
+                }
 
                 // Add the right hand bar
                 $rows .= '|';
@@ -260,5 +273,10 @@ final class ASCIITable
     private static function len(string $colValue) : int
     {
         return \extension_loaded('mbstring') ? \mb_strlen($colValue) : \strlen($colValue);
+    }
+
+    private static function substr(string $colValue, int $start, int $length) : string
+    {
+        return \extension_loaded('mbstring') ? \mb_substr($colValue, $start, $length) : \substr($colValue, $start, $length);
     }
 }
