@@ -468,7 +468,7 @@ ASCIITABLE,
         );
 
         $this->assertStringContainsString(
-            <<<ASCIITABLE
+            <<<'ASCIITABLE'
 +--------------------+
 |this is very long...|
 +--------------------+
@@ -484,7 +484,7 @@ ASCIITABLE,
         );
 
         $this->assertStringContainsString(
-            <<<ASCIITABLE
+            <<<'ASCIITABLE'
 +-------------------------------------------------------------+
 |this is very long entry name that should be longer than items|
 +-------------------------------------------------------------+
