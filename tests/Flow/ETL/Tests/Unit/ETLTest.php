@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
+use Flow\ETL\Cache\LocalFilesystemCache;
 use Flow\ETL\ErrorHandler\IgnoreError;
 use Flow\ETL\ErrorHandler\ThrowError;
 use Flow\ETL\ETL;
@@ -20,6 +21,7 @@ use Flow\ETL\Row\Entry\StringEntry;
 use Flow\ETL\Row\Entry\StructureEntry;
 use Flow\ETL\Rows;
 use Flow\ETL\Tests\Double\AddStampToStringEntryTransformer;
+use Flow\ETL\Tests\Double\AllRowTypesFakeExtractor;
 use Flow\ETL\Transformer;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -619,5 +621,32 @@ ASCIITABLE,
 ASCIITABLE,
             $etl->display(5, 0)
         );
+    }
+
+    public function test_etl_cache() : void
+    {
+        $cache = new LocalFilesystemCache();
+
+        $cache->clear('test_etl_cache');
+
+        ETL::extract(new AllRowTypesFakeExtractor(20, 2), null, $cache)
+            ->cache('test_etl_cache');
+
+        $cacheContent = \array_values(\array_diff(\scandir(\getenv(LocalFilesystemCache::CACHE_DIR_ENV)), ['..', '.']));
+
+        $this->assertContains(\hash('sha256', 'test_etl_cache'), $cacheContent);
+        $cache->clear('test_etl_cache');
+    }
+
+    public function test_etl_sort_by() : void
+    {
+        $rows = ETL::extract(new AllRowTypesFakeExtractor(20, 2))
+            ->sortBy(Row\Sort::asc('id'))
+            ->fetch();
+
+        $cache = \array_diff(\scandir(\getenv(LocalFilesystemCache::CACHE_DIR_ENV)), ['..', '.']);
+
+        $this->assertEmpty($cache);
+        $this->assertSame(\range(0, 39), $rows->reduceToArray('id'));
     }
 }
