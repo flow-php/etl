@@ -17,10 +17,13 @@ final class CacheExtractor implements Extractor
 
     private Cache $cache;
 
-    public function __construct(string $id, Cache $cache)
+    private bool $clear;
+
+    public function __construct(string $id, Cache $cache, bool $clear = false)
     {
         $this->cache = $cache;
         $this->id = $id;
+        $this->clear = $clear;
     }
 
     /**
@@ -34,6 +37,8 @@ final class CacheExtractor implements Extractor
             yield $rows;
         }
 
-        $this->cache->clear($this->id);
+        if ($this->clear) {
+            $this->cache->clear($this->id);
+        }
     }
 }

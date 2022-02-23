@@ -161,13 +161,13 @@ final class ETL
 
     public function cache(string $id = null) : self
     {
-        $this->cache->clear($id = $id ?? \hash('sha256', \spl_object_hash($this)));
+        $this->cache->clear($id = $id ?? $this->uniqueId);
 
         $this->pipeline->process($this->extractor->extract(), $this->limit, function (Rows $rows) use ($id) : void {
             $this->cache->add($id, $rows);
         });
 
-        $this->pipeline->clean();
+        $this->pipeline = $this->pipeline->clean();
         $this->limit = null;
         $this->extractor = new CacheExtractor($id, $this->cache);
 

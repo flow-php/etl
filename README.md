@@ -1,4 +1,5 @@
-# Extract Transform Load - Abstraction
+# Flow PHP
+Data processing and manipulation library,
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
 [![Latest Stable Version](https://poser.pugx.org/flow-php/etl/v)](https://packagist.org/packages/flow-php/etl)
@@ -8,7 +9,11 @@
 
 ## Description
 
-Flow PHP ETL is a simple ETL (Extract Transform Load) abstraction designed to implement Filters & Pipes architecture.
+Flow is a most advanced and flexible PHP, data processing library that is designed according to Filters & Pipes architecture.
+
+Besides typical ETL use cases (Extract, Transform, Load), Flow can be also used for memory-safe data analysis.
+
+By default all operations are synchronous, but for bigger datasets Flow offers an asynchronous pipeline. 
 
 ## Installation
 
@@ -326,6 +331,57 @@ Error Handling can be set directly at ETL:
 ETL::extract($extractor)
     ->onError(new IgnoreError())
     ->transform($transformer)
+    ->load($loader)
+    ->run();
+```
+
+## Sort By 
+
+Thanks to implementation of External Sort algorithm, sorting as everything else
+is by default memory-safe. This means, that even sorting 10gb file if doable
+in just few megabytes of RAM. 
+
+
+```php
+<?php 
+
+$rows = ETL::extract($extractor)
+    ->transform($transformer1)
+    ->transform($transformer2)
+    ->collect()
+    ->sortBy(Sort::desc('price'))
+    ->fetch();
+```
+
+Please remember that sort is an expensive operation, usually datasets are either 
+loaded into destination storages, or reduced by filtering/grouping. 
+Sorting needs to go through entire dataset and sort all Rows regardless of how 
+big the dataset is compared to available memory. In order to achieve
+that, External Sort is using cache which relays on I/O that might become a bottleneck. 
+
+## Cache 
+
+The goal of cache is to serialize and save on disk (or in other location defined by Cache implementation)
+already transformer dataset. 
+
+Cache will run a pipeline, catching each Rows and saving them into cache 
+from where those rows can be later extracted. 
+
+This is useful for operations that requires full transformation of dataset before
+moving forward, like for example sorting.
+
+Another interesting use case for caching would be to share the dataset between multiple ETL's.
+So instead of going to datasource multiple times and then repeating all transformations, only one ETL would
+do the whole job and others could benefit from the final form of dataset in a memory-safe way. 
+
+```php
+<?php 
+
+ETL::extract($extractor)
+    ->transform($transformer1)
+    ->transform($transformer2)
+    ->cache()
+    ->transform($transformer3)
     ->load($loader)
     ->run();
 ```
