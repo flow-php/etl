@@ -11,9 +11,9 @@ Data processing and manipulation library,
 
 Flow is a most advanced and flexible PHP, data processing library that is designed according to Filters & Pipes architecture.
 
-Besides typical ETL use cases (Extract, Transform, Load), Flow can be also used for memory-safe data analysis.
+Except typical ETL use cases (Extract, Transform, Load), Flow can be also used for memory-safe data analysis.
 
-By default all operations are synchronous, but for bigger datasets Flow offers an asynchronous pipeline. 
+By default, all operations are synchronous, but for bigger datasets Flow offers also an [asynchronous](https://github.com/flow-php/etl-async) pipeline. 
 
 ## Installation
 
@@ -231,6 +231,8 @@ In most cases Extractors should be provided by Adapters which you can find below
 please find them below.  
 Please read [tests](tests/Flow/ETL/Tests/Unit/Extractor) to find examples of usage.
 
+* [buffer](src/Flow/ETL/Extractor/BufferExtractor.php) - [tests](tests/Flow/ETL/Tests/Unit/Extractor/BufferExtractorTest.php)
+* [cache](src/Flow/ETL/Extractor/CacheExtractor.php) - [tests](tests/Flow/ETL/Tests/Unit/Extractor/CacheExtractorTest.php)
 * [process](src/Flow/ETL/Extractor/ProcessExtractor.php) - [tests](tests/Flow/ETL/Tests/Unit/Extractor/ProcessExtractorTest.php)
 * [memory](src/Flow/ETL/Extractor/MemoryExtractor.php) - [tests](tests/Flow/ETL/Tests/Unit/Extractor/MemoryExtractorTest.php)
 

@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Extractor;
 
 use Flow\ETL\Extractor;
-use Flow\ETL\Extractor\CollectingExtractor;
+use Flow\ETL\Extractor\BufferExtractor;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
 use PHPUnit\Framework\TestCase;
 
-final class CollectingExtractorTest extends TestCase
+final class BufferExtractorTest extends TestCase
 {
-    public function test_collecting_extractor_when_less_than_max_rows_size() : void
+    public function test_buffer_extractor_when_less_than_max_rows_size() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -38,9 +38,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_when_equals_to_max_rows_size() : void
+    public function test_buffer_extractor_when_equals_to_max_rows_size() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -64,9 +64,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_when_more_even_than_max_rows_size() : void
+    public function test_buffer_extractor_when_more_even_than_max_rows_size() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -111,9 +111,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_when_more_odd_than_max_rows_size() : void
+    public function test_buffer_extractor_when_more_odd_than_max_rows_size() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -156,9 +156,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_from_single_row_rows_even() : void
+    public function test_buffer_extractor_from_single_row_rows_even() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -198,9 +198,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_from_single_row_rows_odd() : void
+    public function test_buffer_extractor_from_single_row_rows_odd() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {
@@ -238,9 +238,9 @@ final class CollectingExtractorTest extends TestCase
         );
     }
 
-    public function test_collecting_extractor_from_single_row_rows_odd_max_size_odd() : void
+    public function test_buffer_extractor_from_single_row_rows_odd_max_size_odd() : void
     {
-        $extractor = new CollectingExtractor(
+        $extractor = new BufferExtractor(
             new class implements Extractor {
                 public function extract() : \Generator
                 {

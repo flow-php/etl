@@ -10,7 +10,7 @@ use Flow\ETL\Rows;
 /**
  * @psalm-immutable
  */
-final class CollectingExtractor implements Extractor
+final class BufferExtractor implements Extractor
 {
     private Extractor $extractor;
 

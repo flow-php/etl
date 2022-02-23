@@ -27,7 +27,7 @@ abstract class CacheTestCase extends TestCase
         $this->cleanupCacheDir($this->cacheDir);
     }
 
-    private function cleanupCacheDir(string $directory): void
+    private function cleanupCacheDir(string $directory) : void
     {
         if (\file_exists($directory)) {
             foreach (\array_diff(\scandir($directory), ['.', '..']) as $fileName) {
