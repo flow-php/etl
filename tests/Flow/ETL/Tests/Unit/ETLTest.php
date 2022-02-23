@@ -293,18 +293,18 @@ final class ETLTest extends TestCase
     {
         $rows = ETL::extract(
             new class implements Extractor {
-                    /**
-                     * @return \Generator<int, Rows, mixed, void>
-                     */
-                    public function extract() : \Generator
-                    {
-                        for ($i = 0; $i < 1000; $i++) {
-                            yield new Rows(
-                                Row::create(new IntegerEntry('id', $i)),
-                            );
-                        }
+                /**
+                 * @return \Generator<int, Rows, mixed, void>
+                 */
+                public function extract() : \Generator
+                {
+                    for ($i = 0; $i < 1000; $i++) {
+                        yield new Rows(
+                            Row::create(new IntegerEntry('id', $i)),
+                        );
                     }
                 }
+            }
         )
             ->transform($transformer = new class implements Closure, Transformer {
                 public bool $closureCalled = false;
