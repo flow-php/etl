@@ -6,10 +6,11 @@ namespace Flow\ETL;
 
 use Flow\ETL\Cache\LocalFilesystemCache;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\ExternalSort\CacheExternalSort;
+use Flow\ETL\ExternalSort\MemorySort;
 use Flow\ETL\Extractor\CacheExtractor;
 use Flow\ETL\Extractor\ProcessExtractor;
 use Flow\ETL\Formatter\AsciiTableFormatter;
+use Flow\ETL\Monitoring\Memory\Unit;
 use Flow\ETL\Pipeline\CollectingPipeline;
 use Flow\ETL\Pipeline\ParallelizingPipeline;
 use Flow\ETL\Pipeline\SynchronousPipeline;
@@ -37,7 +38,7 @@ final class ETL
         $this->pipeline = $pipeline;
         $this->limit = null;
         $this->cache = new LocalFilesystemCache();
-        $this->externalSort = new CacheExternalSort($this->uniqueId, $this->cache);
+        $this->externalSort = new MemorySort($this->uniqueId, $this->cache, Unit::fromMb(200));
     }
 
     public static function process(Rows $rows, Pipeline $pipeline = null) : self
