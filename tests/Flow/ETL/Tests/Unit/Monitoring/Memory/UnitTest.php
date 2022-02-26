@@ -11,18 +11,18 @@ final class UnitTest extends TestCase
 {
     public function test_conversion_from_bytes_to_kbs() : void
     {
-        $this->assertSame(1.0, Unit::fromBytes(1024)->inKb());
-        $this->assertSame(2.0, Unit::fromBytes(2048)->inKb());
+        $this->assertSame(1.0, Unit::fromBytes(1000)->inKb());
+        $this->assertSame(2.0, Unit::fromBytes(2000)->inKb());
         $this->assertSame(0.13, Unit::fromBytes(128)->inKb());
-        $this->assertSame(2048, Unit::fromKb(2)->inBytes());
+        $this->assertSame(2000, Unit::fromKb(2)->inBytes());
     }
 
     public function test_conversion_from_bytes_to_mbs() : void
     {
-        $this->assertSame(1.0, Unit::fromKb(1024)->inMb());
-        $this->assertSame(2.0, Unit::fromKb(2048)->inMb());
+        $this->assertSame(1.0, Unit::fromKb(1000)->inMb());
+        $this->assertSame(2.0, Unit::fromKb(2000)->inMb());
         $this->assertSame(0.0, Unit::fromBytes(128)->inMb());
-        $this->assertSame(2097152, Unit::fromMb(2)->inBytes());
+        $this->assertSame(2000000, Unit::fromMb(2)->inBytes());
     }
 
     public function test_memory_diff() : void
@@ -39,9 +39,13 @@ final class UnitTest extends TestCase
 
     public function test_calculating_percentage_from_value() : void
     {
-        $this->assertSame(
-            10.0,
-            Unit::fromString('100M')->percentage(10)->inMb()
+        $this->assertEquals(
+            Unit::fromString('10M'),
+            Unit::fromString('100M')->percentage(10)
+        );
+        $this->assertEquals(
+            Unit::fromString('90M'),
+            Unit::fromString('100M')->percentage(90)
         );
     }
 }

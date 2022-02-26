@@ -13,6 +13,12 @@ use Flow\ETL\Monitoring\Memory\Unit;
 use Flow\ETL\Row\Sort;
 use Flow\ETL\Rows;
 
+/**
+ * This implementation of external sort will try to read from cache until it reaches memory limit.
+ * Memory limit must be lower by at least 10% from value in php.ini memory_limit,
+ * if provided maximum memory is greater than maximum_memory it will get reduced to 90% of maximum_memory.
+ * If memory limit get exceeded, sort will get back to CacheExternalSort algorithm.
+ */
 final class MemorySort implements ExternalSort
 {
     private Unit $maximumMemory;
@@ -31,10 +37,10 @@ final class MemorySort implements ExternalSort
         $this->cache = $cache;
         $this->cacheId = $cacheId;
         $this->maximumMemory = $maximumMemory;
-        $this->configuration = new Configuration();
+        $this->configuration = new Configuration($safetyBufferPercentage = 10);
 
-        if ($this->configuration->isLessThan($maximumMemory)) {
-            $this->maximumMemory = $this->configuration->limit()->percentage(10);
+        if ($this->configuration->isLessThan($maximumMemory) && !$this->configuration->isInfinite()) {
+            $this->maximumMemory = $this->configuration->limit()->percentage(90);
         }
     }
 
@@ -49,9 +55,9 @@ final class MemorySort implements ExternalSort
             $maxSize = \max($rows->count(), $maxSize);
             $mergedRows = $mergedRows->merge($rows);
 
-            if ($memoryConsumption->currentDiff()->inBytes() > $this->maximumMemory->inBytes()) {
+            if ($memoryConsumption->currentDiff()->isGreaterThan($this->maximumMemory)) {
                 // Reset already merged rows and fallback to Cache based External Sort
-                $mergedRows = new Rows();
+                unset($mergedRows);
 
                 return (new CacheExternalSort($this->cacheId, $this->cache))->sortBy(...$entries);
             }

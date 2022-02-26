@@ -4,19 +4,29 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Monitoring\Memory;
 
+use Flow\ETL\Exception\InvalidArgumentException;
+
 final class Configuration
 {
     private ?Unit $limit;
 
-    public function __construct()
+    private int $safetyBufferPercentage;
+
+    public function __construct(int $safetyBufferPercentage)
     {
+        if ($safetyBufferPercentage < 0 || $safetyBufferPercentage > 90) {
+            throw new InvalidArgumentException("Safety buffer can't be smaller than 0% and greater than 90%, {$safetyBufferPercentage}% given.");
+        }
+
         $limitConfig = \ini_get('memory_limit');
 
         if (\strpos($limitConfig, '-') === 0) {
             $this->limit = null;
         } else {
-            $this->limit = Unit::fromString($limitConfig);
+            $this->limit = Unit::fromString($limitConfig)->percentage(100 - $safetyBufferPercentage);
         }
+
+        $this->safetyBufferPercentage = $safetyBufferPercentage;
     }
 
     public function limit() : ?Unit
@@ -41,5 +51,10 @@ final class Configuration
         }
 
         return $this->limit->inBytes() < $memory->inBytes();
+    }
+
+    public function isInfinite() : bool
+    {
+        return $this->limit === null;
     }
 }

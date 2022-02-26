@@ -46,17 +46,17 @@ final class Unit
 
     public static function fromKb(int $kb) : self
     {
-        return new self($kb * 1024);
+        return new self($kb * 1000);
     }
 
     public static function fromMb(int $mb) : self
     {
-        return new self($mb * 1024 * 1024);
+        return new self($mb * 1000 * 1000);
     }
 
     public static function fromGb(int $gb)
     {
-        return new self($gb * 1024 * 1024 * 1024);
+        return new self($gb * 1000 * 1000 * 1000);
     }
 
     public function inBytes() : int
@@ -66,17 +66,17 @@ final class Unit
 
     public function inKb(int $precision = 2) : float
     {
-        return \round($this->bytes / 1024, $precision);
+        return \round($this->bytes / 1000, $precision);
     }
 
     public function inMb(int $precision = 2) : float
     {
-        return \round($this->inKb($precision) / 1024, $precision);
+        return \round($this->inKb($precision) / 1000, $precision);
     }
 
     public function inGb(int $precision = 2) : float
     {
-        return \round($this->inMb($precision) / 1024, $precision);
+        return \round($this->inMb($precision) / 1000, $precision);
     }
 
     public function diff(self $unit) : self
@@ -92,5 +92,10 @@ final class Unit
     public function percentage(int $value) : self
     {
         return new self((int) \round(($value / 100) * $this->bytes));
+    }
+
+    public function isGreaterThan(self $unit) : bool
+    {
+        return $this->bytes > $unit->bytes;
     }
 }

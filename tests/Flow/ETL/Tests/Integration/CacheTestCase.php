@@ -7,12 +7,15 @@ namespace Flow\ETL\Tests\Integration;
 use Flow\ETL\Cache\LocalFilesystemCache;
 use PHPUnit\Framework\TestCase;
 
-abstract class CacheTestCase extends TestCase
+abstract class IntegrationTestCase extends TestCase
 {
     protected string $cacheDir;
 
+    private string $baseMemoryLimit;
+
     protected function setUp() : void
     {
+        $this->baseMemoryLimit = \ini_get('memory_limit');
         $this->cacheDir = \getenv(LocalFilesystemCache::CACHE_DIR_ENV);
 
         if (!\file_exists($this->cacheDir)) {
@@ -24,6 +27,10 @@ abstract class CacheTestCase extends TestCase
 
     protected function tearDown() : void
     {
+        if (\ini_get('memory_limit') !== $this->baseMemoryLimit) {
+            \ini_set('memory_limit', $this->baseMemoryLimit);
+        }
+
         $this->cleanupCacheDir($this->cacheDir);
     }
 

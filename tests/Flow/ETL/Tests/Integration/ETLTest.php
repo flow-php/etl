@@ -8,7 +8,7 @@ use Flow\ETL\ETL;
 use Flow\ETL\Row\Sort;
 use Flow\ETL\Tests\Double\AllRowTypesFakeExtractor;
 
-final class ETLTest extends CacheTestCase
+final class ETLTest extends IntegrationTestCase
 {
     public function test_etl_cache() : void
     {

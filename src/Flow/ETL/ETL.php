@@ -38,7 +38,7 @@ final class ETL
         $this->pipeline = $pipeline;
         $this->limit = null;
         $this->cache = new LocalFilesystemCache();
-        $this->externalSort = new MemorySort($this->uniqueId, $this->cache, Unit::fromMb(200));
+        $this->externalSort = new MemorySort($this->uniqueId, $this->cache, Unit::fromMb(15));
     }
 
     public static function process(Rows $rows, Pipeline $pipeline = null) : self

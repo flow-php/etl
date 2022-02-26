@@ -8,9 +8,9 @@ use Flow\ETL\Cache\LocalFilesystemCache;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Entry\IntegerEntry;
 use Flow\ETL\Rows;
-use Flow\ETL\Tests\Integration\CacheTestCase;
+use Flow\ETL\Tests\Integration\IntegrationTestCase;
 
-final class LocalFilesystemCacheTest extends CacheTestCase
+final class LocalFilesystemCacheTest extends IntegrationTestCase
 {
     public function test_writing_to_cache() : void
     {
