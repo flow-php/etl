@@ -10,8 +10,6 @@ final class Configuration
 {
     private ?Unit $limit;
 
-    private int $safetyBufferPercentage;
-
     public function __construct(int $safetyBufferPercentage)
     {
         if ($safetyBufferPercentage < 0 || $safetyBufferPercentage > 90) {
@@ -20,13 +18,11 @@ final class Configuration
 
         $limitConfig = \ini_get('memory_limit');
 
-        if (\strpos($limitConfig, '-') === 0) {
+        if ($limitConfig === false || \strpos($limitConfig, '-') === 0) {
             $this->limit = null;
         } else {
             $this->limit = Unit::fromString($limitConfig)->percentage(100 - $safetyBufferPercentage);
         }
-
-        $this->safetyBufferPercentage = $safetyBufferPercentage;
     }
 
     public function limit() : ?Unit

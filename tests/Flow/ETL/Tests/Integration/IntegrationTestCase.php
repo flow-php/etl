@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration;
 
-use Flow\ETL\Cache\LocalFilesystemCache;
+use Flow\ETL\Config;
 use PHPUnit\Framework\TestCase;
 
 abstract class IntegrationTestCase extends TestCase
@@ -16,7 +16,7 @@ abstract class IntegrationTestCase extends TestCase
     protected function setUp() : void
     {
         $this->baseMemoryLimit = \ini_get('memory_limit');
-        $this->cacheDir = \getenv(LocalFilesystemCache::CACHE_DIR_ENV);
+        $this->cacheDir = \getenv(Config::CACHE_DIR_ENV);
 
         if (!\file_exists($this->cacheDir)) {
             \mkdir($this->cacheDir);

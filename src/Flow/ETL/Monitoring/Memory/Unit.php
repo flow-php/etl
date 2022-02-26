@@ -15,6 +15,13 @@ final class Unit
         $this->bytes = $bytes;
     }
 
+    /**
+     * @param string $memoryString
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return self
+     */
     public static function fromString(string $memoryString) : self
     {
         $limit = \str_replace(' ', '', $memoryString);
@@ -34,7 +41,7 @@ final class Unit
                     return self::fromBytes((int) $limit);
                 }
 
-                    throw new InvalidArgumentException("Can't extract memory limit in bytes from php ini value: {$limit}");
+                throw new InvalidArgumentException("Can't extract memory limit in bytes from php ini value: {$limit}");
 
         }
     }
@@ -54,7 +61,7 @@ final class Unit
         return new self($mb * 1000 * 1000);
     }
 
-    public static function fromGb(int $gb)
+    public static function fromGb(int $gb) : self
     {
         return new self($gb * 1000 * 1000 * 1000);
     }

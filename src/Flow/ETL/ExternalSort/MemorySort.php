@@ -40,6 +40,10 @@ final class MemorySort implements ExternalSort
         $this->configuration = new Configuration($safetyBufferPercentage = 10);
 
         if ($this->configuration->isLessThan($maximumMemory) && !$this->configuration->isInfinite()) {
+            /**
+             * @psalm-suppress PossiblyNullReference
+             * @phpstan-ignore-next-line
+             */
             $this->maximumMemory = $this->configuration->limit()->percentage(90);
         }
     }
