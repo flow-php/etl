@@ -64,33 +64,6 @@ final class BufferLoaderTest extends TestCase
         );
     }
 
-    public function test_buffer_extractor_with_more_than_max_rows_size() : void
-    {
-        $overflowLoader = $this->createMock(Loader::class);
-
-        $loader = new BufferLoader(
-            $overflowLoader,
-            2
-        );
-
-        $overflowLoader->expects($this->once())
-            ->method('load')
-            ->with(
-                new Rows(
-                    Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 2)),
-                )
-            );
-
-        $loader->load(
-            new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
-                Row::create(new Row\Entry\IntegerEntry('id', 3)),
-            )
-        );
-    }
-
     public function test_buffer_extractor_with_equal_max_rows_size_multiple_times() : void
     {
         $overflowLoader = $this->createMock(Loader::class);
@@ -126,5 +99,32 @@ final class BufferLoaderTest extends TestCase
         );
 
         $loader->closure(new Rows());
+    }
+
+    public function test_buffer_extractor_with_more_than_max_rows_size() : void
+    {
+        $overflowLoader = $this->createMock(Loader::class);
+
+        $loader = new BufferLoader(
+            $overflowLoader,
+            2
+        );
+
+        $overflowLoader->expects($this->once())
+            ->method('load')
+            ->with(
+                new Rows(
+                    Row::create(new Row\Entry\IntegerEntry('id', 1)),
+                    Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                )
+            );
+
+        $loader->load(
+            new Rows(
+                Row::create(new Row\Entry\IntegerEntry('id', 1)),
+                Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                Row::create(new Row\Entry\IntegerEntry('id', 3)),
+            )
+        );
     }
 }

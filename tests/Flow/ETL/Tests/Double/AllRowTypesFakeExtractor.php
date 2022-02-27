@@ -18,9 +18,9 @@ use Flow\ETL\Rows;
 
 final class AllRowTypesFakeExtractor implements Extractor
 {
-    private int $total;
-
     private int $rowsSize;
+
+    private int $total;
 
     public function __construct(int $total, int $rowsSize)
     {

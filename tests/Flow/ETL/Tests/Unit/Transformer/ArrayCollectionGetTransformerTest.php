@@ -28,6 +28,38 @@ final class ArrayCollectionGetTransformerTest extends TestCase
         );
     }
 
+    public function test_getting_keys_from_simple_array() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('array_entry, must be an array of array (collection of arrays) but it seems to be a regular array.');
+
+        $arrayAccessorTransformer = new ArrayCollectionGetTransformer(['id', 'status'], 'array_entry');
+
+        $rows = $arrayAccessorTransformer->transform(
+            new Rows(
+                Row::create(
+                    new Row\Entry\ArrayEntry(
+                        'array_entry',
+                        [
+                            'id' => 1,
+                            'status' => 'PENDING',
+                            'enabled' => true,
+                            'array' => ['foo' => 'bar'],
+                        ]
+                    ),
+                ),
+            ),
+        );
+
+        $this->assertEquals(
+            [
+                ['id' => 1, 'status' => 'PENDING'],
+                ['id' => 2, 'status' => 'NEW'],
+            ],
+            $rows->first()->valueOf('element')
+        );
+    }
+
     public function test_getting_specific_keys_from_collection_of_array() : void
     {
         $arrayAccessorTransformer = new ArrayCollectionGetTransformer(['id', 'status'], 'array_entry');
@@ -49,38 +81,6 @@ final class ArrayCollectionGetTransformerTest extends TestCase
                             'array' => ['foo' => 'bar'],
                         ],
                     ]),
-                ),
-            ),
-        );
-
-        $this->assertEquals(
-            [
-                ['id' => 1, 'status' => 'PENDING'],
-                ['id' => 2, 'status' => 'NEW'],
-            ],
-            $rows->first()->valueOf('element')
-        );
-    }
-
-    public function test_getting_keys_from_simple_array() : void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('array_entry, must be an array of array (collection of arrays) but it seems to be a regular array.');
-
-        $arrayAccessorTransformer = new ArrayCollectionGetTransformer(['id', 'status'], 'array_entry');
-
-        $rows = $arrayAccessorTransformer->transform(
-            new Rows(
-                Row::create(
-                    new Row\Entry\ArrayEntry(
-                        'array_entry',
-                        [
-                            'id' => 1,
-                            'status' => 'PENDING',
-                            'enabled' => true,
-                            'array' => ['foo' => 'bar'],
-                        ]
-                    ),
                 ),
             ),
         );

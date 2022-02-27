@@ -36,18 +36,6 @@ final class ObjectMethodTransformerTest extends TestCase
         ));
     }
 
-    public function test_transformer_for_object_without_expected_method() : void
-    {
-        $transformer = new ObjectMethodTransformer('object', 'method');
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('"object" is object does not have "method" method.');
-
-        $transformer->transform(new Rows(
-            Row::create(new Row\Entry\ObjectEntry('object', new \stdClass()))
-        ));
-    }
-
     public function test_transformer_for_object() : void
     {
         $transformer = new ObjectMethodTransformer('object', 'toArray');
@@ -76,5 +64,17 @@ final class ObjectMethodTransformerTest extends TestCase
             ],
             $rows->toArray()
         );
+    }
+
+    public function test_transformer_for_object_without_expected_method() : void
+    {
+        $transformer = new ObjectMethodTransformer('object', 'method');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('"object" is object does not have "method" method.');
+
+        $transformer->transform(new Rows(
+            Row::create(new Row\Entry\ObjectEntry('object', new \stdClass()))
+        ));
     }
 }

@@ -12,30 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ArraySortTransformerTest extends TestCase
 {
-    public function test_sort_integer_array_entries() : void
-    {
-        $arrayEntry = new ArrayEntry(
-            'array',
-            [
-                5,
-                3,
-                10,
-                4,
-            ]
-        );
-
-        $transformer = new ArraySortTransformer('array', \SORT_REGULAR);
-
-        $this->assertSame(
-            [
-                [
-                    'array' => [3, 4, 5, 10],
-                ],
-            ],
-            $transformer->transform(new Rows(Row::create($arrayEntry)))->toArray()
-        );
-    }
-
     public function test_sort_datetime_array_entries() : void
     {
         $arrayEntry = new ArrayEntry(
@@ -59,6 +35,30 @@ final class ArraySortTransformerTest extends TestCase
                         new \DateTimeImmutable('2020-01-03 00:00:00 UTC'),
                         new \DateTimeImmutable('2020-01-10 00:00:00 UTC'),
                     ],
+                ],
+            ],
+            $transformer->transform(new Rows(Row::create($arrayEntry)))->toArray()
+        );
+    }
+
+    public function test_sort_integer_array_entries() : void
+    {
+        $arrayEntry = new ArrayEntry(
+            'array',
+            [
+                5,
+                3,
+                10,
+                4,
+            ]
+        );
+
+        $transformer = new ArraySortTransformer('array', \SORT_REGULAR);
+
+        $this->assertSame(
+            [
+                [
+                    'array' => [3, 4, 5, 10],
                 ],
             ],
             $transformer->transform(new Rows(Row::create($arrayEntry)))->toArray()

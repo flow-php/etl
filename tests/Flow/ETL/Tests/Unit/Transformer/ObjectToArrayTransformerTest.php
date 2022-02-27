@@ -14,45 +14,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ObjectToArrayTransformerTest extends TestCase
 {
-    public function test_object_to_array_when_entry_is_not_object() : void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('"integer_entry" is not ObjectEntry');
-
-        $objectHydratorTransformer = new ObjectToArrayTransformer(
-            new ReflectionHydrator(),
-            'integer_entry'
-        );
-
-        $objectHydratorTransformer->transform(
-            new Rows(
-                Row::create(
-                    new Row\Entry\IntegerEntry('integer_entry', 1000),
-                    new Row\Entry\ObjectEntry('object_entry', new Example()),
-                ),
-            ),
-        );
-    }
-
-    public function test_object_to_array_when_entry_does_not_exists() : void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('"object_entry" not found');
-
-        $objectHydratorTransformer = new ObjectToArrayTransformer(
-            new ReflectionHydrator(),
-            'object_entry'
-        );
-
-        $objectHydratorTransformer->transform(
-            new Rows(
-                Row::create(
-                    new Row\Entry\IntegerEntry('integer_entry', 1000),
-                ),
-            ),
-        );
-    }
-
     public function test_object_to_array_transformer() : void
     {
         $objectHydratorTransformer = new ObjectToArrayTransformer(
@@ -82,6 +43,45 @@ final class ObjectToArrayTransformerTest extends TestCase
                 ),
             ),
             $rows
+        );
+    }
+
+    public function test_object_to_array_when_entry_does_not_exists() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('"object_entry" not found');
+
+        $objectHydratorTransformer = new ObjectToArrayTransformer(
+            new ReflectionHydrator(),
+            'object_entry'
+        );
+
+        $objectHydratorTransformer->transform(
+            new Rows(
+                Row::create(
+                    new Row\Entry\IntegerEntry('integer_entry', 1000),
+                ),
+            ),
+        );
+    }
+
+    public function test_object_to_array_when_entry_is_not_object() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('"integer_entry" is not ObjectEntry');
+
+        $objectHydratorTransformer = new ObjectToArrayTransformer(
+            new ReflectionHydrator(),
+            'integer_entry'
+        );
+
+        $objectHydratorTransformer->transform(
+            new Rows(
+                Row::create(
+                    new Row\Entry\IntegerEntry('integer_entry', 1000),
+                    new Row\Entry\ObjectEntry('object_entry', new Example()),
+                ),
+            ),
         );
     }
 }

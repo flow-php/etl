@@ -14,22 +14,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ArrayExpandTransformerTest extends TestCase
 {
-    public function test_array_expand_non_array() : void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('integer_entry is not ArrayEntry but Flow\ETL\Row\Entry\IntegerEntry');
-
-        $arrayUnpackTransformer = new ArrayExpandTransformer('integer_entry');
-
-        $arrayUnpackTransformer->transform(
-            new Rows(
-                Row::create(
-                    new Row\Entry\IntegerEntry('integer_entry', 1),
-                ),
-            ),
-        );
-    }
-
     public function test_array_expand_collection_of_arrays() : void
     {
         $arrayExpandTransformer = new ArrayExpandTransformer('array_entry');
@@ -150,6 +134,22 @@ final class ArrayExpandTransformerTest extends TestCase
                 ],
             ],
             $rows->toArray()
+        );
+    }
+
+    public function test_array_expand_non_array() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('integer_entry is not ArrayEntry but Flow\ETL\Row\Entry\IntegerEntry');
+
+        $arrayUnpackTransformer = new ArrayExpandTransformer('integer_entry');
+
+        $arrayUnpackTransformer->transform(
+            new Rows(
+                Row::create(
+                    new Row\Entry\IntegerEntry('integer_entry', 1),
+                ),
+            ),
         );
     }
 }

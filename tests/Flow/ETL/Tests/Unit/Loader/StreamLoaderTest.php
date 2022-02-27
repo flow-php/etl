@@ -14,6 +14,22 @@ use PHPUnit\Framework\TestCase;
 
 final class StreamLoaderTest extends TestCase
 {
+    public function test_loading_data_int_invalid_stream() : void
+    {
+        $this->expectExceptionMessage("Can't open stream for url: php://qweqweqw in mode: w. Reason: fopen(): Invalid php:// URL specified");
+        $this->expectException(RuntimeException::class);
+
+        $loader = new StreamLoader('php://qweqweqw', 'w', 0);
+
+        $loader->load(
+            new Rows(
+                Row::create(new IntegerEntry('id', 1), new StringEntry('name', 'id_1')),
+                Row::create(new IntegerEntry('id', 2), new StringEntry('name', 'id_2')),
+                Row::create(new IntegerEntry('id', 3), new StringEntry('name', 'id_3'))
+            )
+        );
+    }
+
     public function test_loading_data_into_php_memory_stream() : void
     {
         $loader = new StreamLoader('php://output', 'w', 0);
@@ -42,22 +58,6 @@ final class StreamLoaderTest extends TestCase
 3 rows
 TABLE,
             $output
-        );
-    }
-
-    public function test_loading_data_int_invalid_stream() : void
-    {
-        $this->expectExceptionMessage("Can't open stream for url: php://qweqweqw in mode: w. Reason: fopen(): Invalid php:// URL specified");
-        $this->expectException(RuntimeException::class);
-
-        $loader = new StreamLoader('php://qweqweqw', 'w', 0);
-
-        $loader->load(
-            new Rows(
-                Row::create(new IntegerEntry('id', 1), new StringEntry('name', 'id_1')),
-                Row::create(new IntegerEntry('id', 2), new StringEntry('name', 'id_2')),
-                Row::create(new IntegerEntry('id', 3), new StringEntry('name', 'id_3'))
-            )
         );
     }
 }

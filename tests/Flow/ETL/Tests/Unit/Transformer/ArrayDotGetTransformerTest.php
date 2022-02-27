@@ -52,28 +52,6 @@ final class ArrayDotGetTransformerTest extends TestCase
         );
     }
 
-    public function test_array_accessor_transformer_with_invalid_but_strict_path() : void
-    {
-        $arrayAccessorTransformer = new ArrayDotGetTransformer('array_entry', 'invalid_path');
-
-        $this->expectException(InvalidPathException::class);
-        $this->expectExceptionMessage('Path "invalid_path" does not exists in array ');
-
-        $arrayAccessorTransformer->transform(
-            new Rows(
-                Row::create(
-                    new Row\Entry\ArrayEntry('array_entry', [
-                        'id' => 1,
-                        'status' => 'PENDING',
-                        'enabled' => true,
-                        'datetime' =>  new \DateTimeImmutable('2020-01-01 00:00:00 UTC'),
-                        'array' => ['foo' => 'bar'],
-                    ]),
-                ),
-            ),
-        );
-    }
-
     public function test_array_accessor_transformer_with_invalid_and_without_strict_path() : void
     {
         $arrayAccessorTransformer = new ArrayDotGetTransformer('array_entry', '?invalid_path');
@@ -95,6 +73,28 @@ final class ArrayDotGetTransformerTest extends TestCase
         $this->assertEquals(
             new Row\Entry\NullEntry('element'),
             $rows->first()->get('element')
+        );
+    }
+
+    public function test_array_accessor_transformer_with_invalid_but_strict_path() : void
+    {
+        $arrayAccessorTransformer = new ArrayDotGetTransformer('array_entry', 'invalid_path');
+
+        $this->expectException(InvalidPathException::class);
+        $this->expectExceptionMessage('Path "invalid_path" does not exists in array ');
+
+        $arrayAccessorTransformer->transform(
+            new Rows(
+                Row::create(
+                    new Row\Entry\ArrayEntry('array_entry', [
+                        'id' => 1,
+                        'status' => 'PENDING',
+                        'enabled' => true,
+                        'datetime' =>  new \DateTimeImmutable('2020-01-01 00:00:00 UTC'),
+                        'array' => ['foo' => 'bar'],
+                    ]),
+                ),
+            ),
         );
     }
 }

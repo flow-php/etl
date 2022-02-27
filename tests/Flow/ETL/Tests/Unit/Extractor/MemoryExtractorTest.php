@@ -16,6 +16,22 @@ use PHPUnit\Framework\TestCase;
 
 final class MemoryExtractorTest extends TestCase
 {
+    public function chunk_sizes() : \Generator
+    {
+        yield [1];
+        yield [2];
+        yield [3];
+        yield [4];
+    }
+
+    public function test_chunk_size_must_be_greater_than_0() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Chunk size must be greater than 0');
+
+        new MemoryExtractor(new ArrayMemory(), 0);
+    }
+
     /**
      * @dataProvider chunk_sizes
      */
@@ -51,21 +67,5 @@ final class MemoryExtractorTest extends TestCase
             ],
             $data
         );
-    }
-
-    public function chunk_sizes() : \Generator
-    {
-        yield [1];
-        yield [2];
-        yield [3];
-        yield [4];
-    }
-
-    public function test_chunk_size_must_be_greater_than_0() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Chunk size must be greater than 0');
-
-        new MemoryExtractor(new ArrayMemory(), 0);
     }
 }
