@@ -86,7 +86,12 @@ final class ConfigBuilder
                 : \sys_get_temp_dir(),
             $this->serializer
         );
-        $this->externalSort = $this->externalSort ?? new MemorySort($this->id, $this->cache, Unit::fromMb(200));
+        $this->externalSort = $this->externalSort ??
+            new MemorySort(
+                $this->id,
+                $this->cache,
+                \is_string(\getenv(Config::EXTERNAL_SORT_MAX_MEMORY_ENV)) ? Unit::fromString(\getenv(Config::EXTERNAL_SORT_MAX_MEMORY_ENV)) : Unit::fromMb(200)
+            );
         $this->pipeline = $this->pipeline ?? new SynchronousPipeline();
 
         return new Config(

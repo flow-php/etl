@@ -18,6 +18,9 @@ use Flow\ETL\Rows;
  * Memory limit must be lower by at least 10% from value in php.ini memory_limit,
  * if provided maximum memory is greater than maximum_memory it will get reduced to 90% of maximum_memory.
  * If memory limit get exceeded, sort will get back to CacheExternalSort algorithm.
+ *
+ * Technically speaking, reading from cache is redundant but it was easier to implement first version this way.
+ * Ideally cache should be avoided as long as possible.
  */
 final class MemorySort implements ExternalSort
 {
