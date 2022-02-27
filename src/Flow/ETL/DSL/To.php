@@ -8,7 +8,7 @@ use Flow\ETL\Formatter;
 use Flow\ETL\Loader;
 use Flow\ETL\Memory\Memory;
 
-final class To
+class To
 {
     public static function buffer(Loader $overflowLoader, int $bufferSize) : Loader
     {

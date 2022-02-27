@@ -10,7 +10,7 @@ use Flow\ETL\Transformer\Condition as TransformerCondition;
 use Flow\ETL\Transformer\Condition\RowCondition;
 use Symfony\Component\Validator\Constraint;
 
-final class Condition
+class Condition
 {
     public static function all(RowCondition ...$conditions) : RowCondition
     {

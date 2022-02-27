@@ -10,7 +10,7 @@ use Flow\ETL\Extractor\ProcessExtractor;
 use Flow\ETL\Memory\ArrayMemory;
 use Flow\ETL\Rows;
 
-final class From
+class From
 {
     /**
      * @param array<array> $array

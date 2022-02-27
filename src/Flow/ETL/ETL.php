@@ -170,7 +170,7 @@ final class ETL
      *
      * @return $this
      */
-    public function map(callable $callback)
+    public function map(callable $callback) : self
     {
         $this->pipeline->add(new CallbackRowTransformer($callback));
 
@@ -188,13 +188,29 @@ final class ETL
      * Keep extracting rows and passing them through all transformers up to this point.
      * From here each transformed Row is divided and pushed forward to following pipeline elements.
      *
-     * @throws Exception\InvalidArgumentException
+     * @param int $chunks
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return ETL
      */
     public function parallelize(int $chunks) : self
     {
         $this->pipeline = new ParallelizingPipeline($this->pipeline, $chunks);
 
         return $this;
+    }
+
+    /**
+     * Alias for ETL::transform method.
+     *
+     * @param Transformer $transformer
+     *
+     * @return $this
+     */
+    public function rows(Transformer $transformer) : self
+    {
+        return $this->transform($transformer);
     }
 
     public function run() : void

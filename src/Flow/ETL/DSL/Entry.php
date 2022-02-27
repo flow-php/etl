@@ -6,7 +6,7 @@ namespace Flow\ETL\DSL;
 
 use Flow\ETL\Row\Entry as RowEntry;
 
-final class Entry
+class Entry
 {
     /**
      * @param string $name

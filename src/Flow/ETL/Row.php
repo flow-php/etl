@@ -94,7 +94,7 @@ final class Row implements Serializable
         );
     }
 
-    public function remove(string ...$names) : self
+    public function remove_entries(string ...$names) : self
     {
         $namesToRemove = [];
 
@@ -107,7 +107,7 @@ final class Row implements Serializable
         return new self($this->entries->remove(...$namesToRemove));
     }
 
-    public function rename(string $currentName, string $newName) : self
+    public function rename_entry(string $currentName, string $newName) : self
     {
         return new self($this->entries->rename($currentName, $newName));
     }

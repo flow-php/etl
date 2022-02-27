@@ -31,7 +31,7 @@ use Flow\ETL\Transformer\RenameEntriesTransformer;
 use Laminas\Hydrator\ReflectionHydrator;
 use Symfony\Component\Validator\Constraint;
 
-final class Row
+class Transform
 {
     /**
      * @param string $name
@@ -229,9 +229,9 @@ final class Row
         return new FilterRowsTransformer(new Opposite(new ValidValue($entry, new ValidValue\SymfonyValidator($constraints))));
     }
 
-    public static function keep(string ...$entrys) : Transformer
+    public static function keep(string ...$entries) : Transformer
     {
-        return new KeepEntriesTransformer(...$entrys);
+        return new KeepEntriesTransformer(...$entries);
     }
 
     /**
@@ -245,12 +245,12 @@ final class Row
         return new Transformer\ObjectMethodTransformer($object_name, $method, $entry_name, $parameters);
     }
 
-    public static function remove(string ...$entrys) : Transformer
+    public static function remove_entries(string ...$entries) : Transformer
     {
-        return new Transformer\RemoveEntriesTransformer(...$entrys);
+        return new Transformer\RemoveEntriesTransformer(...$entries);
     }
 
-    public static function rename(string $from, string $to) : Transformer
+    public static function rename_entry(string $from, string $to) : Transformer
     {
         return new RenameEntriesTransformer(new EntryRename($from, $to));
     }
@@ -265,9 +265,9 @@ final class Row
         return new Transformer\StringConcatTransformer($string_columns, $glue, $entry_name);
     }
 
-    public static function to_array_from_json(string ...$entrys) : Transformer
+    public static function to_array_from_json(string ...$entries) : Transformer
     {
-        return new CastTransformer(CastJsonToArray::nullable($entrys));
+        return new CastTransformer(CastJsonToArray::nullable($entries));
     }
 
     public static function to_array_from_object(string $entry) : Transformer
@@ -280,52 +280,52 @@ final class Row
     }
 
     /**
-     * @param string[] $entrys
+     * @param string[] $entries
      * @param ?string $timezone
      * @param ?string $to_timezone
      */
-    public static function to_datetime(array $entrys, ?string $timezone = null, ?string $to_timezone = null) : Transformer
+    public static function to_datetime(array $entries, ?string $timezone = null, ?string $to_timezone = null) : Transformer
     {
-        return new CastTransformer(CastToDateTime::nullable($entrys, $timezone, $to_timezone));
+        return new CastTransformer(CastToDateTime::nullable($entries, $timezone, $to_timezone));
     }
 
     /**
-     * @param array<string> $entrys
+     * @param array<string> $entries
      * @param null|string $tz
      * @param null|string $toTz
      */
-    public static function to_datetime_from_string(array $entrys, ?string $tz = null, ?string $toTz = null) : Transformer
+    public static function to_datetime_from_string(array $entries, ?string $tz = null, ?string $toTz = null) : Transformer
     {
-        return new CastTransformer(new Transformer\Cast\CastEntries($entrys, new StringToDateTimeEntryCaster($tz, $toTz), true));
+        return new CastTransformer(new Transformer\Cast\CastEntries($entries, new StringToDateTimeEntryCaster($tz, $toTz), true));
     }
 
-    public static function to_integer(string ...$entrys) : Transformer
+    public static function to_integer(string ...$entries) : Transformer
     {
-        return new CastTransformer(CastToInteger::nullable($entrys));
+        return new CastTransformer(CastToInteger::nullable($entries));
     }
 
-    public static function to_json(string ...$entrys) : Transformer
+    public static function to_json(string ...$entries) : Transformer
     {
-        return new CastTransformer(CastToJson::nullable($entrys));
+        return new CastTransformer(CastToJson::nullable($entries));
     }
 
-    public static function to_null_from_null_string(string ...$entrys) : Transformer
+    public static function to_null_from_null_string(string ...$entries) : Transformer
     {
-        return new Transformer\NullStringIntoNullEntryTransformer(...$entrys);
+        return new Transformer\NullStringIntoNullEntryTransformer(...$entries);
     }
 
-    public static function to_string(string ...$entrys) : Transformer
+    public static function to_string(string ...$entries) : Transformer
     {
-        return new CastTransformer(CastToString::nullable($entrys));
+        return new CastTransformer(CastToString::nullable($entries));
     }
 
     /**
-     * @param array<string> $entrys
+     * @param array<string> $entries
      * @param string $format
      */
-    public static function to_string_from_datetime(array $entrys, string $format) : Transformer
+    public static function to_string_from_datetime(array $entries, string $format) : Transformer
     {
-        return new CastTransformer(new Transformer\Cast\CastEntries($entrys, new DateTimeToStringEntryCaster($format), true));
+        return new CastTransformer(new Transformer\Cast\CastEntries($entries, new DateTimeToStringEntryCaster($format), true));
     }
 
     public static function transform_if(Transformer\Condition\RowCondition $condition, Transformer $transformer) : Transformer

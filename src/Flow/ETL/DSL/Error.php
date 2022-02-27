@@ -6,7 +6,7 @@ namespace Flow\ETL\DSL;
 
 use Flow\ETL\ErrorHandler as Handler;
 
-class ErrorHandler
+class Error
 {
     public static function ignore_error() : Handler
     {
