@@ -181,7 +181,7 @@ final class StaticEntryTransformerTest extends TestCase
 
     public function test_adding_string_entry() : void
     {
-        $transformer = Transform::add_boolean('boolean', false);
+        $transformer = Transform::add_string('string', 'test');
 
         $rows = $transformer->transform(new Rows(
             Row::create(
@@ -193,7 +193,7 @@ final class StaticEntryTransformerTest extends TestCase
             [
                 [
                     'id' => '1',
-                    'boolean' => false,
+                    'string' => 'test',
                 ],
             ],
             $rows->toArray()
