@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Exception\RuntimeException;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
 use Flow\ETL\Tests\Fixtures\Example;
-use Flow\ETL\Transformer\ObjectToArrayTransformer;
-use Laminas\Hydrator\ReflectionHydrator;
 use PHPUnit\Framework\TestCase;
 
 final class ObjectToArrayTransformerTest extends TestCase
 {
     public function test_object_to_array_transformer() : void
     {
-        $objectHydratorTransformer = new ObjectToArrayTransformer(
-            new ReflectionHydrator(),
+        $objectHydratorTransformer = Transform::to_array_from_object(
             'object_entry'
         );
 
@@ -51,8 +49,7 @@ final class ObjectToArrayTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('"object_entry" not found');
 
-        $objectHydratorTransformer = new ObjectToArrayTransformer(
-            new ReflectionHydrator(),
+        $objectHydratorTransformer = Transform::to_array_from_object(
             'object_entry'
         );
 
@@ -70,8 +67,7 @@ final class ObjectToArrayTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('"integer_entry" is not ObjectEntry');
 
-        $objectHydratorTransformer = new ObjectToArrayTransformer(
-            new ReflectionHydrator(),
+        $objectHydratorTransformer = Transform::to_array_from_object(
             'integer_entry'
         );
 

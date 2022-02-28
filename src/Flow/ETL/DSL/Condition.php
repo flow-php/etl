@@ -12,17 +12,17 @@ use Symfony\Component\Validator\Constraint;
 
 class Condition
 {
-    public static function all(RowCondition ...$conditions) : RowCondition
+    final public static function all(RowCondition ...$conditions) : RowCondition
     {
         return new TransformerCondition\All(...$conditions);
     }
 
-    public static function any(RowCondition ...$conditions) : RowCondition
+    final public static function any(RowCondition ...$conditions) : RowCondition
     {
         return new TransformerCondition\Any(...$conditions);
     }
 
-    public static function array_exists(string $entry, string $path) : RowCondition
+    final public static function array_exists(string $entry, string $path) : RowCondition
     {
         return new TransformerCondition\ArrayDotExists($entry, $path);
     }
@@ -33,7 +33,7 @@ class Condition
      * @param mixed $value
      * @param bool $identical
      */
-    public static function array_value_equals(string $entry, string $path, $value, bool $identical = true) : RowCondition
+    final public static function array_value_equals(string $entry, string $path, $value, bool $identical = true) : RowCondition
     {
         return new TransformerCondition\ArrayDotValueEqualsTo($entry, $path, $value, $identical);
     }
@@ -43,7 +43,7 @@ class Condition
      * @param string $path
      * @param mixed $value
      */
-    public static function array_value_greater_or_equal(string $entry, string $path, $value) : RowCondition
+    final public static function array_value_greater_or_equal(string $entry, string $path, $value) : RowCondition
     {
         return new TransformerCondition\ArrayDotValueGreaterOrEqualThan($entry, $path, $value);
     }
@@ -53,7 +53,7 @@ class Condition
      * @param string $path
      * @param mixed $value
      */
-    public static function array_value_greater_than(string $entry, string $path, $value) : RowCondition
+    final public static function array_value_greater_than(string $entry, string $path, $value) : RowCondition
     {
         return new TransformerCondition\ArrayDotValueGreaterThan($entry, $path, $value);
     }
@@ -63,7 +63,7 @@ class Condition
      * @param string $path
      * @param mixed $value
      */
-    public static function array_value_less_or_equal(string $entry, string $path, $value) : RowCondition
+    final public static function array_value_less_or_equal(string $entry, string $path, $value) : RowCondition
     {
         return new TransformerCondition\ArrayDotValueLessOrEqualThan($entry, $path, $value);
     }
@@ -73,7 +73,7 @@ class Condition
      * @param string $path
      * @param mixed $value
      */
-    public static function array_value_less_than(string $entry, string $path, $value) : RowCondition
+    final public static function array_value_less_than(string $entry, string $path, $value) : RowCondition
     {
         return new TransformerCondition\ArrayDotValueLessThan($entry, $path, $value);
     }
@@ -83,12 +83,12 @@ class Condition
      * @param mixed $value
      * @param bool $identical
      */
-    public static function equals_value(string $entry, $value, bool $identical = true) : RowCondition
+    final public static function equals_to_value(string $entry, $value, bool $identical = true) : RowCondition
     {
         return new TransformerCondition\EntryValueEqualsTo($entry, $value, $identical);
     }
 
-    public static function exists(string $entry) : RowCondition
+    final public static function exists(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryExists($entry);
     }
@@ -97,7 +97,7 @@ class Condition
      * @param string $entry
      * @param mixed $value
      */
-    public static function greater_or_equals_value(string $entry, $value) : RowCondition
+    final public static function greater_or_equals_to_value(string $entry, $value) : RowCondition
     {
         return new TransformerCondition\EntryValueGreaterOrEqualThan($entry, $value);
     }
@@ -106,57 +106,57 @@ class Condition
      * @param string $entry
      * @param mixed $value
      */
-    public static function greater_than_value(string $entry, $value) : RowCondition
+    final public static function greater_than_value(string $entry, $value) : RowCondition
     {
         return new TransformerCondition\EntryValueGreaterThan($entry, $value);
     }
 
-    public static function is_array(string $entry) : RowCondition
+    final public static function is_array(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\ArrayEntry::class);
     }
 
-    public static function is_boolean(string $entry) : RowCondition
+    final public static function is_boolean(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\BooleanEntry::class);
     }
 
-    public static function is_float(string $entry) : RowCondition
+    final public static function is_float(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\FloatEntry::class);
     }
 
-    public static function is_integer(string $entry) : RowCondition
+    final public static function is_integer(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\IntegerEntry::class);
     }
 
-    public static function is_json(string $entry) : RowCondition
+    final public static function is_json(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\JsonEntry::class);
     }
 
-    public static function is_not_null(string $entry) : RowCondition
+    final public static function is_not_null(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryNotNull($entry);
     }
 
-    public static function is_null(string $entry) : RowCondition
+    final public static function is_null(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\NullEntry::class);
     }
 
-    public static function is_object(string $entry) : RowCondition
+    final public static function is_object(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\ObjectEntry::class);
     }
 
-    public static function is_string(string $entry) : RowCondition
+    final public static function is_string(string $entry) : RowCondition
     {
         return new TransformerCondition\EntryInstanceOf($entry, Entry\StringEntry::class);
     }
 
-    public static function is_valid(string $entry, Constraint ...$constraints) : RowCondition
+    final public static function is_valid(string $entry, Constraint ...$constraints) : RowCondition
     {
         if (!\class_exists('Symfony\Component\Validator\Validation')) {
             throw new RuntimeException("Symfony\Component\Validator\Validation class not found, please add symfony/validator dependency to the project first.");
@@ -169,7 +169,7 @@ class Condition
      * @param string $entry
      * @param mixed $value
      */
-    public static function less_or_equals_value(string $entry, $value) : RowCondition
+    final public static function less_or_equals_value(string $entry, $value) : RowCondition
     {
         return new TransformerCondition\EntryValueLessOrEqualThan($entry, $value);
     }
@@ -178,17 +178,17 @@ class Condition
      * @param string $entry
      * @param mixed $value
      */
-    public static function less_than_value(string $entry, $value) : RowCondition
+    final public static function less_than_value(string $entry, $value) : RowCondition
     {
         return new TransformerCondition\EntryValueLessThan($entry, $value);
     }
 
-    public static function none(RowCondition ...$conditions) : RowCondition
+    final public static function none(RowCondition ...$conditions) : RowCondition
     {
         return new TransformerCondition\None(...$conditions);
     }
 
-    public static function opposite(RowCondition $condition) : RowCondition
+    final public static function opposite(RowCondition $condition) : RowCondition
     {
         return new TransformerCondition\Opposite($condition);
     }

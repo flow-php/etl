@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Exception\RuntimeException;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\ArrayExpandTransformer;
 use Flow\ETL\Transformer\ArrayUnpackTransformer;
 use Flow\ETL\Transformer\RemoveEntriesTransformer;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +16,7 @@ final class ArrayExpandTransformerTest extends TestCase
 {
     public function test_array_expand_collection_of_arrays() : void
     {
-        $arrayExpandTransformer = new ArrayExpandTransformer('array_entry');
+        $arrayExpandTransformer = Transform::array_expand('array_entry');
 
         $rows = $arrayExpandTransformer->transform(
             new Rows(
@@ -86,7 +86,7 @@ final class ArrayExpandTransformerTest extends TestCase
 
     public function test_array_expand_collection_of_primitives() : void
     {
-        $arrayExpandTransformer = new ArrayExpandTransformer('array_entry');
+        $arrayExpandTransformer = Transform::array_expand('array_entry');
 
         $rows = $arrayExpandTransformer->transform(
             new Rows(
@@ -111,7 +111,7 @@ final class ArrayExpandTransformerTest extends TestCase
 
     public function test_array_expand_collection_of_primitives_that_keeps_other_entries() : void
     {
-        $arrayExpandTransformer = new ArrayExpandTransformer('array_entry');
+        $arrayExpandTransformer = Transform::array_expand('array_entry');
 
         $rows = $arrayExpandTransformer->transform(
             new Rows(
@@ -142,7 +142,7 @@ final class ArrayExpandTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('integer_entry is not ArrayEntry but Flow\ETL\Row\Entry\IntegerEntry');
 
-        $arrayUnpackTransformer = new ArrayExpandTransformer('integer_entry');
+        $arrayUnpackTransformer = Transform::array_expand('integer_entry');
 
         $arrayUnpackTransformer->transform(
             new Rows(

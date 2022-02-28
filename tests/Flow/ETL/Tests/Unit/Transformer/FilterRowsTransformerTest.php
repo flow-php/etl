@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\Filter\Filter\EntryEqualsTo;
-use Flow\ETL\Transformer\Filter\Filter\EntryExists;
-use Flow\ETL\Transformer\Filter\Filter\EntryNotNull;
-use Flow\ETL\Transformer\Filter\Filter\Opposite;
-use Flow\ETL\Transformer\FilterRowsTransformer;
 use PHPUnit\Framework\TestCase;
 
 final class FilterRowsTransformerTest extends TestCase
 {
     public function test_entry_exists_in_rows() : void
     {
-        $filterRows = new FilterRowsTransformer(
-            new EntryExists('number'),
-        );
+        $filterRows = Transform::filter_exists('number');
 
         $rows = $filterRows->transform(
             new Rows(
@@ -38,9 +32,7 @@ final class FilterRowsTransformerTest extends TestCase
 
     public function test_entry_not_exists_in_rows() : void
     {
-        $filterRows = new FilterRowsTransformer(
-            new Opposite(new EntryExists('number')),
-        );
+        $filterRows = Transform::filter_not_exists('number');
 
         $rows = $filterRows->transform(
             new Rows(
@@ -59,9 +51,7 @@ final class FilterRowsTransformerTest extends TestCase
 
     public function test_filter_null_rows() : void
     {
-        $filterRows = new FilterRowsTransformer(
-            new EntryNotNull('number'),
-        );
+        $filterRows = Transform::filter_not_null('number');
 
         $rows = $filterRows->transform(
             new Rows(
@@ -82,9 +72,7 @@ final class FilterRowsTransformerTest extends TestCase
 
     public function test_filter_numeric_rows() : void
     {
-        $filterRows = new FilterRowsTransformer(
-            new EntryEqualsTo('number', 5),
-        );
+        $filterRows = Transform::filter_equals('number', 5);
 
         $rows = $filterRows->transform(
             new Rows(
@@ -104,9 +92,7 @@ final class FilterRowsTransformerTest extends TestCase
 
     public function test_filter_string_rows() : void
     {
-        $filterRows = new FilterRowsTransformer(
-            new EntryEqualsTo('status', 'NEW'),
-        );
+        $filterRows = Transform::filter_equals('status', 'NEW');
 
         $rows = $filterRows->transform(
             new Rows(

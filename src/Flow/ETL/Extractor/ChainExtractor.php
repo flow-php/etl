@@ -6,6 +6,9 @@ namespace Flow\ETL\Extractor;
 
 use Flow\ETL\Extractor;
 
+/**
+ * @psalm-immutable
+ */
 final class ChainExtractor implements Extractor
 {
     /**

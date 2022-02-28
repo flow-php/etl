@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Entry\ArrayEntry;
 use Flow\ETL\Row\Entry\DateTimeEntry;
@@ -12,13 +13,6 @@ use Flow\ETL\Row\Entry\JsonEntry;
 use Flow\ETL\Row\Entry\NullEntry;
 use Flow\ETL\Row\Entry\StringEntry;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\Cast\CastJsonToArray;
-use Flow\ETL\Transformer\Cast\CastToArray;
-use Flow\ETL\Transformer\Cast\CastToDateTime;
-use Flow\ETL\Transformer\Cast\CastToInteger;
-use Flow\ETL\Transformer\Cast\CastToJson;
-use Flow\ETL\Transformer\Cast\CastToString;
-use Flow\ETL\Transformer\CastTransformer;
 use PHPUnit\Framework\TestCase;
 
 final class CastTransformerTest extends TestCase
@@ -27,7 +21,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new ArrayEntry('collection', ['foo' => 'bar']);
 
-        $transformer = new CastTransformer(new CastToJson(['collection']));
+        $transformer = Transform::to_json('collection');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -37,7 +31,7 @@ final class CastTransformerTest extends TestCase
 
     public function test_casts_multiple_entries_with_null_entry_in_betwee() : void
     {
-        $transformer = new CastTransformer(new CastToInteger(['id', 'limit', 'current'], $nullable = true));
+        $transformer = Transform::to_integer('id', 'limit', 'current');
 
         $rows = $transformer->transform(new Rows(
             Row::create(
@@ -60,7 +54,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new NullEntry('date');
 
-        $transformer = new CastTransformer(CastToDateTime::nullable(['date'], 'Y-m-d H:i:s.P'));
+        $transformer = Transform::to_datetime(['date']);
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -72,7 +66,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('date', '2020-01-01 00:00:00 UTC');
 
-        $transformer = new CastTransformer(new CastToDateTime(['date']));
+        $transformer = Transform::to_datetime(['date']);
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -84,7 +78,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('date', '2020-01-01 00:00:00 UTC');
 
-        $transformer = new CastTransformer(new CastToDateTime(['date'], null, 'Europe/Warsaw'));
+        $transformer = Transform::to_datetime(['date'], null, 'Europe/Warsaw');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -96,7 +90,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('date', '2020-01-01 00:00:00');
 
-        $transformer = new CastTransformer(new CastToDateTime(['date'], 'America/Los_Angeles'));
+        $transformer = Transform::to_datetime(['date'], 'America/Los_Angeles');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -108,7 +102,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('date', '2020-01-01 00:00:00');
 
-        $transformer = new CastTransformer(new CastToDateTime(['date'], 'UTC', 'America/Los_Angeles'));
+        $transformer = Transform::to_datetime(['date'], 'UTC', 'America/Los_Angeles');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -120,7 +114,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('date', '2020-01-01 00:00:00.-08:00');
 
-        $transformer = new CastTransformer(new CastToDateTime(['date'], null, 'UTC'));
+        $transformer = Transform::to_datetime(['date'], null, 'UTC');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -132,7 +126,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new IntegerEntry('ids', 123456);
 
-        $transformer = new CastTransformer(new CastToArray(['ids']));
+        $transformer = Transform::to_array('ids');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -144,7 +138,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new IntegerEntry('id', 123456);
 
-        $transformer = new CastTransformer(new CastToString(['id']));
+        $transformer = Transform::to_string('id');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -156,7 +150,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new JsonEntry('ids', [123456]);
 
-        $transformer = new CastTransformer(new CastJsonToArray(['ids']));
+        $transformer = Transform::to_array_from_json('ids');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -170,7 +164,7 @@ final class CastTransformerTest extends TestCase
         $current = new StringEntry('current_date', '2020-01-01 01:00:00 UTC');
         $end = new StringEntry('end_date', '2020-01-01 02:00:00 UTC');
 
-        $transformer = new CastTransformer(new CastToDateTime(['start_date', 'end_date']));
+        $transformer = Transform::to_datetime(['start_date', 'end_date']);
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($start, $current, $end))));
 
@@ -188,7 +182,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('ids', '[123456]');
 
-        $transformer = new CastTransformer(new CastJsonToArray(['ids']));
+        $transformer = Transform::to_array_from_json('ids');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 
@@ -200,7 +194,7 @@ final class CastTransformerTest extends TestCase
     {
         $entry = new StringEntry('id', '123456');
 
-        $transformer = new CastTransformer(new CastToInteger(['id']));
+        $transformer = Transform::to_integer('id');
 
         $rows = $transformer->transform(new Rows(new Row(new Row\Entries($entry))));
 

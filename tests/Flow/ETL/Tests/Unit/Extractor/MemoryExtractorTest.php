@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Extractor;
 
+use Flow\ETL\DSL\Entry;
+use Flow\ETL\DSL\From;
+use Flow\ETL\DSL\To;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Extractor\MemoryExtractor;
-use Flow\ETL\Loader\MemoryLoader;
 use Flow\ETL\Memory\ArrayMemory;
 use Flow\ETL\Row;
-use Flow\ETL\Row\Entry\IntegerEntry;
-use Flow\ETL\Row\Entry\StringEntry;
 use Flow\ETL\Rows;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +28,7 @@ final class MemoryExtractorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Chunk size must be greater than 0');
 
-        new MemoryExtractor(new ArrayMemory(), 0);
+        From::memory(new ArrayMemory(), 0);
     }
 
     /**
@@ -38,18 +37,18 @@ final class MemoryExtractorTest extends TestCase
     public function test_memory_extractor(int $chunkSize) : void
     {
         $rows = new Rows(
-            Row::create(new IntegerEntry('number', 1), new StringEntry('name', 'one')),
-            Row::create(new IntegerEntry('number', 2), new StringEntry('name', 'two')),
-            Row::create(new IntegerEntry('number', 3), new StringEntry('name', 'tree')),
-            Row::create(new IntegerEntry('number', 4), new StringEntry('name', 'four')),
-            Row::create(new IntegerEntry('number', 5), new StringEntry('name', 'five')),
+            Row::create(Entry::integer('number', 1), Entry::string('name', 'one')),
+            Row::create(Entry::integer('number', 2), Entry::string('name', 'two')),
+            Row::create(Entry::integer('number', 3), Entry::string('name', 'tree')),
+            Row::create(Entry::integer('number', 4), Entry::string('name', 'four')),
+            Row::create(Entry::integer('number', 5), Entry::string('name', 'five')),
         );
 
         $memory = new ArrayMemory();
 
-        (new MemoryLoader($memory))->load($rows);
+        (To::memory($memory))->load($rows);
 
-        $extractor = new MemoryExtractor($memory, $chunkSize);
+        $extractor = From::memory($memory, $chunkSize);
 
         $data = [];
 

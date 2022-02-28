@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Exception\RuntimeException;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\ArrayCollectionMergeTransformer;
 use PHPUnit\Framework\TestCase;
 
 final class ArrayCollectionMergeTransformerTest extends TestCase
@@ -17,7 +17,7 @@ final class ArrayCollectionMergeTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('array_entry, must be an array of arrays, instead element at position "1" is integer');
 
-        $arrayAccessorTransformer = new ArrayCollectionMergeTransformer('array_entry');
+        $arrayAccessorTransformer = Transform::array_collection_merge('array_entry');
 
         $rows = $arrayAccessorTransformer->transform(
             new Rows(
@@ -39,7 +39,7 @@ final class ArrayCollectionMergeTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('invalid_entry is not ArrayEntry but Flow\ETL\Row\Entry\IntegerEntry');
 
-        $arrayUnpackTransformer = new ArrayCollectionMergeTransformer('invalid_entry', 'new_entry');
+        $arrayUnpackTransformer = Transform::array_collection_merge('invalid_entry', 'new_entry');
 
         $arrayUnpackTransformer->transform(
             new Rows(
@@ -52,7 +52,7 @@ final class ArrayCollectionMergeTransformerTest extends TestCase
 
     public function test_merging_collection_of_arrays() : void
     {
-        $arrayAccessorTransformer = new ArrayCollectionMergeTransformer('array_entry');
+        $arrayAccessorTransformer = Transform::array_collection_merge('array_entry');
 
         $rows = $arrayAccessorTransformer->transform(
             new Rows(

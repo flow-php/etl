@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Entry\ArrayEntry;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\ArraySortTransformer;
 use PHPUnit\Framework\TestCase;
 
 final class ArraySortTransformerTest extends TestCase
@@ -24,7 +24,7 @@ final class ArraySortTransformerTest extends TestCase
             ]
         );
 
-        $transformer = new ArraySortTransformer('array', \SORT_REGULAR);
+        $transformer = Transform::array_sort('array');
 
         $this->assertEquals(
             [
@@ -53,7 +53,7 @@ final class ArraySortTransformerTest extends TestCase
             ]
         );
 
-        $transformer = new ArraySortTransformer('array', \SORT_REGULAR);
+        $transformer = Transform::array_sort('array');
 
         $this->assertSame(
             [

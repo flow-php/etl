@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Entry;
 use Flow\ETL\Rows;
-use Flow\ETL\Transformer\CallUserFunctionTransformer;
 use PHPUnit\Framework\TestCase;
 
 final class CallUserFunctionTransformerTest extends TestCase
 {
     public function test_unique_array() : void
     {
-        $callbackTransformer = new CallUserFunctionTransformer(
+        $callbackTransformer = Transform::user_function(
             ['array_list'],
             'array_unique'
         );
@@ -27,7 +27,7 @@ final class CallUserFunctionTransformerTest extends TestCase
             )
         );
 
-        $callbackTransformer = new CallUserFunctionTransformer(
+        $callbackTransformer = Transform::user_function(
             ['array_list'],
             'array_values'
         );
@@ -43,7 +43,7 @@ final class CallUserFunctionTransformerTest extends TestCase
 
     public function test_unique_array_with_closure() : void
     {
-        $callbackTransformer = new CallUserFunctionTransformer(
+        $callbackTransformer = Transform::user_function(
             ['array_list'],
             fn (array $entry) => \array_unique($entry)
         );
@@ -56,7 +56,7 @@ final class CallUserFunctionTransformerTest extends TestCase
             )
         );
 
-        $callbackTransformer = new CallUserFunctionTransformer(
+        $callbackTransformer = Transform::user_function(
             ['array_list'],
             'array_values'
         );
@@ -72,7 +72,7 @@ final class CallUserFunctionTransformerTest extends TestCase
 
     public function test_upper_string_callback() : void
     {
-        $callbackTransformer = new CallUserFunctionTransformer(
+        $callbackTransformer = Transform::user_function(
             ['string-entry'],
             'strtoupper'
         );

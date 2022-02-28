@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Loader;
 
+use Flow\ETL\DSL\Entry;
+use Flow\ETL\DSL\To;
 use Flow\ETL\Loader;
-use Flow\ETL\Loader\BufferLoader;
 use Flow\ETL\Row;
 use Flow\ETL\Rows;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +17,7 @@ final class BufferLoaderTest extends TestCase
     {
         $overflowLoader = $this->createMock(Loader::class);
 
-        $loader = new BufferLoader(
+        $loader = To::buffer(
             $overflowLoader,
             10
         );
@@ -26,8 +27,8 @@ final class BufferLoaderTest extends TestCase
 
         $loader->load(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                Row::create(Entry::integer('id', 1)),
+                Row::create(Entry::integer('id', 2)),
             )
         );
     }
@@ -36,7 +37,7 @@ final class BufferLoaderTest extends TestCase
     {
         $overflowLoader = $this->createMock(Loader::class);
 
-        $loader = new BufferLoader(
+        $loader = To::buffer(
             $overflowLoader,
             10
         );
@@ -45,21 +46,21 @@ final class BufferLoaderTest extends TestCase
             ->method('load')
             ->with(
                 new Rows(
-                    Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                    Row::create(Entry::integer('id', 1)),
+                    Row::create(Entry::integer('id', 2)),
                 )
             );
 
         $loader->load(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                Row::create(Entry::integer('id', 1)),
+                Row::create(Entry::integer('id', 2)),
             )
         );
         $loader->closure(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                Row::create(Entry::integer('id', 1)),
+                Row::create(Entry::integer('id', 2)),
             )
         );
     }
@@ -68,7 +69,7 @@ final class BufferLoaderTest extends TestCase
     {
         $overflowLoader = $this->createMock(Loader::class);
 
-        $loader = new BufferLoader(
+        $loader = To::buffer(
             $overflowLoader,
             4
         );
@@ -77,24 +78,24 @@ final class BufferLoaderTest extends TestCase
             ->method('load')
             ->with(
                 new Rows(
-                    Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 2)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 3)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 4)),
+                    Row::create(Entry::integer('id', 1)),
+                    Row::create(Entry::integer('id', 2)),
+                    Row::create(Entry::integer('id', 3)),
+                    Row::create(Entry::integer('id', 4)),
                 )
             );
 
         $loader->load(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                Row::create(Entry::integer('id', 1)),
+                Row::create(Entry::integer('id', 2)),
             )
         );
 
         $loader->load(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 3)),
-                Row::create(new Row\Entry\IntegerEntry('id', 4)),
+                Row::create(Entry::integer('id', 3)),
+                Row::create(Entry::integer('id', 4)),
             )
         );
 
@@ -105,7 +106,7 @@ final class BufferLoaderTest extends TestCase
     {
         $overflowLoader = $this->createMock(Loader::class);
 
-        $loader = new BufferLoader(
+        $loader = To::buffer(
             $overflowLoader,
             2
         );
@@ -114,16 +115,16 @@ final class BufferLoaderTest extends TestCase
             ->method('load')
             ->with(
                 new Rows(
-                    Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                    Row::create(new Row\Entry\IntegerEntry('id', 2)),
+                    Row::create(Entry::integer('id', 1)),
+                    Row::create(Entry::integer('id', 2)),
                 )
             );
 
         $loader->load(
             new Rows(
-                Row::create(new Row\Entry\IntegerEntry('id', 1)),
-                Row::create(new Row\Entry\IntegerEntry('id', 2)),
-                Row::create(new Row\Entry\IntegerEntry('id', 3)),
+                Row::create(Entry::integer('id', 1)),
+                Row::create(Entry::integer('id', 2)),
+                Row::create(Entry::integer('id', 3)),
             )
         );
     }
