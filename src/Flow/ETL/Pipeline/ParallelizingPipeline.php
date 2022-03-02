@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline;
 
+use Flow\ETL\DSL\From;
 use Flow\ETL\ErrorHandler;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Extractor;
-use Flow\ETL\Extractor\PipelineExtractor;
 use Flow\ETL\Pipeline;
 
 /**
@@ -50,8 +50,8 @@ final class ParallelizingPipeline implements Pipeline
     public function process(?int $limit = null, callable $callback = null) : \Generator
     {
         $this->nextPipeline->source(
-            new Extractor\ChunkExtractor(
-                new PipelineExtractor($this->pipeline, $limit),
+            From::chunks_from(
+                From::pipeline($this->pipeline, $limit),
                 $this->parallel
             )
         );

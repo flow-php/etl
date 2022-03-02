@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline;
 
+use Flow\ETL\DSL\From;
 use Flow\ETL\ErrorHandler;
 use Flow\ETL\ErrorHandler\ThrowError;
 use Flow\ETL\Extractor;
@@ -27,7 +28,7 @@ final class SynchronousPipeline implements Pipeline
     {
         $this->errorHandler = new ThrowError();
         $this->pipes = Pipes::empty();
-        $this->extractor = new Extractor\ProcessExtractor(new Rows());
+        $this->extractor = From::rows(new Rows());
     }
 
     public function add(Pipe $pipe) : void

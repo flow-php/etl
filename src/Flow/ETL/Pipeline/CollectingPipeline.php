@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline;
 
+use Flow\ETL\DSL\From;
 use Flow\ETL\ErrorHandler;
 use Flow\ETL\Extractor;
 use Flow\ETL\Pipeline;
@@ -41,7 +42,7 @@ final class CollectingPipeline implements Pipeline
 
     public function process(?int $limit = null, callable $callback = null) : \Generator
     {
-        $this->nextPipeline->source(new Extractor\ProcessExtractor(
+        $this->nextPipeline->source(From::rows(
             (new Rows())->merge(...\iterator_to_array($this->pipeline->process($limit)))
         ));
 
