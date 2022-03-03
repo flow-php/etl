@@ -132,6 +132,51 @@ final class EntriesTest extends TestCase
         $this->assertTrue($entries->has('entry-Name'));
     }
 
+    public function test_get_all_entries() : void
+    {
+        $entries = new Entries(
+            Entry::integer('id', 1),
+            Entry::integer('name', 1),
+        );
+
+        $this->assertCount(
+            2,
+            $entries->getAll('id', 'name')
+        );
+    }
+
+    public function test_get_all_entries_when_at_least_one_is_missing() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $entries = new Entries(
+            Entry::integer('id', 1),
+            Entry::integer('name', 1),
+        );
+
+        $entries->getAll('id', 'name', 'status');
+    }
+
+    public function test_has_when_at_least_one_is_missing() : void
+    {
+        $entries = new Entries(
+            Entry::integer('id', 1),
+            Entry::integer('name', 1),
+        );
+
+        $this->assertFalse($entries->has('id', 'name', 'status'));
+    }
+
+    public function test_has_when_none_of_many_is_missing() : void
+    {
+        $entries = new Entries(
+            Entry::integer('id', 1),
+            Entry::integer('name', 1),
+            Entry::boolean('active', true)
+        );
+
+        $this->assertTrue($entries->has('id', 'name'));
+    }
+
     public function test_merge_duplicated_entries() : void
     {
         $entries1 = new Entries(new StringEntry('string-name', 'new string entry'));
@@ -325,51 +370,5 @@ final class EntriesTest extends TestCase
             ],
             $entries->toArray()
         );
-    }
-
-    public function test_get_all_entries_when_at_least_one_is_missing() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $entries = new Entries(
-            Entry::integer('id', 1),
-            Entry::integer('name', 1),
-        );
-
-        $entries->getAll('id', 'name', 'status');
-    }
-
-    public function test_get_all_entries() : void
-    {
-        $entries = new Entries(
-            Entry::integer('id', 1),
-            Entry::integer('name', 1),
-        );
-
-        $this->assertCount(
-            2,
-            $entries->getAll('id', 'name')
-        );
-    }
-
-    public function test_has_when_at_least_one_is_missing() : void
-    {
-        $entries = new Entries(
-            Entry::integer('id', 1),
-            Entry::integer('name', 1),
-        );
-
-
-        $this->assertFalse($entries->has('id', 'name', 'status'));
-    }
-
-    public function test_has_when_none_of_many_is_missing() : void
-    {
-        $entries = new Entries(
-            Entry::integer('id', 1),
-            Entry::integer('name', 1),
-            Entry::boolean('active', true)
-        );
-
-        $this->assertTrue($entries->has('id', 'name'));
     }
 }

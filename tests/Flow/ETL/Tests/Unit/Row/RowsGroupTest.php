@@ -16,7 +16,7 @@ final class RowsGroupTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $group = new RowsGroup(["id", "name"], ["1", "test"]);
+        $group = new RowsGroup(['id', 'name'], ['1', 'test']);
 
         $group->add(new Row(Entry::entries(Entry::integer('id', 1))));
     }
@@ -25,7 +25,7 @@ final class RowsGroupTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $group = new RowsGroup(["id", "name"], ["1", "test"]);
+        $group = new RowsGroup(['id', 'name'], ['1', 'test']);
 
         $group->add(new Row(Entry::entries(Entry::integer('id', 1), Entry::string('name', 'not-test'))));
     }

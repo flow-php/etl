@@ -122,7 +122,7 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
         return $entry;
     }
 
-    public function getAll(string ...$names) : Entries
+    public function getAll(string ...$names) : self
     {
         $entries = [];
 
@@ -132,7 +132,6 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
 
         return new self(...$entries);
     }
-
 
     /**
      * @return \Iterator<string, Entry>

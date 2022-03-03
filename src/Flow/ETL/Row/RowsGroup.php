@@ -11,17 +11,22 @@ use Flow\ETL\Rows;
 final class RowsGroup
 {
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $entries;
 
+    private Rows $group;
+
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $values;
 
-    private Rows $group;
-
+    /**
+     * @param array<string> $entries
+     * @param array<string> $values
+     * @param null|Rows $group
+     */
     public function __construct(array $entries, array $values, Rows $group = null)
     {
         $this->entries = $entries;
@@ -32,7 +37,7 @@ final class RowsGroup
     public function add(Row $row) : void
     {
         if (!$row->entries()->has(...$this->entries)) {
-            throw new InvalidArgumentException("Given row is missing following entries: " . \implode(", ", $this->entries));
+            throw new InvalidArgumentException('Given row is missing following entries: ' . \implode(', ', $this->entries));
         }
 
         $rowValues = $row->entries()->getAll(...$this->entries)->map(fn (Entry $entry) => $entry->toString());
@@ -41,7 +46,7 @@ final class RowsGroup
         \sort($expectedValues);
 
         if ($expectedValues !== $rowValues) {
-            throw new InvalidArgumentException("Given row is missing following values: " . \implode(", ", $this->values));
+            throw new InvalidArgumentException('Given row is missing following values: ' . \implode(', ', $this->values));
         }
 
         $this->group = $this->group->add($row);
@@ -50,24 +55,24 @@ final class RowsGroup
     /**
      * @return array<string>
      */
-    public function entries(): array
+    public function entries() : array
     {
         return $this->entries;
     }
 
     /**
-     * @return array<string>
+     * @return array<Entries>
      */
-    public function values(): array
+    public function groupEntries() : array
     {
-        return $this->values;
+        return $this->group->entries();
     }
 
     /**
-     * @return array<Entries>
+     * @return array<string>
      */
-    public function groupEntries(): array
+    public function values() : array
     {
-        return $this->group->entries();
+        return $this->values;
     }
 }

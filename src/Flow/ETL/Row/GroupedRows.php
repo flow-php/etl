@@ -23,7 +23,7 @@ final class GroupedRows
     public function __construct(string ...$entries)
     {
         if (!\count($entries)) {
-            throw new InvalidArgumentException("Group by requires at least one entry name, none given.");
+            throw new InvalidArgumentException('Group by requires at least one entry name, none given.');
         }
 
         $this->groups = [];
@@ -33,6 +33,7 @@ final class GroupedRows
     public function add(Row $row) : void
     {
         $groupedRow = $row;
+
         foreach ($this->entries as $entry) {
             if (!$groupedRow->entries()->has($entry)) {
                 $groupedRow = $groupedRow->add(\Flow\ETL\DSL\Entry::null($entry));
@@ -42,7 +43,7 @@ final class GroupedRows
         $values = $groupedRow->entries()->getAll(...$this->entries)->map(fn (Entry $entry) => $entry->toString());
         $hash = \hash('sha256', \implode($values));
 
-        if  (!\array_key_exists($hash, $this->groups)) {
+        if (!\array_key_exists($hash, $this->groups)) {
             $this->groups[$hash] = new RowsGroup($this->entries, $values);
             $this->groups[$hash]->add($groupedRow);
         } else {
@@ -53,6 +54,7 @@ final class GroupedRows
     public function toRows() : Rows
     {
         $rows = new Rows();
+
         foreach ($this->groups as $group) {
             $rows = $rows->add(
                 Row::create(
