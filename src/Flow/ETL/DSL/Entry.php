@@ -9,6 +9,11 @@ use Flow\ETL\Row\Entry as RowEntry;
 
 class Entry
 {
+    final public static function entries(RowEntry ...$entries) : Entries
+    {
+        return new Entries(...$entries);
+    }
+
     /**
      * @param string $name
      * @param array<mixed> $data
