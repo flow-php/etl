@@ -10,6 +10,7 @@ use Flow\ETL\Transformer;
 use Flow\ETL\Transformer\Filter\Filter;
 
 /**
+ * @implements Transformer<array{filters: array<Filter>}>
  * @psalm-immutable
  */
 final class FilterRowsTransformer implements Transformer
@@ -24,9 +25,6 @@ final class FilterRowsTransformer implements Transformer
         $this->filters = $filters;
     }
 
-    /**
-     * @return array{filters: array<Filter>}
-     */
     public function __serialize() : array
     {
         return [
@@ -34,11 +32,6 @@ final class FilterRowsTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{filters: array<Filter>} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->filters = $data['filters'];

@@ -10,6 +10,7 @@ use Flow\ETL\Rows;
 use Flow\ETL\Transformer;
 
 /**
+ * @implements Transformer<array{array_entries: array<string>, new_entry_name: string}>
  * @psalm-immutable
  */
 final class ArrayMergeTransformer implements Transformer
@@ -31,9 +32,6 @@ final class ArrayMergeTransformer implements Transformer
         $this->newEntryName = $newEntryName;
     }
 
-    /**
-     * @return array{array_entries: array<string>, new_entry_name: string}
-     */
     public function __serialize() : array
     {
         return [
@@ -42,17 +40,16 @@ final class ArrayMergeTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{array_entries: array<string>, new_entry_name: string} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->arrayEntries = $data['array_entries'];
         $this->newEntryName = $data['new_entry_name'];
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgument
+     */
     public function transform(Rows $rows) : Rows
     {
         /**
@@ -70,11 +67,9 @@ final class ArrayMergeTransformer implements Transformer
                     throw new RuntimeException("\"{$entryName}\" is not ArrayEntry");
                 }
 
-                /** @psalm-suppress MixedAssignment */
                 $entryValues[] = $row->get($entryName)->value();
             }
 
-            /** @psalm-suppress MixedArgument */
             return $row->add(new Row\Entry\ArrayEntry(
                 $this->newEntryName,
                 /** @phpstan-ignore-next-line */

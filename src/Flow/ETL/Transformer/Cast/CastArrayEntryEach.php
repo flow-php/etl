@@ -9,6 +9,7 @@ use Flow\ETL\Row\RowConverter;
 use Flow\ETL\Row\ValueConverter;
 
 /**
+ * @implements RowConverter<array{caster: ValueConverter, array_entry_name: string}>
  * @psalm-immutable
  */
 class CastArrayEntryEach implements RowConverter
@@ -23,9 +24,6 @@ class CastArrayEntryEach implements RowConverter
         $this->caster = $caster;
     }
 
-    /**
-     * @return array{caster: ValueConverter, array_entry_name: string}
-     */
     public function __serialize() : array
     {
         return [
@@ -34,11 +32,6 @@ class CastArrayEntryEach implements RowConverter
         ];
     }
 
-    /**
-     * @param array{caster: ValueConverter, array_entry_name: string} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->arrayEntryName = $data['array_entry_name'];

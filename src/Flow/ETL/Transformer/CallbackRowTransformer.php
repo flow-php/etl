@@ -12,6 +12,7 @@ use Flow\ETL\Transformer;
 use Opis\Closure\SerializableClosure;
 
 /**
+ * @implements Transformer<array{callable: SerializableClosure}>
  * @psalm-immutable
  */
 final class CallbackRowTransformer implements Transformer
@@ -32,9 +33,6 @@ final class CallbackRowTransformer implements Transformer
         $this->callable = $callable;
     }
 
-    /**
-     * @return array{callable: SerializableClosure}
-     */
     public function __serialize() : array
     {
         /** @psalm-suppress ImpureMethodCall */
@@ -47,10 +45,6 @@ final class CallbackRowTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{callable: SerializableClosure} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         /** @psalm-suppress ImpureMethodCall */

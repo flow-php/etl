@@ -12,6 +12,7 @@ use Flow\ETL\Transformer;
 use Opis\Closure\SerializableClosure;
 
 /**
+ * @implements Transformer<array{generator: SerializableClosure}>
  * @psalm-immutable
  */
 final class DynamicEntryTransformer implements Transformer
@@ -29,9 +30,6 @@ final class DynamicEntryTransformer implements Transformer
         $this->generator = $generator;
     }
 
-    /**
-     * @return array{generator: SerializableClosure}
-     */
     public function __serialize() : array
     {
         /** @psalm-suppress ImpureMethodCall */
@@ -44,11 +42,6 @@ final class DynamicEntryTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{generator: SerializableClosure} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         /** @psalm-suppress ImpureMethodCall */

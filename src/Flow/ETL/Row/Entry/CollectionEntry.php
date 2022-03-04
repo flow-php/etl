@@ -10,6 +10,7 @@ use Flow\ETL\Row\Entries;
 use Flow\ETL\Row\Entry;
 
 /**
+ * @implements Entry<array<mixed>, array{name: string, entries: array<Entries>}>
  * @psalm-immutable
  */
 final class CollectionEntry implements Entry
@@ -34,9 +35,6 @@ final class CollectionEntry implements Entry
         $this->entries = $entries;
     }
 
-    /**
-     * @return array{name: string, entries: array<Entries>}
-     */
     public function __serialize() : array
     {
         return [
@@ -50,10 +48,6 @@ final class CollectionEntry implements Entry
         return $this->toString();
     }
 
-    /**
-     * @param array{name: string, entries: array<Entries>} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->name = $data['name'];
@@ -113,9 +107,6 @@ final class CollectionEntry implements Entry
         return (string) \json_encode($array);
     }
 
-    /**
-     * @return array<mixed>
-     */
     public function value() : array
     {
         return \array_map(fn (Entries $entries) : array => $entries->toArray(), $this->entries);

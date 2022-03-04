@@ -23,6 +23,12 @@ final class Row implements Serializable
 
     /**
      * @psalm-pure
+     *
+     * @param Entry ...$entries
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return Row
      */
     public static function create(Entry ...$entries) : self
     {
@@ -46,6 +52,13 @@ final class Row implements Serializable
         $this->entries = $data['entries'];
     }
 
+    /**
+     * @param Entry ...$entries
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return $this
+     */
     public function add(Entry ...$entries) : self
     {
         return new self($this->entries->add(...$entries));
@@ -65,7 +78,11 @@ final class Row implements Serializable
     }
 
     /**
+     * @param string $name
+     *
      * @throws InvalidArgumentException
+     *
+     * @return Entry
      */
     public function get(string $name) : Entry
     {
@@ -112,6 +129,11 @@ final class Row implements Serializable
         return new self($this->entries->rename($currentName, $newName));
     }
 
+    /**
+     * @param Entry ...$entries
+     *
+     * @return self
+     */
     public function set(Entry ...$entries) : self
     {
         return new self($this->entries->set(...$entries));

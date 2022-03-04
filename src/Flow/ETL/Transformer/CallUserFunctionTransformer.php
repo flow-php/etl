@@ -14,6 +14,7 @@ use Flow\ETL\Transformer;
 use Opis\Closure\SerializableClosure;
 
 /**
+ * @implements Transformer<array{entries: array<string>, callback: callable, entry_factory: EntryFactory}>
  * @psalm-immutable
  */
 final class CallUserFunctionTransformer implements Transformer
@@ -42,9 +43,6 @@ final class CallUserFunctionTransformer implements Transformer
         $this->entryFactory = $entryFactory ?? new NativeEntryFactory();
     }
 
-    /**
-     * @return array{entries: array<string>, callback: callable, entry_factory: EntryFactory}
-     */
     public function __serialize() : array
     {
         /** @psalm-suppress ImpureMethodCall */
@@ -59,10 +57,6 @@ final class CallUserFunctionTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{entries: array<string>, callback: callable, entry_factory: EntryFactory} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         /** @psalm-suppress ImpureMethodCall */

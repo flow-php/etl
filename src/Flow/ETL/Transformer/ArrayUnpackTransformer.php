@@ -12,6 +12,7 @@ use Flow\ETL\Rows;
 use Flow\ETL\Transformer;
 
 /**
+ * @implements Transformer<array{array_entry_name: string, skip_entry_names: array<string>, entry_factory: EntryFactory, entry_prefix: null|string}>
  * @psalm-immutable
  */
 final class ArrayUnpackTransformer implements Transformer
@@ -38,9 +39,6 @@ final class ArrayUnpackTransformer implements Transformer
         $this->entryPrefix = $entryPrefix;
     }
 
-    /**
-     * @return array{array_entry_name: string, skip_entry_names: array<string>, entry_factory: EntryFactory, entry_prefix: null|string}
-     */
     public function __serialize() : array
     {
         return [
@@ -51,11 +49,6 @@ final class ArrayUnpackTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{array_entry_name: string, skip_entry_names: array<string>, entry_factory: EntryFactory, entry_prefix: null|string} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->arrayEntryName = $data['array_entry_name'];

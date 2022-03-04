@@ -11,6 +11,7 @@ use Flow\ETL\Transformer;
 use Laminas\Hydrator\HydratorInterface;
 
 /**
+ * @implements Transformer<array{object_entry_name: string, hydrator: HydratorInterface}>
  * @psalm-immutable
  */
 final class ObjectToArrayTransformer implements Transformer
@@ -25,9 +26,6 @@ final class ObjectToArrayTransformer implements Transformer
         $this->hydrator = $hydrator;
     }
 
-    /**
-     * @return array{object_entry_name: string, hydrator: HydratorInterface}
-     */
     public function __serialize() : array
     {
         return [
@@ -36,11 +34,6 @@ final class ObjectToArrayTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{object_entry_name: string, hydrator: HydratorInterface} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->objectEntryName = $data['object_entry_name'];

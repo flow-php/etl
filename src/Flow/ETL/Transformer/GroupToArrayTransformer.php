@@ -10,6 +10,7 @@ use Flow\ETL\Rows;
 use Flow\ETL\Transformer;
 
 /**
+ * @implements Transformer<array{group_by_entry: string, new_entry_name: string}>
  * @psalm-immutable
  */
 final class GroupToArrayTransformer implements Transformer
@@ -24,9 +25,6 @@ final class GroupToArrayTransformer implements Transformer
         $this->newEntryName = $newEntryName;
     }
 
-    /**
-     * @return array{group_by_entry: string, new_entry_name: string}
-     */
     public function __serialize() : array
     {
         return [
@@ -35,11 +33,6 @@ final class GroupToArrayTransformer implements Transformer
         ];
     }
 
-    /**
-     * @param array{group_by_entry: string, new_entry_name: string} $data
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->groupByEntry = $data['group_by_entry'];

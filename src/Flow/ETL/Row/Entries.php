@@ -21,6 +21,11 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
      */
     private array $entries;
 
+    /**
+     * @param Entry ...$entries
+     *
+     * @throws InvalidArgumentException
+     */
     public function __construct(Entry ...$entries)
     {
         $this->entries = [];
@@ -53,6 +58,13 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
         $this->entries = $data['entries'];
     }
 
+    /**
+     * @param Entry ...$entries
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return $this
+     */
     public function add(Entry ...$entries) : self
     {
         $newEntries = [];
@@ -77,7 +89,7 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
-     * @return Entry[]
+     * @return array<Entry>
      */
     public function all() : array
     {
@@ -109,7 +121,11 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
+     * @param string $name
+     *
      * @throws InvalidArgumentException
+     *
+     * @return Entry
      */
     public function get(string $name) : Entry
     {
@@ -293,6 +309,11 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
         return self::recreate($entries);
     }
 
+    /**
+     * @param Entry ...$entries
+     *
+     * @return $this
+     */
     public function set(Entry ...$entries) : self
     {
         $newEntries = $this->entries;
@@ -326,6 +347,11 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
         );
     }
 
+    /**
+     * @param string $name
+     *
+     * @return null|Entry
+     */
     private function find(string $name) : ?Entry
     {
         if ($this->has($name)) {

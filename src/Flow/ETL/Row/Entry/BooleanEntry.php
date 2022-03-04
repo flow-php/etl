@@ -8,6 +8,7 @@ use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\Entry;
 
 /**
+ * @implements Entry<bool, array{name: string, value: bool}>
  * @psalm-immutable
  */
 final class BooleanEntry implements Entry
@@ -65,10 +66,6 @@ final class BooleanEntry implements Entry
         return $this->toString();
     }
 
-    /**
-     * @param array{name: string, value: bool} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->name = $data['name'];
