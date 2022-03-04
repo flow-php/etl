@@ -12,6 +12,7 @@ use Flow\Serializer\Serializable;
 /**
  * @implements \ArrayAccess<string, Entry>
  * @implements \IteratorAggregate<string, Entry>
+ * @implements Serializable<array{entries: array<string, Entry>}>
  * @psalm-immutable
  */
 final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Serializable
@@ -41,18 +42,11 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
         }
     }
 
-    /**
-     * @return array{entries: array<string, Entry>}
-     */
     public function __serialize() : array
     {
         return ['entries' => $this->entries];
     }
 
-    /**
-     * @param array{entries: array<string, Entry>} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->entries = $data['entries'];

@@ -10,6 +10,7 @@ use Flow\ETL\Row\Entry;
 use Flow\Serializer\Serializable;
 
 /**
+ * @implements Serializable<array{entries: Entries}>
  * @psalm-immutable
  */
 final class Row implements Serializable
@@ -35,18 +36,11 @@ final class Row implements Serializable
         return new self(new Entries(...$entries));
     }
 
-    /**
-     * @return array{entries: Entries}
-     */
     public function __serialize() : array
     {
         return ['entries' => $this->entries];
     }
 
-    /**
-     * @param array{entries: Entries} $data
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function __unserialize(array $data) : void
     {
         $this->entries = $data['entries'];
