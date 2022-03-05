@@ -35,7 +35,6 @@ final class CallbackRowTransformer implements Transformer
 
     public function __serialize() : array
     {
-        /** @psalm-suppress ImpureMethodCall */
         if (!Closure::isSerializable()) {
             throw new RuntimeException('CallbackRowTransformer is not serializable without "opis/closure" library in your dependencies.');
         }
@@ -47,7 +46,6 @@ final class CallbackRowTransformer implements Transformer
 
     public function __unserialize(array $data) : void
     {
-        /** @psalm-suppress ImpureMethodCall */
         if (!Closure::isSerializable()) {
             throw new RuntimeException('CallbackRowTransformer is not serializable without "opis/closure" library in your dependencies.');
         }

@@ -91,6 +91,8 @@ final class Row implements Serializable
     }
 
     /**
+     * @psalm-param pure-callable(Entry) : Entry $mapper
+     *
      * @param callable(Entry) : Entry $mapper
      */
     public function map(callable $mapper) : self
@@ -149,10 +151,11 @@ final class Row implements Serializable
     }
 
     /**
-     * @psalm-suppress MissingReturnType
-     * @phpstan-ignore-next-line
+     * @param string $name
      *
      * @throws InvalidArgumentException
+     *
+     * @return mixed
      */
     public function valueOf(string $name)
     {

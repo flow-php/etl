@@ -183,9 +183,9 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
-     * @psalm-suppress ImpureFunctionCall
-     * @psalm-suppress MixedReturnTypeCoercion
      * @template ReturnType
+     *
+     * @psalm-param pure-callable(Entry) : ReturnType $callable
      *
      * @param callable(Entry) : ReturnType $callable
      *

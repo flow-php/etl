@@ -36,7 +36,6 @@ final class CallbackEntryTransformer implements Transformer
 
     public function __serialize() : array
     {
-        /** @psalm-suppress ImpureMethodCall */
         if (!Closure::isSerializable()) {
             throw new RuntimeException('CallbackEntryTransformer is not serializable without "opis/closure" library in your dependencies.');
         }
@@ -54,7 +53,6 @@ final class CallbackEntryTransformer implements Transformer
 
     public function __unserialize(array $data) : void
     {
-        /** @psalm-suppress ImpureMethodCall */
         if (!Closure::isSerializable()) {
             throw new RuntimeException('CallbackEntryTransformer is not serializable without "opis/closure" library in your dependencies.');
         }
@@ -75,13 +73,15 @@ final class CallbackEntryTransformer implements Transformer
          * @psalm-var pure-callable(Row) : Row $transform
          */
         $transform = function (Row $row) : Row {
-            $entries = $row->entries()->map(function (Row\Entry $entry) : Row\Entry {
+            /** @psalm-var pure-callable(Row\Entry) : Row\Entry $callable */
+            $callable = function (Row\Entry $entry) : Row\Entry {
                 foreach ($this->callables as $callable) {
                     $entry = $callable($entry);
                 }
 
                 return $entry;
-            });
+            };
+            $entries = $row->entries()->map($callable);
 
             return new Row(new Row\Entries(...$entries));
         };

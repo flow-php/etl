@@ -37,19 +37,19 @@ final class FilterRowsTransformer implements Transformer
         $this->filters = $data['filters'];
     }
 
-    /** @psalm-suppress InvalidArgument */
     public function transform(Rows $rows) : Rows
     {
-        return $rows->filter(
-            function (Row $row) {
-                foreach ($this->filters as $filter) {
-                    if (false === $filter->keep($row)) {
-                        return false;
-                    }
+        /** @psalm-var pure-callable(Row) : bool $filter */
+        $filter = function (Row $row) : bool {
+            foreach ($this->filters as $filter) {
+                if (false === $filter->keep($row)) {
+                    return false;
                 }
-
-                return true;
             }
-        );
+
+            return true;
+        };
+
+        return $rows->filter($filter);
     }
 }

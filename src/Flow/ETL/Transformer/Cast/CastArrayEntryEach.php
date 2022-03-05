@@ -50,20 +50,13 @@ class CastArrayEntryEach implements RowConverter
             return $row;
         }
 
-        /**
-         * @psalm-suppress ImpureFunctionCall
-         * @psalm-suppress MissingClosureReturnType
-         */
         return new Row(
             $row->entries()
                 ->remove($entry->name())
                 ->add(
                     new Row\Entry\ArrayEntry(
                         $entry->name(),
-                        \array_map(
-                            fn ($value) => $this->caster->convert($value),
-                            $entry->value()
-                        )
+                        \array_map([$this->caster, 'convert'], $entry->value())
                     )
                 )
         );

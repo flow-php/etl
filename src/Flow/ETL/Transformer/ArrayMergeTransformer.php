@@ -46,10 +46,6 @@ final class ArrayMergeTransformer implements Transformer
         $this->newEntryName = $data['new_entry_name'];
     }
 
-    /**
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedArgument
-     */
     public function transform(Rows $rows) : Rows
     {
         /**
@@ -59,20 +55,17 @@ final class ArrayMergeTransformer implements Transformer
             $entryValues = [];
 
             foreach ($this->arrayEntries as $entryName) {
-                if (!$row->entries()->has($entryName)) {
-                    throw new RuntimeException("\"{$entryName}\" not found");
-                }
+                $arrayEntry = $row->entries()->get($entryName);
 
-                if (!$row->entries()->get($entryName) instanceof Row\Entry\ArrayEntry) {
+                if (!$arrayEntry instanceof Row\Entry\ArrayEntry) {
                     throw new RuntimeException("\"{$entryName}\" is not ArrayEntry");
                 }
 
-                $entryValues[] = $row->get($entryName)->value();
+                $entryValues[] = $arrayEntry->value();
             }
 
             return $row->add(new Row\Entry\ArrayEntry(
                 $this->newEntryName,
-                /** @phpstan-ignore-next-line */
                 \array_merge(...$entryValues)
             ));
         };

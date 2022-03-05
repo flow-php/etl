@@ -46,7 +46,7 @@ final class GroupToArrayTransformer implements Transformer
 
         foreach ($rows as $row) {
             /** @var array<array-key, array<mixed>> $entries */
-            $groupValue = (string) $row->valueOf($this->groupByEntry);
+            $groupValue = $row->get($this->groupByEntry)->toString();
 
             if (!\array_key_exists($groupValue, $entries)) {
                 $entries[$groupValue] = [];

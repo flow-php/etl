@@ -57,19 +57,15 @@ final class ArrayUnpackTransformer implements Transformer
         $this->entryPrefix = $data['entry_prefix'];
     }
 
-    /**
-     * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
-     * @psalm-suppress MixedArgument
-     */
     public function transform(Rows $rows) : Rows
     {
-        return $rows->map(function (Row $row) : Row {
-            if (!$row->entries()->has($this->arrayEntryName)) {
-                throw new RuntimeException("\"{$this->arrayEntryName}\" not found");
-            }
+        /**
+         * @psalm-var pure-callable(Row) : Row $rowsMap
+         */
+        $rowsMap = function (Row $row) : Row {
+            $arrayEntry = $row->entries()->get($this->arrayEntryName);
 
-            if (!$row->entries()->get($this->arrayEntryName) instanceof Row\Entry\ArrayEntry) {
+            if (!$arrayEntry instanceof Row\Entry\ArrayEntry) {
                 throw new RuntimeException("\"{$this->arrayEntryName}\" is not ArrayEntry");
             }
 
@@ -78,7 +74,7 @@ final class ArrayUnpackTransformer implements Transformer
              * @var int|string $key
              * @var mixed $value
              */
-            foreach ($row->valueOf($this->arrayEntryName) as $key => $value) {
+            foreach ($arrayEntry->value() as $key => $value) {
                 $entryName = (string) $key;
 
                 if (\in_array($entryName, $this->skipEntryNames, true)) {
@@ -97,6 +93,8 @@ final class ArrayUnpackTransformer implements Transformer
             }
 
             return $row;
-        });
+        };
+
+        return $rows->map($rowsMap);
     }
 }
