@@ -133,9 +133,6 @@ final class JsonEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self && (new ArrayComparison())->equals($this->value, $entry->value);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function map(callable $mapper) : Entry
     {
         return self::fromJsonString($this->name, $mapper($this->value()));

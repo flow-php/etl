@@ -58,11 +58,6 @@ final class ObjectEntry implements Entry
             && \serialize($this->__serialize()['value']) === \serialize($entry->__serialize()['value']);
     }
 
-    /**
-     * @psalm-suppress MixedArgument
-     *
-     * @throws InvalidArgumentException
-     */
     public function map(callable $mapper) : Entry
     {
         return new self($this->name, $mapper($this->value()));

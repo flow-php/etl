@@ -221,7 +221,7 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
-     * @param string $offset
+     * @param array-key $offset
      *
      * @throws InvalidArgumentException
      *
@@ -229,7 +229,6 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
      */
     public function offsetExists($offset) : bool
     {
-        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_string($offset)) {
             throw new InvalidArgumentException('Entries accepts only string offsets');
         }
@@ -238,7 +237,7 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
-     * @param string $offset
+     * @param array-key $offset
      *
      * @throws InvalidArgumentException
      *
@@ -246,6 +245,10 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
      */
     public function offsetGet($offset) : Entry
     {
+        if (!\is_string($offset)) {
+            throw new InvalidArgumentException('Entries accepts only string offsets');
+        }
+
         if ($this->offsetExists($offset)) {
             return $this->get($offset);
         }
@@ -259,7 +262,7 @@ final class Entries implements \ArrayAccess, \Countable, \IteratorAggregate, Ser
     }
 
     /**
-     * @param string $offset
+     * @param array-key $offset
      *
      * @throws InvalidArgumentException
      *

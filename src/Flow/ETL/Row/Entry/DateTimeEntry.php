@@ -56,11 +56,6 @@ final class DateTimeEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self && $this->value() == $entry->value();
     }
 
-    /**
-     * @psalm-suppress MixedArgument
-     *
-     * @throws InvalidArgumentException
-     */
     public function map(callable $mapper) : Entry
     {
         return new self($this->name, $mapper($this->value));

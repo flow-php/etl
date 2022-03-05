@@ -74,11 +74,6 @@ final class FloatEntry implements Entry
             && \bccomp((string) $this->value(), (string) $entry->value(), $this->precision) === 0;
     }
 
-    /**
-     * @psalm-suppress MixedArgument
-     *
-     * @throws InvalidArgumentException
-     */
     public function map(callable $mapper) : Entry
     {
         return new self($this->name, $mapper($this->value()));

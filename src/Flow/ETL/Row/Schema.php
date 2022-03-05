@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Flow\ETL\Row;
 
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Row;
 use Flow\ETL\Row\Schema\Definition;
 use Flow\Serializer\Serializable;
 
@@ -75,30 +74,5 @@ final class Schema implements \Countable, Serializable
         }
 
         return $this->definitions[$entry];
-    }
-
-    public function isValid(Row $row) : bool
-    {
-        if (\count($this->definitions) !== $row->entries()->count()) {
-            return false;
-        }
-
-        foreach ($row->entries()->all() as $entry) {
-            $isValid = false;
-
-            foreach ($this->definitions as $definition) {
-                if ($definition->matches($entry)) {
-                    $isValid = true;
-
-                    break;
-                }
-            }
-
-            if (!$isValid) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

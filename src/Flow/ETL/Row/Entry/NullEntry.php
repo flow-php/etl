@@ -52,11 +52,6 @@ final class NullEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self;
     }
 
-    /**
-     * @psalm-suppress MixedArgument
-     *
-     * @throws InvalidArgumentException
-     */
     public function map(callable $mapper) : Entry
     {
         return new self($this->name);
