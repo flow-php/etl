@@ -44,10 +44,7 @@ final class GroupToArrayTransformer implements Transformer
         /** @var array<array-key, array<mixed>> $entries */
         $entries = [];
 
-        /**
-         * @psalm-var pure-callable(Row $row) : void $iterator
-         */
-        $iterator = function (Row $row) use (&$entries) : void {
+        foreach ($rows as $row) {
             /** @var array<array-key, array<mixed>> $entries */
             $groupValue = (string) $row->valueOf($this->groupByEntry);
 
@@ -56,10 +53,7 @@ final class GroupToArrayTransformer implements Transformer
             }
 
             $entries[$groupValue][] = $row->toArray();
-        };
-
-        /** @psalm-suppress UnusedMethodCall */
-        $rows->each($iterator);
+        }
 
         $rows = new Rows();
 

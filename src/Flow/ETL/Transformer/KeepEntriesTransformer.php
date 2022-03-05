@@ -39,12 +39,14 @@ final class KeepEntriesTransformer implements Transformer
 
     public function transform(Rows $rows) : Rows
     {
-        /** @psalm-suppress InvalidArgument */
-        return $rows->map(function (Row $row) : Row {
+        /** @psalm-var pure-callable(Row) : Row $transformer */
+        $transformer = function (Row $row) : Row {
             $allEntries = $row->entries()->map(fn (Entry $entry) : string => $entry->name());
             $removeEntries = \array_diff($allEntries, $this->names);
 
             return $row->remove(...$removeEntries);
-        });
+        };
+
+        return $rows->map($transformer);
     }
 }

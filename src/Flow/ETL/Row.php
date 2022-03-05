@@ -64,6 +64,8 @@ final class Row implements Serializable
     }
 
     /**
+     * @psalm-param pure-callable(Entry) : bool $callable
+     *
      * @param callable(Entry) : bool $callable
      */
     public function filter(callable $callable) : self

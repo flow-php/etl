@@ -40,18 +40,13 @@ final class ObjectToArrayTransformer implements Transformer
         $this->hydrator = $data['hydrator'];
     }
 
-    /**
-     * @psalm-suppress InvalidArgument
-     * @psalm-suppress MixedArgument
-     */
     public function transform(Rows $rows) : Rows
     {
-        return $rows->map(function (Row $row) : Row {
-            if (!$row->entries()->has($this->objectEntryName)) {
-                throw new RuntimeException("\"{$this->objectEntryName}\" not found");
-            }
+        /** @psalm-var pure-callable(Row) : Row $transformer */
+        $transformer = function (Row $row) : Row {
+            $entry = $row->entries()->get($this->objectEntryName);
 
-            if (!$row->entries()->get($this->objectEntryName) instanceof Row\Entry\ObjectEntry) {
+            if (!$entry instanceof Row\Entry\ObjectEntry) {
                 throw new RuntimeException("\"{$this->objectEntryName}\" is not ObjectEntry");
             }
 
@@ -61,12 +56,14 @@ final class ObjectToArrayTransformer implements Transformer
                     new Row\Entry\ArrayEntry(
                         $this->objectEntryName,
                         $this->hydrator->extract(
-                            $row->valueOf($this->objectEntryName)
+                            $entry->value()
                         )
                     )
                 );
 
             return new Row($entries);
-        });
+        };
+
+        return $rows->map($transformer);
     }
 }

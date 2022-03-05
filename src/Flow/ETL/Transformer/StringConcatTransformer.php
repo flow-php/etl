@@ -57,7 +57,9 @@ final class StringConcatTransformer implements Transformer
          * @psalm-var pure-callable(Row $row) : Row $transformer
          */
         $transformer = function (Row $row) : Row {
-            $entries = $row->filter(fn (Row\Entry $entry) : bool => \in_array($entry->name(), $this->stringEntryNames, true) && $entry instanceof Row\Entry\StringEntry)->entries();
+            /** @psalm-var pure-callable(Row\Entry) : bool $filter */
+            $filter = fn (Row\Entry $entry) : bool => \in_array($entry->name(), $this->stringEntryNames, true) && $entry instanceof Row\Entry\StringEntry;
+            $entries = $row->filter($filter)->entries();
             /** @var array<string> $values */
             $values = [];
 
