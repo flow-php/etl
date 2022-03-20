@@ -1021,15 +1021,15 @@ ASCIITABLE,
     {
         $rows = ETL::process(
             new Rows(
-                    Row::create(Entry::integer('id', 1), Entry::string('country', 'PL'), Entry::integer('age', 20)),
-                    Row::create(Entry::integer('id', 2), Entry::string('country', 'PL'), Entry::integer('age', 20)),
-                    Row::create(Entry::integer('id', 3), Entry::string('country', 'PL'), Entry::integer('age', 25)),
-                    Row::create(Entry::integer('id', 4), Entry::string('country', 'PL'), Entry::integer('age', 30)),
-                    Row::create(Entry::integer('id', 5), Entry::string('country', 'US'), Entry::integer('age', 40)),
-                    Row::create(Entry::integer('id', 6), Entry::string('country', 'US'), Entry::integer('age', 40)),
-                    Row::create(Entry::integer('id', 7), Entry::string('country', 'US'), Entry::integer('age', 45)),
-                    Row::create(Entry::integer('id', 9), Entry::string('country', 'US'), Entry::integer('age', 50)),
-                )
+                Row::create(Entry::integer('id', 1), Entry::string('country', 'PL'), Entry::integer('age', 20)),
+                Row::create(Entry::integer('id', 2), Entry::string('country', 'PL'), Entry::integer('age', 20)),
+                Row::create(Entry::integer('id', 3), Entry::string('country', 'PL'), Entry::integer('age', 25)),
+                Row::create(Entry::integer('id', 4), Entry::string('country', 'PL'), Entry::integer('age', 30)),
+                Row::create(Entry::integer('id', 5), Entry::string('country', 'US'), Entry::integer('age', 40)),
+                Row::create(Entry::integer('id', 6), Entry::string('country', 'US'), Entry::integer('age', 40)),
+                Row::create(Entry::integer('id', 7), Entry::string('country', 'US'), Entry::integer('age', 45)),
+                Row::create(Entry::integer('id', 9), Entry::string('country', 'US'), Entry::integer('age', 50)),
+            )
         )
             ->aggregate(Aggregation::avg('age'))
             ->rows(Transform::rename('age_avg', 'average_age'))
