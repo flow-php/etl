@@ -27,6 +27,7 @@ final class Average implements Aggregator
     public function aggregate(Row $row) : void
     {
         try {
+            /** @var mixed $value */
             $value = $row->valueOf($this->entry);
 
             if (\is_numeric($value)) {

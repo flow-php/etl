@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flow\ETL;
 
 use Flow\ETL\Exception\InvalidArgumentException;
+use Flow\ETL\Exception\RuntimeException;
 use Flow\ETL\GroupBy\Aggregation;
 use Flow\ETL\GroupBy\Aggregator;
 use Flow\ETL\Row\Entries;
@@ -23,7 +24,7 @@ final class GroupBy
     private array $entries;
 
     /**
-     * @var array<string, array{?value: mixed, aggregators: array<array-key, Aggregator>}>
+     * @var array<string, array{values?: array<string, mixed>, aggregators: array<Aggregator>}>
      */
     private array $groups;
 
@@ -45,13 +46,20 @@ final class GroupBy
 
     public function group(Rows $rows) : void
     {
-        /** @var Row $row */
         foreach ($rows as $row) {
+            /** @var array<string, null|mixed> $values */
             $values = [];
 
             foreach ($this->entries as $entryName) {
                 try {
-                    $values[$entryName] = $row->valueOf($entryName);
+                    $value = $row->valueOf($entryName);
+
+                    if (!\is_scalar($value) && null !== $value) {
+                        throw new RuntimeException('Grouping by non scalar values is not supported, given: ' . \gettype($value));
+                    }
+
+                    /** @psalm-suppress MixedAssignment */
+                    $values[$entryName] = $value;
                 } catch (InvalidArgumentException $e) {
                     $values[$entryName] = null;
                 }
@@ -84,6 +92,7 @@ final class GroupBy
             $entries = new Entries();
 
             if (\array_key_exists('values', $group)) {
+                /** @var mixed $value */
                 foreach ($group['values'] as $entry => $value) {
                     $entries = $entries->add((new NativeEntryFactory)->create($entry, $value));
                 }
@@ -94,7 +103,7 @@ final class GroupBy
             }
 
             if (\count($entries)) {
-                $rows = $rows->add(Row::create(...$entries));
+                $rows = $rows->add(new Row($entries));
             }
         }
 
@@ -102,7 +111,7 @@ final class GroupBy
     }
 
     /**
-     * @param array<mixed> $values
+     * @param array<array-key, mixed> $values
      *
      * @return string
      */
@@ -111,10 +120,11 @@ final class GroupBy
         /** @var array<string> $stringValues */
         $stringValues = [];
 
+        /** @var mixed $value */
         foreach ($values as $value) {
             if ($value === null) {
                 $stringValues[] =\hash('sha256', 'null');
-            } else {
+            } elseif (\is_scalar($value)) {
                 $stringValues[] = (string) $value;
             }
         }

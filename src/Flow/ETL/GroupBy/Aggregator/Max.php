@@ -13,21 +13,28 @@ final class Max implements Aggregator
 {
     private string $entry;
 
-    private float $max;
+    private ?float $max;
 
     public function __construct(string $entry)
     {
         $this->entry = $entry;
-        $this->max = 0;
+        $this->max = null;
     }
 
     public function aggregate(Row $row) : void
     {
         try {
+            /** @var mixed $value */
             $value = $row->valueOf($this->entry);
 
-            if (\is_numeric($value)) {
-                $this->max = \max($this->max, (float) $value);
+            if ($this->max === null) {
+                if (\is_numeric($value)) {
+                    $this->max = (float) $value;
+                }
+            } else {
+                if (\is_numeric($value)) {
+                    $this->max = \max($this->max, (float) $value);
+                }
             }
         } catch (InvalidArgumentException $e) {
             // do nothing?
@@ -36,6 +43,10 @@ final class Max implements Aggregator
 
     public function result() : Entry
     {
+        if ($this->max === null) {
+            return \Flow\ETL\DSL\Entry::null($this->entry . '_max');
+        }
+
         $resultInt = (int) $this->max;
 
         if ($this->max - $resultInt === 0.0) {

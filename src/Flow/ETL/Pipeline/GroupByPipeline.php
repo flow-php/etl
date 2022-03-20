@@ -8,7 +8,6 @@ use Flow\ETL\ErrorHandler;
 use Flow\ETL\Extractor;
 use Flow\ETL\GroupBy;
 use Flow\ETL\Pipeline;
-use Flow\ETL\Rows;
 
 final class GroupByPipeline implements Pipeline
 {
@@ -39,7 +38,6 @@ final class GroupByPipeline implements Pipeline
 
     public function process(?int $limit = null, callable $callback = null) : \Generator
     {
-        /** @var Rows $nextRows */
         foreach ($this->pipeline->process($limit) as $nextRows) {
             $this->groupBy->group($nextRows);
         }

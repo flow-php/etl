@@ -24,10 +24,13 @@ final class Min implements Aggregator
     public function aggregate(Row $row) : void
     {
         try {
+            /** @var mixed $value */
             $value = $row->valueOf($this->entry);
 
             if ($this->min === null) {
-                $this->min = (float) $value;
+                if (\is_numeric($value)) {
+                    $this->min = (float) $value;
+                }
             } else {
                 if (\is_numeric($value)) {
                     $this->min = \min($this->min, (float) $value);
@@ -42,10 +45,14 @@ final class Min implements Aggregator
     {
         $resultInt = (int) $this->min;
 
+        if ($this->min === null) {
+            return \Flow\ETL\DSL\Entry::null($this->entry . '_min');
+        }
+
         if ($this->min - $resultInt === 0.0) {
             return \Flow\ETL\DSL\Entry::integer($this->entry . '_min', (int) $this->min);
         }
 
-        return \Flow\ETL\DSL\Entry::float($this->entry . '_min', (float) $this->min);
+        return \Flow\ETL\DSL\Entry::float($this->entry . '_min', $this->min);
     }
 }

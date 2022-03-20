@@ -24,6 +24,7 @@ final class Sum implements Aggregator
     public function aggregate(Row $row) : void
     {
         try {
+            /** @var mixed $value */
             $value = $row->valueOf($this->entry);
 
             if (\is_numeric($value)) {
@@ -42,6 +43,6 @@ final class Sum implements Aggregator
             return \Flow\ETL\DSL\Entry::integer($this->entry . '_sum', (int) $this->sum);
         }
 
-        return \Flow\ETL\DSL\Entry::float($this->entry . '_min', (float) $this->sum);
+        return \Flow\ETL\DSL\Entry::float($this->entry . '_min', $this->sum);
     }
 }
