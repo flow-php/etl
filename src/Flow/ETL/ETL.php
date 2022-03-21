@@ -14,6 +14,7 @@ use Flow\ETL\Loader\SchemaValidationLoader;
 use Flow\ETL\Pipeline\CollectingPipeline;
 use Flow\ETL\Pipeline\GroupByPipeline;
 use Flow\ETL\Pipeline\ParallelizingPipeline;
+use Flow\ETL\Pipeline\VoidPipeline;
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Sort;
 use Flow\ETL\Transformer\CallbackRowTransformer;
@@ -49,7 +50,8 @@ final class ETL
 
     /**
      * @param Extractor $extractor
-     * @param Config|null $configuration
+     * @param null|Config $configuration
+     *
      * @return self
      */
     public static function extract(Extractor $extractor, Config $configuration = null) : self
@@ -62,7 +64,8 @@ final class ETL
 
     /**
      * @param Rows $rows
-     * @param Config|null $configuration
+     * @param null|Config $configuration
+     *
      * @return self
      */
     public static function process(Rows $rows, Config $configuration = null) : self
@@ -387,6 +390,21 @@ final class ETL
     public function validate(Schema $schema, SchemaValidator $validator = null) : self
     {
         $this->pipeline->add(new SchemaValidationLoader($schema, $validator ?? new Schema\StrictValidator()));
+
+        return $this;
+    }
+
+    /**
+     * This method is useful mostly in development when
+     * you want to pause processing at certain moment without
+     * removing code. All operations will get processed up to this point,
+     * from here no rows are passed forward.
+     *
+     * @return self
+     */
+    public function void() : self
+    {
+        $this->pipeline = new VoidPipeline($this->pipeline);
 
         return $this;
     }
