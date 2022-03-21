@@ -34,6 +34,9 @@ final class VoidPipeline implements Pipeline
     {
     }
 
+    /**
+     * @psalm-suppress UnusedForeachValue
+     */
     public function process(?int $limit = null) : \Generator
     {
         foreach ($this->pipeline->process($limit) as $rows) {
