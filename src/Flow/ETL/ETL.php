@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL;
 
+use Flow\ETL\DSL\Transform;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Extractor\CacheExtractor;
 use Flow\ETL\Extractor\ProcessExtractor;
@@ -46,6 +47,11 @@ final class ETL
         $this->groupBy = null;
     }
 
+    /**
+     * @param Extractor $extractor
+     * @param Config|null $configuration
+     * @return self
+     */
     public static function extract(Extractor $extractor, Config $configuration = null) : self
     {
         return new self(
@@ -54,6 +60,11 @@ final class ETL
         );
     }
 
+    /**
+     * @param Rows $rows
+     * @param Config|null $configuration
+     * @return self
+     */
     public static function process(Rows $rows, Config $configuration = null) : self
     {
         return new self(
@@ -96,6 +107,16 @@ final class ETL
         return $this;
     }
 
+    /**
+     * Start processing rows up to this moment and put each instance of Rows
+     * into previously defined cache.
+     * Cache type can be set through ConfigBuilder.
+     * By default everything is cached in system tmp dir.
+     *
+     * @param null|string $id
+     *
+     * @return self
+     */
     public function cache(string $id = null) : self
     {
         $this->cache->clear($id = $id ?? $this->id);
@@ -114,6 +135,8 @@ final class ETL
     /**
      * Keep extracting rows and passing them through all transformers up to this point.
      * From here all transformed Rows are collected and merged together before pushing them forward.
+     *
+     * @return self
      */
     public function collect() : self
     {
@@ -152,13 +175,20 @@ final class ETL
         return $this;
     }
 
-    public function fetch(int $limit = 0) : Rows
+    /**
+     * @param ?int $limit
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return Rows
+     */
+    public function fetch(?int $limit = null) : Rows
     {
-        if ($limit < 0) {
-            throw new InvalidArgumentException("Fetch limit can't be lower than 0");
-        }
+        if ($limit !== null) {
+            if ($limit <= 0) {
+                throw new InvalidArgumentException("Fetch limit can't be lower or equal to 0");
+            }
 
-        if ($limit !== 0) {
             $this->limit = $limit;
         }
 
@@ -189,8 +219,6 @@ final class ETL
     /**
      * @param string ...$entries
      *
-     * @throws InvalidArgumentException
-     *
      * @return self
      */
     public function groupBy(string ...$entries) : self
@@ -201,6 +229,13 @@ final class ETL
         return $this;
     }
 
+    /**
+     * @param int $limit
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return self
+     */
     public function limit(int $limit) : self
     {
         if ($limit <= 0) {
@@ -212,6 +247,11 @@ final class ETL
         return $this;
     }
 
+    /**
+     * @param Loader $loader
+     *
+     * @return self
+     */
     public function load(Loader $loader) : self
     {
         $this->pipeline->add($loader);
@@ -232,6 +272,11 @@ final class ETL
         return $this;
     }
 
+    /**
+     * @param ErrorHandler $handler
+     *
+     * @return self
+     */
     public function onError(ErrorHandler $handler) : self
     {
         $this->pipeline->onError($handler);
@@ -252,6 +297,19 @@ final class ETL
     public function parallelize(int $chunks) : self
     {
         $this->pipeline = new ParallelizingPipeline($this->pipeline, $chunks);
+
+        return $this;
+    }
+
+    /**
+     * @param string $from
+     * @param string $to
+     *
+     * @return self
+     */
+    public function rename(string $from, string $to) : self
+    {
+        $this->pipeline->add(Transform::rename($from, $to));
 
         return $this;
     }
@@ -294,6 +352,11 @@ final class ETL
         return $this;
     }
 
+    /**
+     * @param Sort ...$entries
+     *
+     * @return self
+     */
     public function sortBy(Sort ...$entries) : self
     {
         $this->cache($this->id);
@@ -303,6 +366,11 @@ final class ETL
         return $this;
     }
 
+    /**
+     * @param Transformer $transformer
+     *
+     * @return self
+     */
     public function transform(Transformer $transformer) : self
     {
         $this->pipeline->add($transformer);

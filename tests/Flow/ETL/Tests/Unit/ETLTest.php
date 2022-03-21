@@ -763,7 +763,7 @@ ASCIITABLE,
     public function test_fetch_with_limit_below_0() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Fetch limit can't be lower than 0");
+        $this->expectExceptionMessage("Fetch limit can't be lower or equal to 0");
 
         ETL::process(new Rows())
             ->fetch(-1);
@@ -967,6 +967,28 @@ ASCIITABLE,
             new Rows(
                 Row::create(Entry::string('country', 'PL')),
                 Row::create(Entry::string('country', 'US')),
+            ),
+            $rows
+        );
+    }
+
+    public function test_rename() : void
+    {
+        $rows = ETL::process(
+            new Rows(
+                Row::create(Entry::integer('id', 1), Entry::string('name', 'foo'), Entry::boolean('active', true)),
+                Row::create(Entry::integer('id', 2), Entry::null('name'), Entry::boolean('active', false)),
+                Row::create(Entry::integer('id', 2), Entry::string('name', 'bar'), Entry::boolean('active', false)),
+            )
+        )
+            ->rename('name', 'new_name')
+            ->fetch();
+
+        $this->assertEquals(
+            new Rows(
+                Row::create(Entry::integer('id', 1), Entry::string('new_name', 'foo'), Entry::boolean('active', true)),
+                Row::create(Entry::integer('id', 2), Entry::null('new_name'), Entry::boolean('active', false)),
+                Row::create(Entry::integer('id', 2), Entry::string('new_name', 'bar'), Entry::boolean('active', false)),
             ),
             $rows
         );
