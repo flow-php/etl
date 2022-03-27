@@ -49,10 +49,10 @@ final class JoinRowsTransformerTest extends TestCase
         );
         $right = (new Flow())->process(
             new Rows(
-            Row::create(Entry::string('code', 'PL'), Entry::string('name', 'Poland')),
-            Row::create(Entry::string('code', 'US'), Entry::string('name', 'United States')),
-            Row::create(Entry::string('code', 'GB'), Entry::string('name', 'Great Britain')),
-        )
+                Row::create(Entry::string('code', 'PL'), Entry::string('name', 'Poland')),
+                Row::create(Entry::string('code', 'US'), Entry::string('name', 'United States')),
+                Row::create(Entry::string('code', 'GB'), Entry::string('name', 'Great Britain')),
+            )
         );
 
         $transformer = JoinRowsTransformer::left($right, Condition::on(['country' => 'code']));
