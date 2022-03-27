@@ -556,7 +556,7 @@ $names = (new Flow())->process(
 
 $countriesWithNames = (new Flow())
     ->process($countries)
-    ->join($countries, Condition::on(['country' => 'code']), $type = "left")
+    ->join($names, Condition::on(['country' => 'code']), $type = "left")
     ->fetch();
 ```
 
