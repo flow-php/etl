@@ -309,6 +309,17 @@ class Transform
         return new Transformer\GroupToArrayTransformer($groupByEntry, $newEntryName);
     }
 
+    final public static function hash(array $entries, string $algorithm = null, string $newEntryName = 'hash') : Transformer
+    {
+        return new Transformer\HashTransformer(
+            $entries,
+            $algorithm === null
+                ? (PHP_VERSION_ID >= 80100 ? 'murmur3f' : 'sha256')
+                : $algorithm,
+            $newEntryName
+        );
+    }
+
     final public static function keep(string ...$entries) : Transformer
     {
         return new KeepEntriesTransformer(...$entries);
@@ -317,6 +328,15 @@ class Transform
     final public static function multiply(string $leftEntry, string $rightEntry) : Transformer
     {
         return MathOperationTransformer::multiply($leftEntry, $rightEntry);
+    }
+
+    final public static function murmur3(array $entries, string $newEntryName = 'hash') : Transformer
+    {
+        return new Transformer\HashTransformer(
+            $entries,
+            'murmur3f',
+            $newEntryName
+        );
     }
 
     /**
@@ -343,6 +363,15 @@ class Transform
     final public static function rename(string $from, string $to) : Transformer
     {
         return new RenameEntriesTransformer(new EntryRename($from, $to));
+    }
+
+    final public static function sha256(array $entries, string $newEntryName = 'hash') : Transformer
+    {
+        return new Transformer\HashTransformer(
+            $entries,
+            'sha256',
+            $newEntryName
+        );
     }
 
     /**
