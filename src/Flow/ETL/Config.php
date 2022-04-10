@@ -18,8 +18,7 @@ final class Config
         private readonly ExternalSort $externalSort,
         private readonly Pipeline $pipeline,
         private readonly Serializer $serializer
-    )
-    {
+    ) {
     }
 
     public static function builder() : ConfigBuilder
