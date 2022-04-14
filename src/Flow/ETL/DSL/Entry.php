@@ -144,6 +144,18 @@ class Entry
      *
      * @throws \Flow\ETL\Exception\InvalidArgumentException
      *
+     * @return RowEntry\EnumEntry
+     */
+    final public static function enum(string $name, \UnitEnum $enum) : RowEntry
+    {
+        return new RowEntry\EnumEntry($name, $enum);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
      * @return RowEntry\StringEntry
      */
     final public static function string(string $name, string $value) : RowEntry
