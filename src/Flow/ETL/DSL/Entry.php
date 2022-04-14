@@ -72,6 +72,18 @@ class Entry
      *
      * @throws \Flow\ETL\Exception\InvalidArgumentException
      *
+     * @return RowEntry\EnumEntry
+     */
+    final public static function enum(string $name, \UnitEnum $enum) : RowEntry
+    {
+        return new RowEntry\EnumEntry($name, $enum);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
      * @return RowEntry\FloatEntry
      */
     final public static function float(string $name, float $value) : RowEntry
@@ -137,18 +149,6 @@ class Entry
     final public static function object(string $name, object $object) : RowEntry
     {
         return new RowEntry\ObjectEntry($name, $object);
-    }
-
-    /**
-     * @psalm-pure
-     *
-     * @throws \Flow\ETL\Exception\InvalidArgumentException
-     *
-     * @return RowEntry\EnumEntry
-     */
-    final public static function enum(string $name, \UnitEnum $enum) : RowEntry
-    {
-        return new RowEntry\EnumEntry($name, $enum);
     }
 
     /**

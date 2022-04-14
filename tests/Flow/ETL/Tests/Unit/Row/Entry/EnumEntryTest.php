@@ -52,6 +52,14 @@ final class EnumEntryTest extends TestCase
         $this->assertSame('enum', $enum->name());
     }
 
+    public function test_definition() : void
+    {
+        $this->assertEquals(
+            Definition::enum('enum'),
+            (new EnumEntry('enum', BackedStringEnum::one))->definition()
+        );
+    }
+
     public function test_is_equal() : void
     {
         $this->assertTrue(
@@ -65,24 +73,16 @@ final class EnumEntryTest extends TestCase
     public function test_to_string() : void
     {
         $this->assertSame(
-            "one",
+            'one',
             (new EnumEntry('enum', BasicEnum::one))->toString()
         );
         $this->assertSame(
-            "one",
+            'one',
             (new EnumEntry('enum', BackedStringEnum::one))->toString()
         );
         $this->assertSame(
-            "one",
+            'one',
             (new EnumEntry('enum', BackedIntEnum::one))->toString()
-        );
-    }
-
-    public function test_definition() : void
-    {
-        $this->assertEquals(
-            Definition::enum('enum'),
-            (new EnumEntry('enum', BackedStringEnum::one))->definition()
         );
     }
 }

@@ -399,7 +399,7 @@ final class EntriesTest extends TestCase
                     new IntegerEntry('item-id', 3),
                     new StringEntry('name', 'three'),
                 ],
-                'enum' => BasicEnum::three
+                'enum' => BasicEnum::three,
             ],
             $entries->toArray()
         );
