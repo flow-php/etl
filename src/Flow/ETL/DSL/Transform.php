@@ -114,9 +114,9 @@ class Transform
         return new Transformer\StaticEntryTransformer(DSLEntry::string($name, $value));
     }
 
-    final public static function add_value(string $left_entry, int|float $value, string $new_entry_name = 'add') : Transformer
+    final public static function add_value(string $left_entry, int|float $value, string $new_entry_name = null) : Transformer
     {
-        return MathValueOperationTransformer::add($left_entry, $value, $new_entry_name);
+        return MathValueOperationTransformer::add($left_entry, $value, $new_entry_name ?? $left_entry);
     }
 
     /**
@@ -354,7 +354,7 @@ class Transform
         return MathValueOperationTransformer::modulo($left_entry, $value, $new_entry_name ?? $left_entry);
     }
 
-    final public static function multiply(string $left_entry, string $right_entry, string $new_entry_name) : Transformer
+    final public static function multiply(string $left_entry, string $right_entry, string $new_entry_name = null) : Transformer
     {
         return MathOperationTransformer::multiply($left_entry, $right_entry, $new_entry_name ?? $left_entry);
     }
