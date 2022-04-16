@@ -550,4 +550,15 @@ class Transform
     {
         return new Transformer\CallUserFunctionTransformer($entries, $callback, $extra_arguments, $entry_factory);
     }
+
+    final public static function prefix(string $entry, string $prefix) : Transformer
+    {
+        return new Transformer\StringFormatTransformer($entry, \str_replace("%", "%%", $prefix) . "%s");
+    }
+
+
+    final public static function suffix(string $entry, string $suffix) : Transformer
+    {
+        return new Transformer\StringFormatTransformer($entry, "%s" . \str_replace("%", "%%", $suffix));
+    }
 }
