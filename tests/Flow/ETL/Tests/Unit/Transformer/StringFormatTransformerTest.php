@@ -12,6 +12,26 @@ use PHPUnit\Framework\TestCase;
 
 final class StringFormatTransformerTest extends TestCase
 {
+    public function test_prefix() : void
+    {
+        $transformer = Transform::prefix('string', 'prefix-');
+
+        $rows = $transformer->transform(new Rows(
+            Row::create(Entry::string('string', '1')),
+            Row::create(Entry::string('string', '2')),
+            Row::create(Entry::string('string', '3')),
+        ));
+
+        $this->assertSame(
+            [
+                ['string' => 'prefix-1'],
+                ['string' => 'prefix-2'],
+                ['string' => 'prefix-3'],
+            ],
+            $rows->toArray()
+        );
+    }
+
     public function test_string_format_transformer() : void
     {
         $transformer = Transform::string_format('id', 'https://examlpe.com/resource/%d');
@@ -32,29 +52,9 @@ final class StringFormatTransformerTest extends TestCase
         );
     }
 
-    public function test_prefix() : void
-    {
-        $transformer = Transform::prefix("string", "prefix-");
-
-        $rows = $transformer->transform(new Rows(
-            Row::create(Entry::string('string', '1')),
-            Row::create(Entry::string('string', '2')),
-            Row::create(Entry::string('string', '3')),
-        ));
-
-        $this->assertSame(
-            [
-                ['string' => 'prefix-1'],
-                ['string' => 'prefix-2'],
-                ['string' => 'prefix-3'],
-            ],
-            $rows->toArray()
-        );
-    }
-
     public function test_suffix() : void
     {
-        $transformer = Transform::suffix("percentage", "%");
+        $transformer = Transform::suffix('percentage', '%');
 
         $rows = $transformer->transform(new Rows(
             Row::create(Entry::integer('percentage', 1)),
