@@ -7,6 +7,7 @@ namespace Flow\ETL\Row\Entry\TypedCollection;
 enum Type
 {
     case boolean;
+    case dateTime;
     case float;
     case integer;
     case string;
@@ -20,6 +21,16 @@ enum Type
      */
     public function isValid(array $collection) : bool
     {
+        if ($this === self::dateTime) {
+            foreach ($collection as $item) {
+                if (!$item instanceof \DateTimeInterface) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         /** @psalm-suppress ImpureVariable */
         $types = $this->types($collection);
 

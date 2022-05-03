@@ -29,6 +29,14 @@ final class ListEntryTest extends TestCase
         new ListEntry('list', Type::boolean, ['string', false]);
     }
 
+    public function test_creating_datetime_list_from_wrong_value_types() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected list of dateTime got: string, object');
+
+        new ListEntry('list', Type::dateTime, ['string', new \DateTimeImmutable()]);
+    }
+
     public function test_creating_float_list_from_wrong_value_types() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -98,6 +106,14 @@ final class ListEntryTest extends TestCase
         $this->assertEquals(
             '["one","two","three"]',
             Entry::list_of_string('strings', ['one', 'two', 'three'])->toString()
+        );
+    }
+
+    public function test_to_string_date_time() : void
+    {
+        $this->assertEquals(
+            '[{"date":"2021-01-01 00:00:00.000000","timezone_type":3,"timezone":"UTC"}]',
+            Entry::list_of_datetime('strings', [new \DateTimeImmutable('2021-01-01 00:00:00')])->toString()
         );
     }
 

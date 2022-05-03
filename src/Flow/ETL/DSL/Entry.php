@@ -148,6 +148,20 @@ class Entry
     /**
      * @psalm-pure
      *
+     * @param array<\DateTimeInterface> $value
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
+     * @return RowEntry\ListEntry
+     */
+    final public static function list_of_datetime(string $name, array $value) : RowEntry
+    {
+        return new RowEntry\ListEntry($name, Type::dateTime, $value);
+    }
+
+    /**
+     * @psalm-pure
+     *
      * @param array<float> $value
      *
      * @throws \Flow\ETL\Exception\InvalidArgumentException
