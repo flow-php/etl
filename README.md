@@ -135,6 +135,7 @@ All entries are available through [DSL\Entry](src/Flow/ETL/DSL/Entry.php)
 * [float](src/Flow/ETL/Row/Entry/FloatEntry.php)
 * [integer](src/Flow/ETL/Row/Entry/IntegerEntry.php)
 * [json](src/Flow/ETL/Row/Entry/JsonEntry.php)  
+* [list](src/Flow/ETL/Row/Entry/ListEntry.php) - strongly typed array
 * [null](src/Flow/ETL/Row/Entry/NullEntry.php)
 * [object](src/Flow/ETL/Row/Entry/ObjectEntry.php)
 * [string](src/Flow/ETL/Row/Entry/StringEntry.php)
@@ -210,41 +211,6 @@ Adapters might also define some custom transformers.
     * [callback row](src/Flow/ETL/Transformer/CallbackRowTransformer.php) - [tests](tests/Flow/ETL/Tests/Unit/Transformer/CallbackRowTransformerTest.php)
 
 Some transformers come with complex configuration, please find more details [here](/docs/complex_transformers.md).
-
-### Asynchronous Processing 
-
-Currently Flow is supporting only local multiprocess asynchronous processing.
-
-In order to process data asynchronously one of the following adapters must be first installed:
-
-* [etl-adapter-amphp](https://github.com/flow-php/etl-adapter-amphp)
-* [etl-adapter-reactphp](https://github.com/flow-php/etl-adapter-reactphp)
-
-Code example: 
-
-```php
-<?php
-(Flow::setUp(Config::builder()))
-    ->read(new CSVExtractor($path = __DIR__ . '/data/dataset.csv', 10_000, 0))
-    ->pipeline(
-        new LocalSocketPipeline(
-            SocketServer::unixDomain(__DIR__ . "/var/run/", $logger),
-            new ChildProcessLauncher(__DIR__ . "/vendor/bin/worker-amp", $logger),
-            $workers = 8
-        )
-    )
-    ->rows(Transform::array_unpack('row'))
-    ->drop('row')
-    ->rows(Transform::to_integer("id"))
-    ->rows(Transform::string_concat(['name', 'last_name'], ' ', 'name'))
-    ->drop('last_name')
-    ->load(new DbalLoader($tableName, $chunkSize = 1000, $dbConnectionParams))
-    ->run();
-```
-
-Following ilustration presents current state and future plans of the asynchronouse processing in flow 
-
-![async](docs/img/processing_modes.png)
 
 ### Serialization
 
@@ -368,6 +334,41 @@ data entries.
 
 **❗ If adapter that you are looking for is not available yet, and you are willing to work on one, feel free to create one as a standalone repository.**
 **Well designed and documented adapters can be pulled into `flow-php` organization that will give them maintenance and security support from the organization.** 
+
+### Asynchronous Processing
+
+Currently Flow is supporting only local multiprocess asynchronous processing.
+
+In order to process data asynchronously one of the following adapters must be first installed:
+
+* [etl-adapter-amphp](https://github.com/flow-php/etl-adapter-amphp)
+* [etl-adapter-reactphp](https://github.com/flow-php/etl-adapter-reactphp)
+
+Code example:
+
+```php
+<?php
+(Flow::setUp(Config::builder()))
+    ->read(new CSVExtractor($path = __DIR__ . '/data/dataset.csv', 10_000, 0))
+    ->pipeline(
+        new LocalSocketPipeline(
+            SocketServer::unixDomain(__DIR__ . "/var/run/", $logger),
+            new ChildProcessLauncher(__DIR__ . "/vendor/bin/worker-amp", $logger),
+            $workers = 8
+        )
+    )
+    ->rows(Transform::array_unpack('row'))
+    ->drop('row')
+    ->rows(Transform::to_integer("id"))
+    ->rows(Transform::string_concat(['name', 'last_name'], ' ', 'name'))
+    ->drop('last_name')
+    ->load(new DbalLoader($tableName, $chunkSize = 1000, $dbConnectionParams))
+    ->run();
+```
+
+Following ilustration presents current state and future plans of the asynchronouse processing in flow
+
+![async](docs/img/processing_modes.png)
 
 ## Process
 
@@ -730,6 +731,7 @@ $flow->read($from)
 
 - [all](src/Flow/ETL/Row/Schema/Constraint/All.php)
 - [any](src/Flow/ETL/Row/Schema/Constraint/Any.php)
+- [collection type](src/Flow/ETL/Row/Schema/Constraint/CollectionType.php)
 - [same as](src/Flow/ETL/Row/Schema/Constraint/SameAs.php)
 - [is instance of](src/Flow/ETL/Row/Schema/Constraint/IsInstanceOf.php)
 

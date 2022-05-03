@@ -6,6 +6,7 @@ namespace Flow\ETL\DSL;
 
 use Flow\ETL\Row\Entries;
 use Flow\ETL\Row\Entry as RowEntry;
+use Flow\ETL\Row\Entry\TypedCollection\Type;
 
 /**
  * @infection-ignore-all
@@ -128,6 +129,62 @@ class Entry
     final public static function json_object(string $name, array $data) : RowEntry
     {
         return RowEntry\JsonEntry::object($name, $data);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param array<bool> $value
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
+     * @return RowEntry\ListEntry
+     */
+    final public static function list_of_boolean(string $name, array $value) : RowEntry
+    {
+        return new RowEntry\ListEntry($name, Type::boolean, $value);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param array<float> $value
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
+     * @return RowEntry\ListEntry
+     */
+    final public static function list_of_float(string $name, array $value) : RowEntry
+    {
+        return new RowEntry\ListEntry($name, Type::float, $value);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param array<int> $value
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
+     * @return RowEntry\ListEntry
+     */
+    final public static function list_of_int(string $name, array $value) : RowEntry
+    {
+        return new RowEntry\ListEntry($name, Type::integer, $value);
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param array<string> $value
+     *
+     * @throws \Flow\ETL\Exception\InvalidArgumentException
+     *
+     * @return RowEntry\ListEntry
+     */
+    final public static function list_of_string(string $name, array $value) : RowEntry
+    {
+        return new RowEntry\ListEntry($name, Type::string, $value);
     }
 
     /**

@@ -14,10 +14,14 @@ use Flow\ETL\Row\Entry\EnumEntry;
 use Flow\ETL\Row\Entry\FloatEntry;
 use Flow\ETL\Row\Entry\IntegerEntry;
 use Flow\ETL\Row\Entry\JsonEntry;
+use Flow\ETL\Row\Entry\ListEntry;
 use Flow\ETL\Row\Entry\NullEntry;
 use Flow\ETL\Row\Entry\ObjectEntry;
 use Flow\ETL\Row\Entry\StringEntry;
 use Flow\ETL\Row\Entry\StructureEntry;
+use Flow\ETL\Row\Entry\TypedCollection\Type;
+use Flow\ETL\Row\Schema\Constraint\All;
+use Flow\ETL\Row\Schema\Constraint\CollectionType;
 use Flow\Serializer\Serializable;
 
 /**
@@ -101,6 +105,21 @@ final class Definition implements Serializable
     public static function json(string $entry, bool $nullable = false, ?Constraint $constraint = null) : self
     {
         return new self($entry, ($nullable) ? [JsonEntry::class, NullEntry::class] : [JsonEntry::class], $constraint);
+    }
+
+    /**
+     * @psalm-pure
+     * @psalm-suppress ImpureMethodCall
+     */
+    public static function list(string $entry, Type $type, bool $nullable = false, ?Constraint $constraint = null) : self
+    {
+        return new self(
+            $entry,
+            ($nullable) ? [ListEntry::class, ListEntry::class] : [ListEntry::class],
+            $constraint
+                ? new All(new CollectionType($type), $constraint)
+                : new CollectionType($type)
+        );
     }
 
     /**
