@@ -21,6 +21,7 @@ enum Type
      */
     public function isValid(array $collection) : bool
     {
+        /** @psalm-suppress ImpureVariable */
         if ($this === self::dateTime) {
             foreach ($collection as $item) {
                 if (!$item instanceof \DateTimeInterface) {
