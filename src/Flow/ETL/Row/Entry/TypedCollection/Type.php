@@ -58,6 +58,7 @@ enum Type
         /** @var array<string> $types */
         $types = [];
 
+        /** @psalm-suppress MixedAssignment */ 
         foreach ($collection as $value) {
             $type = \gettype($value);
 
