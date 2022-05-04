@@ -156,7 +156,7 @@ class Entry
      */
     final public static function list_of_datetime(string $name, array $value) : RowEntry
     {
-        return new RowEntry\ListEntry($name, Type::dateTime, $value);
+        return new RowEntry\ListEntry($name, Type::datetime, $value);
     }
 
     /**

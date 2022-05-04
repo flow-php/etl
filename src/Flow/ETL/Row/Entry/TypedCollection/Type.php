@@ -7,7 +7,7 @@ namespace Flow\ETL\Row\Entry\TypedCollection;
 enum Type
 {
     case boolean;
-    case dateTime;
+    case datetime;
     case float;
     case integer;
     case string;
@@ -22,7 +22,7 @@ enum Type
     public function isValid(array $collection) : bool
     {
         /** @psalm-suppress ImpureVariable */
-        if ($this === self::dateTime) {
+        if ($this === self::datetime) {
             foreach ($collection as $item) {
                 if (!$item instanceof \DateTimeInterface) {
                     return false;
@@ -55,9 +55,23 @@ enum Type
      */
     public function types(array $collection) : array
     {
-        return \array_map(
-            fn (string $value) => $value === 'double' ? 'float' : $value,
-            \array_unique(\array_map('gettype', $collection))
-        );
+        /** @var array<string> $types */
+        $types = [];
+
+        foreach ($collection as $value) {
+            $type = \gettype($value);
+
+            if ($value instanceof \DateTimeInterface) {
+                $type = 'datetime';
+            }
+
+            if ($type === 'double') {
+                $type = 'float';
+            }
+
+            $types[] = $type;
+        }
+
+        return \array_values(\array_unique($types));
     }
 }

@@ -32,9 +32,9 @@ final class ListEntryTest extends TestCase
     public function test_creating_datetime_list_from_wrong_value_types() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected list of dateTime got: string, object');
+        $this->expectExceptionMessage('Expected list of datetime got: string, datetime');
 
-        new ListEntry('list', Type::dateTime, ['string', new \DateTimeImmutable()]);
+        new ListEntry('list', Type::datetime, ['string', new \DateTimeImmutable()]);
     }
 
     public function test_creating_float_list_from_wrong_value_types() : void
