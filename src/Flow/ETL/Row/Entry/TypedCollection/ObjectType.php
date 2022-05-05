@@ -16,6 +16,7 @@ final class ObjectType implements Type
      */
     public function __construct(private readonly string $class)
     {
+        /** @psalm-suppress ImpureFunctionCall */
         if (!\class_exists($class) && !\interface_exists($this->class)) {
             throw new InvalidArgumentException("Class {$class} not found");
         }
