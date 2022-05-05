@@ -33,8 +33,12 @@ final class ListEntry implements Entry, TypedCollection
             throw InvalidArgumentException::because('Entry name cannot be empty');
         }
 
+        if (\count($value) && !\array_is_list($value)) {
+            throw new InvalidArgumentException('Expected list of ' . $type->toString() . ' got array with not sequential integer indexes');
+        }
+
         if (!$type->isValid($value)) {
-            throw new InvalidArgumentException('Expected list of ' . $type->name . ' got: ' . \implode(', ', $type->types($value)));
+            throw new InvalidArgumentException('Expected list of ' . $type->toString() . ' got different types.');
         }
     }
 
@@ -57,7 +61,7 @@ final class ListEntry implements Entry, TypedCollection
 
     public function definition() : Definition
     {
-        return Definition::list($this->name, $this->type, false);
+        return Definition::list($this->name, $this->type);
     }
 
     public function is(string $name) : bool
@@ -69,7 +73,7 @@ final class ListEntry implements Entry, TypedCollection
     {
         return $this->is($entry->name()) &&
             $entry instanceof self && (new ArrayComparison())->equals($this->value(), $entry->value())
-            && $this->type === $entry->type;
+            && $this->type->isEqual($entry->type);
     }
 
     public function map(callable $mapper) : Entry

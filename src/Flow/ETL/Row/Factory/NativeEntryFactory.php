@@ -63,7 +63,36 @@ final class NativeEntryFactory implements EntryFactory
         }
 
         if (\is_array($value)) {
-            return new Row\Entry\ArrayEntry($entryName, $value);
+            if (!\array_is_list($value)) {
+                return new Row\Entry\ArrayEntry($entryName, $value);
+            }
+
+            $type = null;
+            $class = null;
+
+            foreach ($value as $valueElement) {
+                if ($type === null) {
+                    $type = \gettype($valueElement);
+                }
+
+                if ($type === 'object' && $class === null) {
+                    $class = \get_class($valueElement);
+                }
+
+                if ($type !== \gettype($valueElement)) {
+                    return new Row\Entry\ArrayEntry($entryName, $value);
+                }
+
+                if ($class !== null && $class !== \get_class($valueElement)) {
+                    return new Row\Entry\ArrayEntry($entryName, $value);
+                }
+            }
+
+            if ($class !== null) {
+                return new Entry\ListEntry($entryName, Entry\TypedCollection\ObjectType::of($class), $value);
+            }
+
+            return new Entry\ListEntry($entryName, Entry\TypedCollection\ScalarType::fromString($type), $value);
         }
 
         if (null === $value) {

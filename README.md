@@ -22,6 +22,9 @@ Except typical ETL use cases (Extract, Transform, Load), Flow can be also used f
 composer require flow-php/etl:1.x@dev
 ```
 
+Until project get first stable release it's recommended to lock it to specific
+commit version in your composer.lock file. 
+
 ## Typical Use Cases
 
 * Sync data from external systems (API)
@@ -140,6 +143,8 @@ All entries are available through [DSL\Entry](src/Flow/ETL/DSL/Entry.php)
 * [object](src/Flow/ETL/Row/Entry/ObjectEntry.php)
 * [string](src/Flow/ETL/Row/Entry/StringEntry.php)
 * [structure](src/Flow/ETL/Row/Entry/StructureEntry.php)
+
+While adding new entry type, please follow the [checklist](docs/new_type.md). 
 
 > Entry names are case-sensitive, `entry` is not the same as `Entry`.
 

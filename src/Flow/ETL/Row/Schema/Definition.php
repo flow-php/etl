@@ -21,6 +21,7 @@ use Flow\ETL\Row\Entry\StringEntry;
 use Flow\ETL\Row\Entry\StructureEntry;
 use Flow\ETL\Row\Entry\TypedCollection\Type;
 use Flow\ETL\Row\Schema\Constraint\All;
+use Flow\ETL\Row\Schema\Constraint\Any;
 use Flow\ETL\Row\Schema\Constraint\CollectionType;
 use Flow\Serializer\Serializable;
 
@@ -115,7 +116,7 @@ final class Definition implements Serializable
     {
         return new self(
             $entry,
-            ($nullable) ? [ListEntry::class, ListEntry::class] : [ListEntry::class],
+            ($nullable) ? [ListEntry::class, NullEntry::class] : [ListEntry::class],
             $constraint
                 ? new All(new CollectionType($type), $constraint)
                 : new CollectionType($type)
@@ -163,6 +164,10 @@ final class Definition implements Serializable
      */
     public static function union(string $entry, array $entryClasses, ?Constraint $constraint = null)
     {
+        if (!\count($entryClasses) > 1) {
+            throw new InvalidArgumentException('Union type requires at least two entry types.');
+        }
+
         return new self($entry, $entryClasses, $constraint);
     }
 
@@ -188,7 +193,7 @@ final class Definition implements Serializable
         return $this->entry;
     }
 
-    public function isEqualType(self $definition) : bool
+    public function isEqual(self $definition) : bool
     {
         $classes = $this->classes;
         $otherClasses = $definition->classes;
@@ -196,7 +201,11 @@ final class Definition implements Serializable
         \sort($classes);
         \sort($otherClasses);
 
-        return $this->classes === $otherClasses;
+        if ($this->classes !== $otherClasses) {
+            return false;
+        }
+
+        return $this->constraint == $definition->constraint;
     }
     // @codeCoverageIgnoreEnd
 
@@ -235,6 +244,32 @@ final class Definition implements Serializable
         }
 
         return true;
+    }
+
+    public function merge(self $definition) : self
+    {
+        $leftConstraint = $this->constraint;
+        $rightConstraint = $definition->constraint;
+
+        $constraint = null;
+
+        if ($leftConstraint !== null && $rightConstraint === null) {
+            $constraint = $leftConstraint;
+        }
+
+        if ($leftConstraint === null && $rightConstraint !== null) {
+            $constraint = $rightConstraint;
+        }
+
+        if ($leftConstraint !== null && $rightConstraint !== null) {
+            $constraint = new Any($leftConstraint, $rightConstraint);
+        }
+
+        return new self(
+            $this->entry,
+            \array_values(\array_unique(\array_merge($this->types(), $definition->types()))),
+            $constraint
+        );
     }
 
     public function nullable() : self
