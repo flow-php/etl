@@ -6,6 +6,9 @@ namespace Flow\ETL\Row\Entry\TypedCollection;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 
+/**
+ * @psalm-immutable
+ */
 enum ScalarType: string implements Type
 {
     case boolean = 'boolean';

@@ -10,35 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 final class NativeEntryFactoryTest extends TestCase
 {
-    public function test_string() : void
+    public function test_array() : void
     {
         $this->assertEquals(
-            Entry::string('e', 'test'),
-            (new NativeEntryFactory())->create('e', 'test')
-        );
-    }
-
-    public function test_json() : void
-    {
-        $this->assertEquals(
-            Entry::json('e', ["id" => 1]),
-            (new NativeEntryFactory())->create('e', '{"id":1}')
-        );
-    }
-
-    public function test_float() : void
-    {
-        $this->assertEquals(
-            Entry::float('e', 1.1),
-            (new NativeEntryFactory())->create('e', 1.1)
-        );
-    }
-
-    public function test_int() : void
-    {
-        $this->assertEquals(
-            Entry::integer('e', 1),
-            (new NativeEntryFactory())->create('e', 1)
+            Entry::array('e', ['a' => 1, 'b' => 2]),
+            (new NativeEntryFactory())->create('e', ['a' => 1, 'b' => 2])
         );
     }
 
@@ -58,27 +34,27 @@ final class NativeEntryFactoryTest extends TestCase
         );
     }
 
-    public function test_object() : void
+    public function test_float() : void
     {
         $this->assertEquals(
-            Entry::object('e', $object = new \ArrayIterator([1, 2])),
-            (new NativeEntryFactory())->create('e', $object)
+            Entry::float('e', 1.1),
+            (new NativeEntryFactory())->create('e', 1.1)
         );
     }
 
-    public function test_array() : void
+    public function test_int() : void
     {
         $this->assertEquals(
-            Entry::array('e', ['a' => 1, 'b' => 2]),
-            (new NativeEntryFactory())->create('e', ['a' => 1, 'b' => 2])
+            Entry::integer('e', 1),
+            (new NativeEntryFactory())->create('e', 1)
         );
     }
 
-    public function test_list_of_scalars() : void
+    public function test_json() : void
     {
         $this->assertEquals(
-            Entry::list_of_int('e', [1, 2]),
-            (new NativeEntryFactory())->create('e', [1, 2])
+            Entry::json('e', ['id' => 1]),
+            (new NativeEntryFactory())->create('e', '{"id":1}')
         );
     }
 
@@ -90,11 +66,35 @@ final class NativeEntryFactoryTest extends TestCase
         );
     }
 
+    public function test_list_of_scalars() : void
+    {
+        $this->assertEquals(
+            Entry::list_of_int('e', [1, 2]),
+            (new NativeEntryFactory())->create('e', [1, 2])
+        );
+    }
+
     public function test_null() : void
     {
         $this->assertEquals(
             Entry::null('e'),
             (new NativeEntryFactory())->create('e', null)
+        );
+    }
+
+    public function test_object() : void
+    {
+        $this->assertEquals(
+            Entry::object('e', $object = new \ArrayIterator([1, 2])),
+            (new NativeEntryFactory())->create('e', $object)
+        );
+    }
+
+    public function test_string() : void
+    {
+        $this->assertEquals(
+            Entry::string('e', 'test'),
+            (new NativeEntryFactory())->create('e', 'test')
         );
     }
 }

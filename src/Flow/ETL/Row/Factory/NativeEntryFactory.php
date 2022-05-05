@@ -70,12 +70,14 @@ final class NativeEntryFactory implements EntryFactory
             $type = null;
             $class = null;
 
+            /** @psalm-suppress MixedAssignment */
             foreach ($value as $valueElement) {
                 if ($type === null) {
                     $type = \gettype($valueElement);
                 }
 
                 if ($type === 'object' && $class === null) {
+                    /** @psalm-suppress MixedArgument */
                     $class = \get_class($valueElement);
                 }
 
@@ -83,15 +85,24 @@ final class NativeEntryFactory implements EntryFactory
                     return new Row\Entry\ArrayEntry($entryName, $value);
                 }
 
+                /** @psalm-suppress MixedArgument */
                 if ($class !== null && $class !== \get_class($valueElement)) {
                     return new Row\Entry\ArrayEntry($entryName, $value);
                 }
             }
 
             if ($class !== null) {
+                /**
+                 * @psalm-suppress PossiblyNullArgument
+                 * @phpstan-ignore-next-line
+                 */
                 return new Entry\ListEntry($entryName, Entry\TypedCollection\ObjectType::of($class), $value);
             }
 
+            /**
+             * @psalm-suppress PossiblyNullArgument
+             * @phpstan-ignore-next-line
+             */
             return new Entry\ListEntry($entryName, Entry\TypedCollection\ScalarType::fromString($type), $value);
         }
 
