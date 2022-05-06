@@ -631,12 +631,12 @@ class Transform
 
     /**
      * @param array<string> $entries
-     * @param callable|string $callback
+     * @param callable $callback
      * @param array<mixed> $extra_arguments
      * @param EntryFactory $entry_factory
      * @return Transformer
      */
-    final public static function user_function(array $entries, callable|string $callback, array $extra_arguments = [], EntryFactory $entry_factory = new NativeEntryFactory()) : Transformer
+    final public static function user_function(array $entries, callable $callback, array $extra_arguments = [], EntryFactory $entry_factory = new NativeEntryFactory()) : Transformer
     {
         return new Transformer\CallUserFunctionTransformer($entries, $callback, $extra_arguments, $entry_factory);
     }
