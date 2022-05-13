@@ -41,10 +41,10 @@ final class EnumEntry implements Entry
 
     public function definition() : Definition
     {
+        /** @psalm-suppress ImpureMethodCall */
         return Definition::enum(
             $this->name,
-            metadata: Metadata::empty()
-                ->add(Definition::METADATA_ENUM_CASES, $this->value::cases())
+            metadata: Metadata::with(Definition::METADATA_ENUM_CASES, $this->value::cases())
         );
     }
 
