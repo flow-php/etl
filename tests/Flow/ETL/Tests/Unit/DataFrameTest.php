@@ -846,6 +846,40 @@ ASCIITABLE,
             });
     }
 
+    public function test_group_by_multiple_columns_and_parallelize() : void
+    {
+        $loader = $this->createMock(Loader::class);
+        $loader->expects($this->exactly(4))
+            ->method('load');
+
+        $rows = (new Flow())->process(
+            new Rows(
+                Row::create(Entry::integer('id', 1), Entry::string('country', 'PL'), Entry::integer('age', 20), Entry::string('gender', 'male')),
+                Row::create(Entry::integer('id', 2), Entry::string('country', 'PL'), Entry::integer('age', 20), Entry::string('gender', 'male')),
+                Row::create(Entry::integer('id', 3), Entry::string('country', 'PL'), Entry::integer('age', 25), Entry::string('gender', 'male')),
+                Row::create(Entry::integer('id', 4), Entry::string('country', 'PL'), Entry::integer('age', 30), Entry::string('gender', 'female')),
+                Row::create(Entry::integer('id', 5), Entry::string('country', 'US'), Entry::integer('age', 40), Entry::string('gender', 'female')),
+                Row::create(Entry::integer('id', 6), Entry::string('country', 'US'), Entry::integer('age', 40), Entry::string('gender', 'male')),
+                Row::create(Entry::integer('id', 7), Entry::string('country', 'US'), Entry::integer('age', 45), Entry::string('gender', 'female')),
+                Row::create(Entry::integer('id', 9), Entry::string('country', 'US'), Entry::integer('age', 50), Entry::string('gender', 'male')),
+            )
+        )
+            ->groupBy('country', 'gender')
+            ->parallelize(1)
+            ->write($loader)
+            ->fetch();
+
+        $this->assertEquals(
+            new Rows(
+                Row::create(Entry::string('country', 'PL'), Entry::string('gender', 'male')),
+                Row::create(Entry::string('country', 'PL'), Entry::string('gender', 'female')),
+                Row::create(Entry::string('country', 'US'), Entry::string('gender', 'female')),
+                Row::create(Entry::string('country', 'US'), Entry::string('gender', 'male')),
+            ),
+            $rows
+        );
+    }
+
     public function test_group_by_multiples_columns_with_avg_aggregation() : void
     {
         $rows = (new Flow())->process(
