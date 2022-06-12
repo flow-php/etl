@@ -12,6 +12,8 @@
             <directory name="vendor"/>
             <file name="src/Flow/ETL/Formatter/ASCII/ASCIITable.php" />
             <file name="src/Flow/ETL/ExternalSort/RowsMinHeap.php" />
+            <file name="src/Flow/ETL/Adapter/Avro/FlixTech/SchemaConverter.php" />
+            <file name="src/Flow/ETL/Adapter/Avro/FlixTech/ValueConverter.php" />
         </ignoreFiles>
     </projectFiles>
 </psalm>

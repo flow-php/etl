@@ -6,5 +6,6 @@ parameters:
     excludePaths:
         - src/Flow/ETL/Formatter/ASCII/ASCIITable.php
         - src/Flow/ETL/ExternalSort/RowsMinHeap.php
-
+        - src/Flow/ETL/Adapter/Avro/FlixTech/SchemaConverter.php
+        - src/Flow/ETL/Adapter/Avro/FlixTech/ValueConverter.php
     tmpDir: var/phpstan/cache

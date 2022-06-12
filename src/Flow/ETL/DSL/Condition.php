@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\DSL;
 
-use Flow\ETL\Exception\RuntimeException;
+use Flow\ETL\Dependency;
 use Flow\ETL\Row\Entry;
 use Flow\ETL\Transformer\Condition as TransformerCondition;
 use Flow\ETL\Transformer\Condition\RowCondition;
@@ -122,9 +122,7 @@ class Condition
 
     final public static function is_valid(string $entry, Constraint ...$constraints) : RowCondition
     {
-        if (!\class_exists(\Symfony\Component\Validator\Validation::class)) {
-            throw new RuntimeException("Symfony\Component\Validator\Validation class not found, please add symfony/validator dependency to the project first.");
-        }
+        Dependency::assertClassExists('Symfony\Component\Validator\Validation', 'Symfony Validator', 'symfony/validator');
 
         return new TransformerCondition\ValidValue($entry, new TransformerCondition\ValidValue\SymfonyValidator($constraints));
     }

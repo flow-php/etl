@@ -24,6 +24,125 @@ composer require flow-php/etl:1.x@dev
 Until project get first stable release it's recommended to lock it to specific
 commit version in your composer.lock file. 
 
+### Dependencies 
+
+Our design goal is to keep list of dependencies as short as possible however not everything should/can be handled
+inside of Flow. For example, reading JSON files in batches is handled by `halaxa/json-machine`, remote 
+filesystem access is possible thanks to `league/flysystem`.
+
+Typical approach for PHP libraries is to define all dependencies in composer.json file, in `require` section.
+In case of this project, there are only few mandatory dependencies, 2 php extensions 
+(that anyway are available pretty much everywhere) and 2 PSR abstractions. 
+
+All other dependencies that you can find in project `require-dev`/`suggest` section are optional and depends on your use case.
+
+For example `flow-php/etl-adapter-amphp` and `flow-php/etl-adapter-reactphp` provides possibility to process/load
+data in batches, however if your use case is to only read transform and write CSV file, installing Amp or ReactPHP
+would only make your project heavier. That's why Flow is not enforcing any optional dependencies however in order
+to use them, you need to add them to your project manually. 
+
+The reason why Flow is not following typical Composer workflow is to not overload your project with 
+unnecessary dependencies but also to simplify development of this project. 
+
+Previously we had to maintain over 10 adapter libraries the only difference for the end use was that instead
+of adding manually to the composer third party library dependency, he had to add flow adapter library. 
+
+### Optional Dependencies
+
+Below you can find list of all optional dependencies with explanation when you might need them. 
+Additionally, DSL will throw [MissingDependencyException](src/Flow/ETL/Exception/MissingDependencyException.php)
+in case you would try to use missing dependency. 
+
+Process data asynchronously using PHPAmp library
+```bash
+composer require flow-php/etl-adapter-amphp
+```
+   
+Process data asynchronously using ReactPHP library
+```bash                                        
+composer require flow-php/etl-adapter-reactphp
+```
+
+Read/Write data from/in PHP arrays throug dot notation
+```bash
+composer require flow-php/array-dot
+```
+
+Read/Write data from/in Databases (through Doctrine Dbal)
+```bash
+composer require flow-php/doctrine-dbal-bulk
+```
+
+Read/Write data from/in remote filesystems
+```bash
+composer require league/flysystem
+```
+
+Read/Write data from/in AWS S3"
+```bash
+composer require league/flysystem-aws-s3-v3
+```
+
+Read/Write data from/in Azure Blob Storage
+```bash
+composer require league/flysystem-azure-blob-storage
+```
+
+Read/Write data from/in parquet files
+```bash
+composer require codename/parquet
+```
+
+Read/Write data from/in elasticsearch
+```bash
+composer require elasticsearch/elasticsearch
+```
+
+Read/Write data from/in avro files
+```bash
+composer require flix-tech/avro-php
+```
+
+Read/Write data from/in json files
+```bash
+composer require halaxa/json-machine
+```
+
+Read/Write data from URL's
+```bash
+composer require psr/http-client-implementation
+```
+
+Write data into logs
+```bash
+composer require psr/log-implementation
+```
+
+Converting ObjectEntry into ArrayEntry
+```bash
+composer require laminas/laminas-hydrator
+```
+
+Converting ObjectEntry into ArrayEntry
+```bash
+composer require ocramius/generated-hydrator
+```
+
+Converting strings into different styles, snake case, camel case, etc
+```bash
+composer require jawira/case-converter
+```
+
+Closures serialization
+```bash
+composer require laravel/serializable-closure
+```
+
+Additional conditions for conditional transformations
+```bash
+composer require symfony/validator
+```
+
 ## Typical Use Cases
 
 * Sync data from external systems (API)
@@ -68,18 +187,22 @@ $array = new ArrayMemory();
 
 ## DSL - Domain Specific Language
 
-Flow comes with a rich DSL that will make code more readable and easier to understand,
-due to language limitations DSL is available through static methods on following classes:
+Flow comes with a rich DSL that will make code more readable and easier to understand.
+DSL is representing also the highest level API for of the Flow PHP. 
 
+* [Avro](src/Flow/ETL/DSL/Avro.php)
+* [Condition](src/Flow/ETL/DSL/Condition.php)
+* [CSV](src/Flow/ETL/DSL/CSV.php)
 * [Entry](src/Flow/ETL/DSL/Entry.php)
+* [From](src/Flow/ETL/DSL/From.php)
 * [Handler](src/Flow/ETL/DSL/Handler.php)
-* [From](src/Flow/ETL/DSL/From.php) - Readers (Extractors)
-* [Transform](src/Flow/ETL/DSL/Transform.php)  - Transformers
-  * [Condition](src/Flow/ETL/DSL/Condition.php) 
-* [To](src/Flow/ETL/DSL/To.php) - Writers (Loaders)
-
-Adapters should deliver their own DSL, so for example Json Adapter should create custom `ToJson` and `FromJson` 
-classes with own methods. 
+* [Json](src/Flow/ETL/DSL/Json.php)
+* [Parquet](src/Flow/ETL/DSL/Parquet.php)
+* [Stream](src/Flow/ETL/DSL/Stream.php)
+* [Text](src/Flow/ETL/DSL/Text.php)
+* [To](src/Flow/ETL/DSL/To.php)
+* [Transform](src/Flow/ETL/DSL/Transform.php)
+* [XML](src/Flow/ETL/DSL/XML.php)
 
 By design all methods in DSL are marked as final (they are not an extension points) but
 classes itself can be extended in case you would like to add your own custom elements.
@@ -175,8 +298,9 @@ Transformers can be registered in the pipeline through following methods:
 * `DataFrame::transformer(Transformer $transformer) : DataFrame`
 * `DataFrame::rows(Transformer $transformer) : DataFrame`
 
-Set of ETL generic Transformers, for the detailed usage instruction please look into [tests](tests/Flow/ETL/Tests/Unit/Transformer).
-Adapters might also define some custom transformers.
+For the detailed usage instruction please look into [tests](tests/Flow/ETL/Tests/Unit/Transformer).
+
+In case transformations available through DSL would not be enough, please find all underlying transformers below:
 
 * **Generic**
     * [cast](src/Flow/ETL/Transformer/CastTransformer.php) - [tests](tests/Flow/ETL/Tests/Unit/Transformer/CastTransformerTest.php)
@@ -246,19 +370,22 @@ By design Flow should use [StreamWrappers](https://www.php.net/manual/en/stream.
 with a custom protocol that starts from `flow-`, for example `flow-aws-s3` or `flow-azure-blob`. 
 [StreamWrapper](src/Flow/ETL/Stream/StreamWrapper.php) should be used to register custom wrappers. 
 
-[flow-php/etl-adapter-streams](https://github.com/flow-php/etl-adapter-streams) provides support for popular remote filesystems. 
+**Additional dependencies required**
 
-### Serialization
+```bash
+composer require league/flysystem
+# one of below 
+composer require league/flysystem-aws-s3-v3
+composer require league/flysystem-azure-blob-storage
+```
+
+### Closures Serialization
 
 In order to allow serialization of callable based transformers please
-add into your dependencies [opis/closure](https://github.com/opis/closure) library:
+add into your dependencies [laravel/serializable-closure](https://github.com/laravel/serializable-closure) library:
 
-```
-{
-  "require": {
-    "opis/closure": "^3.5"
-  }
-}
+```bash
+composer require laravel/serializable-closure
 ```
 
 ### Custom Transformers
@@ -343,88 +470,9 @@ method will be executed with the last Rows from Extractor.
 This can be handy for things like [buffer loader](src/Flow/ETL/Loader/BufferLoader.php) that maintain the state
 but that also needs to clean up that state at last Rows.
 
-## Adapters
-
-Adapter connects ETL with existing data sources/storages and including some times custom 
-data entries. 
-
-<table style="text-align:center">
-<thead>
-  <tr>
-    <th>Name</th>
-    <th>Extractor (read)</th>
-    <th>Loader (write)</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-doctrine">Doctrine - DB</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-elasticsearch">Elasticsearch</a></td>
-      <td>N/A</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-text">Text</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>    
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-csv">CSV</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-json">JSON</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-parquet">Parquet</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-avro">Avro</a></td>
-      <td>✅</td>
-      <td>✅</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-xml">XML</a></td>
-      <td>✅</td>
-      <td>N/A</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-http">HTTP</a></td>
-      <td>✅</td>
-      <td>N/A</td>
-  </tr>
-  <tr>
-      <td><a href="#">Excel</a></td>
-      <td>N/A</td>
-      <td>N/A</td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/flow-php/etl-adapter-logger">Logger</a></td>
-      <td>🚫</td>
-      <td>✅</td>
-  </tr>
-</tbody>
-</table>
-
-* ✅ - at least one implementation is available 
-* 🚫 - implementation not possible
-* `N/A` - not available yet 
-
-**❗ If adapter that you are looking for is not available yet, and you are willing to work on one, feel free to create one as a standalone repository.**
-**Well designed and documented adapters can be pulled into `flow-php` organization that will give them maintenance and security support from the organization.** 
-
 ### Asynchronous Processing
 
-Currently Flow is supporting only local multiprocess asynchronous processing.
+Currently, Flow is supporting only local multiprocess asynchronous processing.
 
 In order to process data asynchronously one of the following adapters must be first installed:
 
@@ -436,7 +484,7 @@ Code example:
 ```php
 <?php
 (Flow::setUp(Config::builder()))
-    ->read(new CSVExtractor($path = __DIR__ . '/data/dataset.csv', 10_000, 0))
+    ->read(CSV::from($path = __DIR__ . '/data/dataset.csv'))
     ->pipeline(
         new LocalSocketPipeline(
             SocketServer::unixDomain(__DIR__ . "/var/run/", $logger),
@@ -504,6 +552,8 @@ is missing it will be skipped or grouped into `null` entry.
 * max
 * min
 * sum
+* first
+* last
 
 ```php 
 <?php
@@ -1015,7 +1065,7 @@ processing performance.
 ### DataFrame::collect()
 
 Using collect on a large number of rows might end up without of memory exception, but it can also significantly increase
-loading time into datasink. It might be cheaper to do one big insert than multiple smaller inserts.
+loading time into data sink. It might be cheaper to do one big insert than multiple smaller inserts.
 
 ### DataFrame::sortBy()
 

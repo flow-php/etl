@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\DSL;
 
+use Flow\ETL\Dependency;
 use Flow\ETL\DSL\Entry as DSLEntry;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Exception\RuntimeException;
@@ -157,9 +158,7 @@ class Transform
      */
     final public static function array_convert_keys(string $array_column, string $style, ?Schema $schema = null) : Transformer
     {
-        if (!\class_exists('\Jawira\CaseConverter\Convert')) {
-            throw new RuntimeException("Jawira\CaseConverter\Convert class not found, please require using 'composer require jawira/case-converter'");
-        }
+        Dependency::assertClassExists('Jawira\CaseConverter\Convert', 'Jawira Case Converter', 'jawira/case-converter');
 
         return new ArrayKeysStyleConverterTransformer(
             $array_column,
@@ -273,9 +272,7 @@ class Transform
 
     final public static function convert_name(string $style) : Transformer
     {
-        if (!\class_exists('\Jawira\CaseConverter\Convert')) {
-            throw new RuntimeException("Jawira\CaseConverter\Convert class not found, please require using 'composer require jawira/case-converter'");
-        }
+        Dependency::assertClassExists('Jawira\CaseConverter\Convert', 'Jawira Case Converter', 'jawira/case-converter');
 
         return new Transformer\EntryNameStyleConverterTransformer($style);
     }
@@ -560,9 +557,7 @@ class Transform
 
     final public static function to_array_from_object(string $entry) : Transformer
     {
-        if (!\class_exists("\Laminas\Hydrator\ReflectionHydrator")) {
-            throw new RuntimeException("Laminas\Hydrator\ReflectionHydrator class not found, please install it using 'composer require laminas/laminas-hydrator'");
-        }
+        Dependency::assertClassExists('Laminas\Hydrator\ReflectionHydrator', 'Laminas Hydrator', 'laminas/laminas-hydrator');
 
         return new Transformer\ObjectToArrayTransformer(new ReflectionHydrator(), $entry);
     }

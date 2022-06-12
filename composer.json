@@ -6,13 +6,27 @@
     "prefer-stable": true,
     "require": {
         "php": "~8.1",
-        "flow-php/array-dot": "^1.0@dev",
         "ext-mbstring": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "psr/log": "^1.1",
+        "psr/http-client": "^1.0"
     },
     "require-dev": {
-        "jawira/case-converter": "^3.4",
+        "ext-xmlreader": "*",
+        "ext-dom": "*",
+        "flow-php/doctrine-dbal-bulk": "^1.0@dev",
+        "flow-php/array-dot": "^1.0@dev",
+        "league/flysystem": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "league/flysystem-azure-blob-storage": "^3.0",
+        "codename/parquet": "^0.6.2",
+        "elasticsearch/elasticsearch": "^7.6",
+        "flix-tech/avro-php": "^4.2",
+        "halaxa/json-machine": "^0.8.0 || ^1.0.0",
         "laminas/laminas-hydrator": "^4.0",
+        "jawira/case-converter": "^3.4",
+        "php-http/curl-client": "^2.2",
+        "nyholm/psr7": "^1.4",
         "laravel/serializable-closure": "^1.1",
         "symfony/validator": "^5.3 || ^6.0"
     },
@@ -21,9 +35,39 @@
         "sort-packages": true
     },
     "suggest": {
-        "laminas/laminas-hydrator" : "Help converting ObjectEntry into ArrayEntry that can be later unpack into standalone Entries",
-        "ocramius/generated-hydrator" : "Provieds generated hydrator that implemenets Laminas\\Hydrator\\HydratorInterface",
-        "jawira/case-converter" : "Provides CaseConverter that is required by the EntryNameCaseConverterTransformer"
+        "flow-php/etl-adapter-amphp": "Process data asynchronously using PHPAmp library",
+        "flow-php/etl-adapter-reactphp": "Process data asynchronously using ReactPHP library",
+        "flow-php/array-dot": "Read/Write data from/in PHP arrays throug dot notation",
+        "flow-php/doctrine-dbal-bulk": "Read/Write data from/IN Databases",
+        "league/flysystem": "Read/Write data from/in remote filesystems",
+        "league/flysystem-aws-s3-v3": "Read/Write data from/in AWS S3",
+        "league/flysystem-azure-blob-storage": "Read/Write data from/in Azure Blob Storage",
+        "codename/parquet": "Read/Write data from/in parquet files",
+        "elasticsearch/elasticsearch" : "Read/Write data from/in elasticsearch",
+        "flix-tech/avro-php": "Read/Write data from/in avro files",
+        "halaxa/json-machine" : "Read/Write data from/in json files",
+        "psr/http-client-implementation": "Read/Write data from URL's",
+        "psr/log-implementation": "Write data into logs",
+        "laminas/laminas-hydrator" : "Converting ObjectEntry into ArrayEntry",
+        "ocramius/generated-hydrator" : "Converting ObjectEntry into ArrayEntry",
+        "jawira/case-converter" : "Converting strings into different styles, snake case, camel case, etc",
+        "laravel/serializable-closure": "Closures serialization",
+        "symfony/validator": "Additional conditions for conditional transformations"
+    },
+    "conflict": {
+        "league/flysystem": "<3.0",
+        "league/flysystem-aws-s3-v3": "<3.0",
+        "league/flysystem-azure-blob-storage": "<3.0",
+        "codename/parquet": "<0.6.2",
+        "elasticsearch/elasticsearch": "<7.6",
+        "flix-tech/avro-php": "<4.2",
+        "halaxa/json-machine": "<0.8.0",
+        "laminas/laminas-hydrator": "<4.0",
+        "jawira/case-converter": "<3.4",
+        "php-http/curl-client": "<2.2",
+        "nyholm/psr7": "<1.4",
+        "laravel/serializable-closure": "<1.1",
+        "symfony/validator": "<5.3"
     },
     "license": "MIT",
     "autoload": {

@@ -4,7 +4,13 @@
          colors="true"
          bootstrap="tests/bootstrap.php"
          cacheResultFile="var/phpunit/.result.cache"
-  >
+         executionOrder="random"
+>
+  <php>
+    <env name="ELASTICSEARCH_URL" value="localhost:9200" />
+    <env name="PGSQL_DATABASE_URL" value="postgresql://postgres:postgres@127.0.0.1:5432/postgres?serverVersion=11%26charset=utf8" />
+  </php>
+
   <coverage>
     <include>
       <directory suffix=".php">./src</directory>
@@ -22,6 +28,9 @@
     </testsuite>
     <testsuite name="integration">
       <directory suffix=".php">tests/Flow/ETL/Tests/Integration</directory>
+    </testsuite>
+    <testsuite name="functional">
+      <directory suffix=".php">tests/Flow/ETL/Tests/Functional</directory>
     </testsuite>
   </testsuites>
 </phpunit>
