@@ -33,7 +33,7 @@ final class Handler
     {
         /** @psalm-suppress PossiblyNullOperand */
         $fullPath = ($this->safeMode)
-            ? (\rtrim($stream->uri(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . \uniqid() . '.' . $this->extension)
+            ? (\rtrim($stream->uri(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . \uniqid('', true) . '.' . $this->extension)
             : $stream->uri();
 
         $context = \count($stream->options())
