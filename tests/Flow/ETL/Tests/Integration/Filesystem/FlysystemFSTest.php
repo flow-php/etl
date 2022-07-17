@@ -35,32 +35,38 @@ final class FlysystemFSTest extends TestCase
 
     public function test_reading_multi_partitioned_path() : void
     {
+        $paths = \iterator_to_array(
+            (new FlysystemFS())
+                ->scan(
+                    new Path(__DIR__ . '/Fixtures/multi_partitions'),
+                    Partitions::chain(
+                        Partitions::only('country', 'pl'),
+                        Partitions::date_between('date', new \DateTimeImmutable('2022-01-02'), new \DateTimeImmutable('2022-01-04'))
+                    )
+                )
+        );
+        \sort($paths);
+
         $this->assertEquals(
             [
                 new Path(__DIR__ . '/Fixtures/multi_partitions/date=2022-01-02/country=pl/file.txt'),
                 new Path(__DIR__ . '/Fixtures/multi_partitions/date=2022-01-03/country=pl/file.txt'),
             ],
-            \iterator_to_array(
-                (new FlysystemFS())
-                    ->scan(
-                        new Path(__DIR__ . '/Fixtures/multi_partitions'),
-                        Partitions::chain(
-                            Partitions::only('country', 'pl'),
-                            Partitions::date_between('date', new \DateTimeImmutable('2022-01-02'), new \DateTimeImmutable('2022-01-04'))
-                        )
-                    )
-            )
+            $paths
         );
     }
 
     public function test_reading_partitioned_folder() : void
     {
+        $paths = \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned'), new NoopFilter()));
+        \sort($paths);
+
         $this->assertEquals(
             [
-                new Path(__DIR__ . '/Fixtures/partitioned/partition_01=b/file_02.txt'),
                 new Path(__DIR__ . '/Fixtures/partitioned/partition_01=a/file_01.txt'),
+                new Path(__DIR__ . '/Fixtures/partitioned/partition_01=b/file_02.txt'),
             ],
-            \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned'), new NoopFilter()))
+            $paths
         );
     }
 
@@ -82,12 +88,15 @@ final class FlysystemFSTest extends TestCase
 
     public function test_reading_partitioned_folder_with_pattern() : void
     {
+        $paths = \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned/partition_01=*/*.txt'), new NoopFilter()));
+        \sort($paths);
+
         $this->assertEquals(
             [
-                new Path(__DIR__ . '/Fixtures/partitioned/partition_01=b/file_02.txt'),
                 new Path(__DIR__ . '/Fixtures/partitioned/partition_01=a/file_01.txt'),
+                new Path(__DIR__ . '/Fixtures/partitioned/partition_01=b/file_02.txt'),
             ],
-            \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned/partition_01=*/*.txt'), new NoopFilter()))
+            $paths
         );
     }
 }
