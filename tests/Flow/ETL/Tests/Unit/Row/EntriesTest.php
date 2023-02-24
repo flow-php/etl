@@ -42,7 +42,7 @@ final class EntriesTest extends TestCase
         $entries = new Entries(new IntegerEntry('integer-entry', 100));
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectDeprecationMessage('Added entries names must be unique, given: [integer-entry, string-name] + [string-name]');
+        $this->expectExceptionMessage('Added entries names must be unique, given: [integer-entry, string-name] + [string-name]');
 
         $entries->add($stringEntry)->add($booleanEntry);
     }
@@ -219,6 +219,40 @@ final class EntriesTest extends TestCase
             new Entries(new StringEntry('string-name', 'new string entry'), new IntegerEntry('integer-entry', 100)),
             $entries
         );
+    }
+
+    public function test_order_entries() : void
+    {
+        $entries = new Entries(
+            new IntegerEntry('integer', 100),
+            new StringEntry('string', 'new string entry'),
+            new BooleanEntry('bool', true),
+        );
+
+        $this->assertEquals(
+            ['integer', 'string', 'bool'],
+            $entries->map(fn (\Flow\ETL\Row\Entry $e) => $e->name())
+        );
+
+        $entries = $entries->order('bool', 'string', 'integer');
+
+        $this->assertEquals(
+            ['bool', 'string', 'integer'],
+            $entries->map(fn (\Flow\ETL\Row\Entry $e) => $e->name())
+        );
+    }
+
+    public function test_order_entries_without_providing_all_entry_names() : void
+    {
+        $this->expectExceptionMessage('In order to sort entries in a given order you need to provide all entry names, given: "bool", "string", expected: "integer", "string", "bool"');
+
+        $entries = new Entries(
+            new IntegerEntry('integer', 100),
+            new StringEntry('string', 'new string entry'),
+            new BooleanEntry('bool', true),
+        );
+
+        $entries->order('bool', 'string');
     }
 
     public function test_overwrites_entry_when_it_exists() : void
