@@ -1,4 +1,4 @@
-# FLow PHP - ETL
+# Flow PHP - ETL
 
 Flow PHP is a premier ETL (Extract, Transform, Load) framework engineered for agile and precise data processing and
 transformation.
@@ -18,7 +18,7 @@ demands of modern web infrastructures.
 composer require flow-php/etl:1.x@dev
 ```
 
-Until project get first stable release it's recommended to lock it to specific
+Until the project gets its first stable release it's recommended to lock it to a specific
 commit version in your composer.lock file. 
 
 ## Typical Use Cases
