@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\Filesystem;
 
 use Flow\ETL\DSL\Partitions;
-use Flow\ETL\Filesystem\FlysystemFS;
+use Flow\ETL\Filesystem\LocalFilesystem;
 use Flow\ETL\Filesystem\Path;
 use Flow\ETL\Filesystem\Stream\Mode;
 use Flow\ETL\Partition\NoopFilter;
 use PHPUnit\Framework\TestCase;
 
-final class FlysystemFSTest extends TestCase
+final class LocalFilesystemTest extends TestCase
 {
     public function test_append_mode() : void
     {
-        $fs = new FlysystemFS();
+        $fs = new LocalFilesystem();
 
         $stream = $fs->open(Path::realpath(\sys_get_temp_dir() . '/flow-fs-test/append.txt'), Mode::APPEND);
         \fwrite($stream->resource(), "some data to make file not empty\n");
@@ -39,25 +39,25 @@ STRING,
 
     public function test_dir_exists() : void
     {
-        $this->assertTrue((new FlysystemFS())->exists(new Path(__DIR__)));
-        $this->assertFalse((new FlysystemFS())->exists(new Path(__DIR__ . '/not_existing_directory')));
+        $this->assertTrue((new LocalFilesystem())->exists(new Path(__DIR__)));
+        $this->assertFalse((new LocalFilesystem())->exists(new Path(__DIR__ . '/not_existing_directory')));
     }
 
     public function test_fie_exists() : void
     {
-        $this->assertTrue((new FlysystemFS())->exists(new Path(__FILE__)));
-        $this->assertFalse((new FlysystemFS())->exists(new Path(__DIR__ . '/not_existing_file.php')));
+        $this->assertTrue((new LocalFilesystem())->exists(new Path(__FILE__)));
+        $this->assertFalse((new LocalFilesystem())->exists(new Path(__DIR__ . '/not_existing_file.php')));
     }
 
     public function test_file_pattern_exists() : void
     {
-        $this->assertTrue((new FlysystemFS())->exists(new Path(__DIR__ . '/**/*.txt')));
-        $this->assertFalse((new FlysystemFS())->exists(new Path(__DIR__ . '/**/*.pdf')));
+        $this->assertTrue((new LocalFilesystem())->exists(new Path(__DIR__ . '/**/*.txt')));
+        $this->assertFalse((new LocalFilesystem())->exists(new Path(__DIR__ . '/**/*.pdf')));
     }
 
     public function test_open_file_stream_for_existing_file() : void
     {
-        $stream = (new FlysystemFS())->open(new Path(__FILE__), Mode::READ);
+        $stream = (new LocalFilesystem())->open(new Path(__FILE__), Mode::READ);
 
         $this->assertIsResource($stream->resource());
         $this->assertSame(
@@ -70,7 +70,7 @@ STRING,
     {
         $path = \sys_get_temp_dir() . '/' . \uniqid('flow_php_test_file_', true) . '.txt';
 
-        $stream = (new FlysystemFS())->open(new Path($path), Mode::WRITE);
+        $stream = (new LocalFilesystem())->open(new Path($path), Mode::WRITE);
 
         $this->assertIsResource($stream->resource());
     }
@@ -78,7 +78,7 @@ STRING,
     public function test_reading_multi_partitioned_path() : void
     {
         $paths = \iterator_to_array(
-            (new FlysystemFS())
+            (new LocalFilesystem())
                 ->scan(
                     new Path(__DIR__ . '/Fixtures/multi_partitions'),
                     Partitions::chain(
@@ -100,7 +100,7 @@ STRING,
 
     public function test_reading_partitioned_folder() : void
     {
-        $paths = \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned'), new NoopFilter()));
+        $paths = \iterator_to_array((new LocalFilesystem())->scan(new Path(__DIR__ . '/Fixtures/partitioned'), new NoopFilter()));
         \sort($paths);
 
         $this->assertEquals(
@@ -119,7 +119,7 @@ STRING,
                 new Path(__DIR__ . '/Fixtures/partitioned/partition_01=b/file_02.txt'),
             ],
             \iterator_to_array(
-                (new FlysystemFS())
+                (new LocalFilesystem())
                     ->scan(
                         new Path(__DIR__ . '/Fixtures/partitioned'),
                         Partitions::only('partition_01', 'b')
@@ -130,7 +130,7 @@ STRING,
 
     public function test_reading_partitioned_folder_with_pattern() : void
     {
-        $paths = \iterator_to_array((new FlysystemFS())->scan(new Path(__DIR__ . '/Fixtures/partitioned/partition_01=*/*.txt'), new NoopFilter()));
+        $paths = \iterator_to_array((new LocalFilesystem())->scan(new Path(__DIR__ . '/Fixtures/partitioned/partition_01=*/*.txt'), new NoopFilter()));
         \sort($paths);
 
         $this->assertEquals(
@@ -144,7 +144,7 @@ STRING,
 
     public function test_remove_directory_with_content_when_exists() : void
     {
-        $fs = new FlysystemFS();
+        $fs = new LocalFilesystem();
 
         $dirPath = Path::realpath(\sys_get_temp_dir() . '/flow-fs-test-directory/');
 
@@ -161,7 +161,7 @@ STRING,
 
     public function test_remove_file_when_exists() : void
     {
-        $fs = new FlysystemFS();
+        $fs = new LocalFilesystem();
 
         $stream = $fs->open(Path::realpath(\sys_get_temp_dir() . '/flow-fs-test/remove_file_when_exists.txt'), Mode::WRITE);
         \fwrite($stream->resource(), 'some data to make file not empty');
@@ -174,7 +174,7 @@ STRING,
 
     public function test_remove_pattern() : void
     {
-        $fs = new FlysystemFS();
+        $fs = new LocalFilesystem();
 
         $dirPath = Path::realpath(\sys_get_temp_dir() . '/flow-fs-test-directory/');
 
