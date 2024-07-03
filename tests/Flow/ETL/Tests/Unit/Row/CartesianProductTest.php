@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Tests\Unit\Partition;
+namespace Flow\ETL\Tests\Unit\Row;
 
-use Flow\ETL\Partition\CartesianProduct;
+use Flow\ETL\Row\CartesianProduct;
 use PHPUnit\Framework\TestCase;
 
 final class CartesianProductTest extends TestCase

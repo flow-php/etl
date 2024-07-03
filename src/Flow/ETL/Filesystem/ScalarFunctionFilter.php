@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Partition;
+namespace Flow\ETL\Filesystem;
 
 use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\ScalarFunction;
-use Flow\ETL\Partition;
 use Flow\ETL\PHP\Type\AutoCaster;
 use Flow\ETL\Row\EntryFactory;
+use Flow\Filesystem\Path\Filter;
+use Flow\Filesystem\{FileStatus, Partition};
 
-final class ScalarFunctionFilter implements PartitionFilter
+final class ScalarFunctionFilter implements Filter
 {
     public function __construct(
         private readonly ScalarFunction $function,
@@ -19,13 +20,13 @@ final class ScalarFunctionFilter implements PartitionFilter
     ) {
     }
 
-    public function keep(Partition ...$partitions) : bool
+    public function accept(FileStatus $status) : bool
     {
         return (bool) $this->function->eval(
             row(
                 ...\array_map(
                     fn (Partition $partition) => $this->entryFactory->create($partition->name, $this->caster->cast($partition->value)),
-                    $partitions
+                    $status->path->partitions()->toArray()
                 )
             )
         );

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Partition;
+namespace Flow\ETL\Row;
 
 /**
  * @source https://stackoverflow.com/a/15973172
