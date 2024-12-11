@@ -268,15 +268,6 @@ abstract class ScalarFunctionChain implements ScalarFunction
         return new ToLower($this);
     }
 
-    /**
-     * @param ScalarFunction|string $method
-     * @param array<mixed> $params
-     */
-    public function method(ScalarFunction|string $method, array $params) : self
-    {
-        return new CallMethod($this, $method, $params);
-    }
-
     public function minus(ScalarFunction|int|float $ref) : self
     {
         return new Minus($this, $ref);

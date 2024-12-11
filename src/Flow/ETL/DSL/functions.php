@@ -28,7 +28,6 @@ use Flow\ETL\Function\{All,
     ArrayUnpack,
     Average,
     Between,
-    CallMethod,
     Capitalize,
     Cast,
     Coalesce,
@@ -944,15 +943,6 @@ function upper(ScalarFunction|string $value) : ToUpper
     return new ToUpper($value);
 }
 
-/**
- * @param array<mixed> $params
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-function call_method(object $object, ScalarFunction|string $method, array $params = []) : CallMethod
-{
-    return new CallMethod($object, $method, $params);
-}
-
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
 function all(ScalarFunction ...$functions) : All
 {
@@ -1557,6 +1547,7 @@ function dom_element_to_string(\DOMElement $element, bool $format_output = false
     return $doc->saveXML($doc->documentElement);
 }
 
+#[DocumentationDSL(module: Module::CORE, type: DSLType::HELPER)]
 function date_interval_to_milliseconds(\DateInterval $interval) : int
 {
     if ($interval->y !== 0 || $interval->m !== 0) {
@@ -1573,6 +1564,7 @@ function date_interval_to_milliseconds(\DateInterval $interval) : int
         : (int) ($absoluteSeconds * 1000 + $interval->f * 1000);
 }
 
+#[DocumentationDSL(module: Module::CORE, type: DSLType::HELPER)]
 function date_interval_to_seconds(\DateInterval $interval) : int
 {
     if ($interval->y !== 0 || $interval->m !== 0) {
@@ -1589,6 +1581,7 @@ function date_interval_to_seconds(\DateInterval $interval) : int
         : (int) ceil($absoluteSeconds + $interval->f);
 }
 
+#[DocumentationDSL(module: Module::CORE, type: DSLType::HELPER)]
 function date_interval_to_microseconds(\DateInterval $interval) : int
 {
     if ($interval->y !== 0 || $interval->m !== 0) {
