@@ -33,7 +33,7 @@ final class GroupToArrayTransformer implements Transformer
         foreach ($entries as $entry) {
             $rows = $rows->add(
                 Row::create(
-                    new Entry\ArrayEntry(
+                    new Entry\JsonEntry(
                         $this->newEntryName,
                         $entry
                     )

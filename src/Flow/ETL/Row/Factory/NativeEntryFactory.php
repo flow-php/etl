@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Factory;
 
-use function Flow\ETL\DSL\{array_entry,
-    bool_entry,
+use function Flow\ETL\DSL\{bool_entry,
+    date_entry,
     datetime_entry,
     enum_entry,
     float_entry,
@@ -14,10 +14,9 @@ use function Flow\ETL\DSL\{array_entry,
     json_entry,
     json_object_entry,
     map_entry,
-    obj_entry,
-    object_entry,
     str_entry,
     struct_entry,
+    time_entry,
     type_boolean,
     type_float,
     type_int,
@@ -28,10 +27,12 @@ use function Flow\ETL\DSL\{array_entry,
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException, SchemaDefinitionNotFoundException};
 use Flow\ETL\PHP\Type\Caster\StringCastingHandler\StringTypeChecker;
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
+    DateType,
     JsonType,
     ListType,
     MapType,
     StructureType,
+    TimeType,
     UuidType,
     XMLElementType,
     XMLType};
@@ -103,7 +104,7 @@ final class NativeEntryFactory implements EntryFactory
             }
         }
 
-        if ($valueType instanceof JsonType) {
+        if ($valueType instanceof JsonType || $valueType instanceof ArrayType) {
             return json_entry($entryName, $value);
         }
 
@@ -113,6 +114,14 @@ final class NativeEntryFactory implements EntryFactory
             }
 
             return uuid_entry($entryName, (string) $value);
+        }
+
+        if ($valueType instanceof TimeType) {
+            return time_entry($entryName, $value);
+        }
+
+        if ($valueType instanceof DateType) {
+            return date_entry($entryName, $value);
         }
 
         if ($valueType instanceof DateTimeType) {
@@ -136,7 +145,15 @@ final class NativeEntryFactory implements EntryFactory
                 return xml_element_entry($entryName, $value);
             }
 
+            if ($valueType->class === \DateInterval::class) {
+                return time_entry($entryName, $value);
+            }
+
             if (\in_array($valueType->class, [\DateTimeImmutable::class, \DateTimeInterface::class, \DateTime::class], true)) {
+                if ($value->format('H:i:s') === '00:00:00') {
+                    return date_entry($entryName, $value);
+                }
+
                 return datetime_entry($entryName, $value);
             }
 
@@ -148,15 +165,11 @@ final class NativeEntryFactory implements EntryFactory
                 return uuid_entry($entryName, $value);
             }
 
-            return object_entry($entryName, $value);
+            throw new InvalidArgumentException("{$entryName}: {$valueType->toString()} can't be converted to any known Entry, please normalize that object first.");
         }
 
         if ($valueType instanceof EnumType) {
             return enum_entry($entryName, $value);
-        }
-
-        if ($valueType instanceof ArrayType) {
-            return array_entry($entryName, $value);
         }
 
         if ($valueType instanceof ListType) {
@@ -187,15 +200,15 @@ final class NativeEntryFactory implements EntryFactory
                     ScalarType::BOOLEAN => bool_entry($definition->entry()->name(), null),
                     default => throw new InvalidArgumentException("Can't convert value into entry \"{$definition->entry()}\""),
                 },
-                ObjectType::class => obj_entry($definition->entry()->name(), null),
-                ArrayType::class => array_entry($definition->entry()->name(), null),
                 MapType::class => map_entry($definition->entry()->name(), null, $type),
                 StructureType::class => struct_entry($definition->entry()->name(), null, $type),
                 ListType::class => new Entry\ListEntry($definition->entry()->name(), null, $type),
                 UuidType::class => uuid_entry($definition->entry()->name(), null),
                 DateTimeType::class => datetime_entry($definition->entry()->name(), null),
+                TimeType::class => time_entry($definition->entry()->name(), null),
+                DateType::class => date_entry($definition->entry()->name(), null),
                 EnumType::class => enum_entry($definition->entry()->name(), null),
-                JsonType::class => json_entry($definition->entry()->name(), null),
+                ArrayType::class, JsonType::class => json_entry($definition->entry()->name(), null),
                 default => throw new InvalidArgumentException("Can't convert value into entry \"{$definition->entry()}\""),
             };
         }
@@ -219,6 +232,14 @@ final class NativeEntryFactory implements EntryFactory
                 return uuid_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
             }
 
+            if ($type instanceof DateType) {
+                return date_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
+            }
+
+            if ($type instanceof TimeType) {
+                return time_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
+            }
+
             if ($type instanceof DateTimeType) {
                 return datetime_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
             }
@@ -235,12 +256,12 @@ final class NativeEntryFactory implements EntryFactory
                 }
             }
 
-            if ($type instanceof ObjectType) {
-                return obj_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
+            if ($type instanceof ArrayType) {
+                return json_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
             }
 
-            if ($type instanceof ArrayType) {
-                return array_entry($definition->entry()->name(), is_type([$type], $value) ? $value : $this->caster->to($type)->value($value));
+            if ($type instanceof ObjectType) {
+                throw new InvalidArgumentException("{$definition->entry()->name()}: {$type->toString()} can't be converted to any known Entry, please normalize that object first.");
             }
 
             if ($type instanceof MapType) {

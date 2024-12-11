@@ -68,7 +68,7 @@ final class AddJsonTest extends TestCase
             [
                 [
                     'id' => 1,
-                    'json' => '{"id":1,"name":"test"}',
+                    'json' => ['id' => 1, 'name' => 'test'],
                 ],
             ],
             $memory->dump()
@@ -89,7 +89,7 @@ final class AddJsonTest extends TestCase
             [
                 [
                     'id' => 1,
-                    'json' => '[{"id":1},{"id":2}]',
+                    'json' => [['id' => 1], ['id' => 2]],
                 ],
             ],
             $memory->dump()

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, concat, lit, ref};
+use function Flow\ETL\DSL\{concat, json_entry, lit, ref};
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ final class ConcatTest extends TestCase
     {
         self::assertSame(
             '["a"]["b","c"]',
-            concat(ref('array_1'), ref('array_2'))->eval(Row::create(array_entry('array_1', ['a']), array_entry('array_2', ['b', 'c']))),
+            concat(ref('array_1'), ref('array_2'))->eval(Row::create(json_entry('array_1', ['a']), json_entry('array_2', ['b', 'c']))),
         );
     }
 

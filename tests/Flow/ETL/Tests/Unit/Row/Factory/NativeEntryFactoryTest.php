@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Row\Factory;
 
-use function Flow\ETL\DSL\{array_entry,
-    bool_entry,
+use function Flow\ETL\DSL\{bool_entry,
+    date_entry,
     datetime_entry,
     enum_entry,
     float_entry,
@@ -13,16 +13,15 @@ use function Flow\ETL\DSL\{array_entry,
     json_entry,
     json_object_entry,
     list_entry,
-    object_entry,
     str_entry,
     structure_element,
     structure_type,
+    time_entry,
     type_datetime,
     type_float,
     type_int,
     type_list,
     type_map,
-    type_object,
     type_string,
     uuid_entry,
     xml_entry};
@@ -30,7 +29,7 @@ use Flow\ETL\Exception\{CastingException, SchemaDefinitionNotFoundException};
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, StructureType};
-use Flow\ETL\Row\Entry\StructureEntry;
+use Flow\ETL\Row\Entry\{StructureEntry, TimeEntry};
 use Flow\ETL\Row\Factory\NativeEntryFactory;
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Tests\Fixtures\Enum\BackedIntEnum;
@@ -79,15 +78,6 @@ final class NativeEntryFactoryTest extends TestCase
         );
     }
 
-    public function test_array_with_schema() : void
-    {
-        self::assertEquals(
-            array_entry('e', [1, 2, 3]),
-            (new NativeEntryFactory())
-                ->create('e', [1, 2, 3], new Schema(Schema\Definition::array('e')))
-        );
-    }
-
     public function test_bool() : void
     {
         self::assertEquals(
@@ -101,6 +91,38 @@ final class NativeEntryFactoryTest extends TestCase
         self::assertEquals(
             bool_entry('e', false),
             (new NativeEntryFactory())->create('e', false, new Schema(Schema\Definition::boolean('e')))
+        );
+    }
+
+    public function test_date() : void
+    {
+        self::assertEquals(
+            date_entry('e', '2022-01-01'),
+            (new NativeEntryFactory())->create('e', new \DateTimeImmutable('2022-01-01'))
+        );
+    }
+
+    public function test_date_from_int_with_definition() : void
+    {
+        self::assertEquals(
+            date_entry('e', '1970-01-01'),
+            (new NativeEntryFactory())->create('e', 1, new Schema(Schema\Definition::date('e')))
+        );
+    }
+
+    public function test_date_from_null_with_definition() : void
+    {
+        self::assertEquals(
+            date_entry('e', null),
+            (new NativeEntryFactory())->create('e', null, new Schema(Schema\Definition::date('e', true)))
+        );
+    }
+
+    public function test_date_from_string_with_definition() : void
+    {
+        self::assertEquals(
+            date_entry('e', '2022-01-01'),
+            (new NativeEntryFactory())->create('e', '2022-01-01', new Schema(Schema\Definition::date('e')))
         );
     }
 
@@ -316,19 +338,9 @@ final class NativeEntryFactoryTest extends TestCase
 
     public function test_object() : void
     {
-        self::assertEquals(
-            object_entry('e', $object = new \ArrayIterator([1, 2])),
-            (new NativeEntryFactory())->create('e', $object)
-        );
-    }
+        $this->expectExceptionMessage("e: object<ArrayIterator> can't be converted to any known Entry, please normalize that object first");
 
-    public function test_object_with_schema() : void
-    {
-        self::assertEquals(
-            object_entry('e', $object = new \ArrayObject([1, 2, 3])),
-            (new NativeEntryFactory())
-                ->create('e', $object, new Schema(Schema\Definition::object('e', type_object($object::class))))
-        );
+        (new NativeEntryFactory())->create('e', new \ArrayIterator([1, 2]));
     }
 
     public function test_string() : void
@@ -361,6 +373,30 @@ final class NativeEntryFactoryTest extends TestCase
                 ])
             ),
             (new NativeEntryFactory())->create('address', ['id' => 1, 'city' => 'Krakow', 'street' => 'Floriańska', 'zip' => '31-021'])
+        );
+    }
+
+    public function test_time() : void
+    {
+        self::assertEquals(
+            TimeEntry::fromDays('e', 1),
+            (new NativeEntryFactory())->create('e', new \DateInterval('P1D'))
+        );
+    }
+
+    public function test_time_from_null_with_definition() : void
+    {
+        self::assertEquals(
+            time_entry('e', null),
+            (new NativeEntryFactory())->create('e', null, new Schema(Schema\Definition::time('e', true)))
+        );
+    }
+
+    public function test_time_from_string_with_definition() : void
+    {
+        self::assertEquals(
+            time_entry('e', new \DateInterval('P10D')),
+            (new NativeEntryFactory())->create('e', 'P10D', new Schema(Schema\Definition::time('e')))
         );
     }
 

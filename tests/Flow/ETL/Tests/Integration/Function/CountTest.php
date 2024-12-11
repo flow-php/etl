@@ -54,28 +54,4 @@ final class CountTest extends TestCase
             $memory->dump()
         );
     }
-
-    public function test_count_on_object() : void
-    {
-        $iterator = new \ArrayIterator([1, 2, 3]);
-
-        (new Flow())
-            ->read(
-                from_array(
-                    [
-                        ['key' => $iterator],
-                    ]
-                )
-            )
-            ->withEntry('count', ref('key')->size())
-            ->write(to_memory($memory = new ArrayMemory()))
-            ->run();
-
-        self::assertEquals(
-            [
-                ['key' => $iterator, 'count' => 3],
-            ],
-            $memory->dump()
-        );
-    }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, array_keys_style_convert, int_entry, ref};
+use function Flow\ETL\DSL\{array_keys_style_convert, int_entry, json_entry, ref};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ final class ArrayKeysStyleConverterTest extends TestCase
         $this->expectExceptionMessage('Unrecognized style invalid, please use one of following:');
 
         $row = Row::create(
-            array_entry('invalid_entry', []),
+            json_entry('invalid_entry', []),
         );
 
         array_keys_style_convert(ref('invalid_entry'), 'invalid')->eval($row);
@@ -35,7 +35,7 @@ final class ArrayKeysStyleConverterTest extends TestCase
     public function test_transforms_case_style_for_all_keys_in_array_entry() : void
     {
         $row = Row::create(
-            new Row\Entry\ArrayEntry(
+            new Row\Entry\JsonEntry(
                 'arrayEntry',
                 [
                     'itemId' => 1,

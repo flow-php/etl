@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, int_entry, lit, ref};
+use function Flow\ETL\DSL\{int_entry, json_entry, lit, ref};
 use Flow\ETL\Function\ArrayMerge;
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -18,8 +18,8 @@ final class ArrayMergeTest extends TestCase
             ref('a')->arrayMerge(ref('b'))
                 ->eval(
                     Row::create(
-                        array_entry('a', ['a' => 1]),
-                        array_entry('b', ['b' => 2]),
+                        json_entry('a', ['a' => 1]),
+                        json_entry('b', ['b' => 2]),
                     ),
                 )
         );
@@ -42,7 +42,7 @@ final class ArrayMergeTest extends TestCase
                 ->eval(
                     Row::create(
                         int_entry('a', 1),
-                        array_entry('b', ['b' => 2]),
+                        json_entry('b', ['b' => 2]),
                     ),
                 )
         );
@@ -54,7 +54,7 @@ final class ArrayMergeTest extends TestCase
             ref('a')->arrayMerge(ref('b'))
                 ->eval(
                     Row::create(
-                        array_entry('a', ['a' => 1]),
+                        json_entry('a', ['a' => 1]),
                         int_entry('b', 2),
                     ),
                 )

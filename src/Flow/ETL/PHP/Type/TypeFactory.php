@@ -6,10 +6,12 @@ namespace Flow\ETL\PHP\Type;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
+    DateType,
     JsonType,
     ListType,
     MapType,
     StructureType,
+    TimeType,
     UuidType,
     XMLElementType,
     XMLType};
@@ -31,6 +33,8 @@ final class TypeFactory
             'null' => NullType::fromArray($data),
             'object' => ObjectType::fromArray($data),
             'resource' => ResourceType::fromArray($data),
+            'time' => TimeType::fromArray($data),
+            'date' => DateType::fromArray($data),
             'datetime' => DateTimeType::fromArray($data),
             'json' => JsonType::fromArray($data),
             'uuid' => UuidType::fromArray($data),

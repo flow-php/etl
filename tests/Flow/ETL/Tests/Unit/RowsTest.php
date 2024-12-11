@@ -4,13 +4,24 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
-use function Flow\ETL\DSL\{array_entry, bool_entry, datetime_entry, int_entry, list_entry, ref, row, rows, rows_partitioned, str_entry, type_int, type_list, type_string};
+use function Flow\ETL\DSL\{bool_entry,
+    datetime_entry,
+    int_entry,
+    list_entry,
+    ref,
+    row,
+    rows,
+    rows_partitioned,
+    str_entry,
+    type_int,
+    type_list,
+    type_string};
 use function Flow\Filesystem\DSL\{partition, partitions};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\ListType;
-use Flow\ETL\Row\Comparator\{NativeComparator, WeakObjectComparator};
-use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry, ObjectEntry, StringEntry};
+use Flow\ETL\Row\Comparator\{NativeComparator};
+use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry, StringEntry};
 use Flow\ETL\Row\Schema\Definition;
 use Flow\ETL\Row\{Comparator, Schema};
 use Flow\ETL\{Row, Rows};
@@ -94,15 +105,6 @@ final class RowsTest extends TestCase
                 row(int_entry('number', 1))
             ),
             $comparator = new NativeComparator(),
-        ];
-
-        yield 'simple identical rows with objects' => [
-            $expected = rows(row(new ObjectEntry('object', new \stdClass()))),
-            $notUnique = rows(
-                row(new ObjectEntry('object', $object = new \stdClass())),
-                row(new ObjectEntry('object', $object = new \stdClass()))
-            ),
-            $comparator = new WeakObjectComparator(),
         ];
     }
 
@@ -816,7 +818,7 @@ final class RowsTest extends TestCase
         $rows = rows(
             row(int_entry('id', 1), str_entry('name', 'foo')),
             row(int_entry('id', 1), str_entry('name', null), list_entry('list', [1, 2], type_list(type_int()))),
-            row(int_entry('id', 1), str_entry('name', 'bar'), array_entry('tags', ['a', 'b'])),
+            row(int_entry('id', 1), str_entry('name', 'bar'), list_entry('tags', ['a', 'b'], type_list(type_string()))),
             row(int_entry('id', 1), int_entry('name', 25)),
         );
 
@@ -824,7 +826,7 @@ final class RowsTest extends TestCase
             new Schema(
                 Definition::integer('id'),
                 Definition::string('name', true),
-                Definition::array('tags', false, true),
+                Definition::list('tags', new ListType(ListElement::string(), true)),
                 Definition::list('list', new ListType(ListElement::integer(), true))
             ),
             $rows->schema()
@@ -839,7 +841,7 @@ final class RowsTest extends TestCase
         );
 
         self::assertEquals(
-            new Schema(Definition::array('list')),
+            new Schema(Definition::json('list')),
             $rows->schema()
         );
     }

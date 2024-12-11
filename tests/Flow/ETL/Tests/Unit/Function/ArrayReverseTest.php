@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, int_entry, ref};
+use function Flow\ETL\DSL\{int_entry, json_entry, ref};
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +17,7 @@ final class ArrayReverseTest extends TestCase
             ref('a')->arrayReverse()
                 ->eval(
                     Row::create(
-                        array_entry('a', [4, 10, 3, 5]),
+                        json_entry('a', [4, 10, 3, 5]),
                     ),
                 )
         );

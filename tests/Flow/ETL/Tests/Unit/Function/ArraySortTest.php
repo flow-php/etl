@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, ref, str_entry};
+use function Flow\ETL\DSL\{json_entry, ref, str_entry};
 use Flow\ETL\Function\ArraySort\Sort;
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -14,8 +14,8 @@ final class ArraySortTest extends TestCase
     public function test_sorting_big_arrays() : void
     {
         self::assertSame(
-            ref('array')->arraySort()->eval(Row::create(array_entry('array', \json_decode($this->jsonDifferentOrder(), true, 512, JSON_THROW_ON_ERROR)))),
-            ref('array')->arraySort()->eval(Row::create(array_entry('array', \json_decode($this->json(), true, 512, JSON_THROW_ON_ERROR))))
+            ref('array')->arraySort()->eval(Row::create(json_entry('array', \json_decode($this->jsonDifferentOrder(), true, 512, JSON_THROW_ON_ERROR)))),
+            ref('array')->arraySort()->eval(Row::create(json_entry('array', \json_decode($this->json(), true, 512, JSON_THROW_ON_ERROR))))
         );
     }
 
@@ -32,7 +32,7 @@ final class ArraySortTest extends TestCase
                 ],
             ],
             ref('array')->arraySort(Sort::asort)->eval(Row::create(
-                array_entry(
+                json_entry(
                     'array',
                     [
                         'a' => [
@@ -61,7 +61,7 @@ final class ArraySortTest extends TestCase
                 ],
             ],
             ref('array')->arraySort(Sort::ksort)->eval(Row::create(
-                array_entry(
+                json_entry(
                     'array',
                     [
                         'a' => [

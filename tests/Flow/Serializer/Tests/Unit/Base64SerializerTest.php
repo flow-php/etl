@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\Serializer\Tests\Unit;
 
-use function Flow\ETL\DSL\{bool_entry, datetime_entry, float_entry, int_entry, object_entry, row, rows, str_entry, struct_element, struct_entry, struct_type, type_int, type_string};
+use function Flow\ETL\DSL\{bool_entry, datetime_entry, float_entry, int_entry, row, rows, str_entry, struct_element, struct_entry, struct_type, type_int, type_string};
 use Flow\ETL\{Row, Rows};
 use Flow\Serializer\{Base64Serializer, NativePHPSerializer};
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,6 @@ final class Base64SerializerTest extends TestCase
                     datetime_entry('datetime', new \DateTimeImmutable('2022-01-01 00:00:00')),
                     str_entry('null', null),
                     float_entry('float', 0.12),
-                    object_entry('object', new \ArrayIterator([1, 2, 3])),
                     struct_entry(
                         'struct',
                         ['integer' => 1, 'string' => 'string'],

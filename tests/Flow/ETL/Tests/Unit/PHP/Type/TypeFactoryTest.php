@@ -20,6 +20,7 @@ use function Flow\ETL\DSL\{structure_element,
     type_resource,
     type_string,
     type_structure,
+    type_time,
     type_uuid,
     type_xml,
     type_xml_element};
@@ -132,5 +133,23 @@ final class TypeFactoryTest extends TestCase
     {
         $xml = type_xml();
         self::assertEquals($xml, TypeFactory::fromArray($xml->normalize()));
+    }
+
+    public function test_normalizing_date() : void
+    {
+        $date = type_datetime();
+        self::assertEquals($date, TypeFactory::fromArray($date->normalize()));
+    }
+
+    public function test_normalizing_date_time() : void
+    {
+        $dateTime = type_datetime();
+        self::assertEquals($dateTime, TypeFactory::fromArray($dateTime->normalize()));
+    }
+
+    public function test_normalizing_time() : void
+    {
+        $time = type_time();
+        self::assertEquals($time, TypeFactory::fromArray($time->normalize()));
     }
 }

@@ -13,7 +13,7 @@ use Flow\ETL\Row\Schema\Definition;
 use Flow\ETL\Row\{Entry, Reference};
 
 /**
- * @implements Entry<?string>
+ * @implements Entry<?array<mixed>>
  */
 final class JsonEntry implements Entry
 {
@@ -89,8 +89,8 @@ final class JsonEntry implements Entry
 
     public function isEqual(Entry $entry) : bool
     {
-        $entryValue = $entry->value();
-        $thisValue = $this->value();
+        $entryValue = $entry instanceof self ? $entry->value : $entry->value();
+        $thisValue = $this->value;
 
         if ($entryValue === null && $thisValue !== null) {
             return false;
@@ -105,10 +105,6 @@ final class JsonEntry implements Entry
                 && $entry instanceof self
                 && $this->type->isEqual($entry->type);
         }
-
-        /** @phpstan-ignore-next-line */
-        $thisValue = \json_decode($thisValue, true, flags: \JSON_THROW_ON_ERROR);
-        $entryValue = \json_decode($entryValue, true, flags: \JSON_THROW_ON_ERROR);
 
         return $this->is($entry->name()) && $entry instanceof self && $this->type->isEqual($entry->type) && (new ArrayComparison())->equals($thisValue, $entryValue);
     }
@@ -133,13 +129,15 @@ final class JsonEntry implements Entry
 
     public function toString() : string
     {
-        $value = $this->value();
-
-        if ($value === null) {
+        if ($this->value === null) {
             return '';
         }
 
-        return $value;
+        if (!\count($this->value) && $this->object) {
+            return '{}';
+        }
+
+        return \json_encode($this->value, JSON_THROW_ON_ERROR);
     }
 
     public function type() : Type
@@ -148,19 +146,11 @@ final class JsonEntry implements Entry
     }
 
     /**
-     * @throws \JsonException
+     * @return null|array<mixed>
      */
-    public function value() : ?string
+    public function value() : ?array
     {
-        if ($this->value === null) {
-            return null;
-        }
-
-        if (!\count($this->value) && $this->object) {
-            return '{}';
-        }
-
-        return \json_encode($this->value, JSON_THROW_ON_ERROR);
+        return $this->value;
     }
 
     public function withValue(mixed $value) : Entry

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
-use function Flow\ETL\DSL\{array_entry, int_entry, row, rows, string_entry};
+use function Flow\ETL\DSL\{int_entry, json_entry, row, rows, string_entry};
 use Flow\ETL\Transformer\DropEntriesTransformer;
 use Flow\ETL\{Config, FlowContext};
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ final class DropEntriesTransformerTest extends TestCase
             row(
                 int_entry('id', 1),
                 string_entry('name', 'Row Name'),
-                array_entry('array', ['test'])
+                json_entry('array', ['test'])
             )
         );
 
@@ -36,7 +36,7 @@ final class DropEntriesTransformerTest extends TestCase
             row(
                 int_entry('id', 1),
                 string_entry('name', 'Row Name'),
-                array_entry('array', ['test'])
+                json_entry('array', ['test'])
             )
         );
 

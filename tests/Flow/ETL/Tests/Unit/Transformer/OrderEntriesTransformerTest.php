@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Transformer;
 
-use function Flow\ETL\DSL\{array_entry,
+use function Flow\ETL\DSL\{
     bool_entry,
     compare_entries_by_name,
     compare_entries_by_name_desc,
@@ -21,7 +21,6 @@ use function Flow\ETL\DSL\{array_entry,
     json_entry,
     list_entry,
     map_entry,
-    object_entry,
     row,
     rows,
     str_entry,
@@ -58,13 +57,6 @@ final class OrderEntriesTransformerTest extends TestCase
                 str_entry('string_b', 'string'),
                 uuid_entry('uuid', new \Flow\ETL\PHP\Value\Uuid(Uuid::uuid4())),
                 json_entry('json', ['id' => 1, 'status' => 'NEW']),
-                array_entry(
-                    'array',
-                    [
-                        ['id' => 1, 'status' => 'NEW'],
-                        ['id' => 2, 'status' => 'PENDING'],
-                    ]
-                ),
                 list_entry('list', [1, 2, 3], type_list(type_int())),
                 map_entry('map', [0 => 'zero', 1 => 'one', 2 => 'two'], type_map(type_int(), type_string())),
                 struct_entry(
@@ -90,14 +82,13 @@ final class OrderEntriesTransformerTest extends TestCase
                         ),
                     ]),
                 ),
-                object_entry('object', new \ArrayIterator([1, 2, 3])),
                 enum_entry('enum_a', BackedStringEnum::three),
                 enum_entry('enum_b', BackedStringEnum::one)
             )
         );
 
         self::assertSame(
-            ['uuid', 'int_a', 'int_b', 'bool', 'bool_a', 'bool_c', 'float_a', 'float_b', 'datetime_d', 'datetime_z', 'string_a', 'string_b', 'enum_a', 'enum_b', 'array', 'list', 'json', 'map', 'object', 'struct'],
+            ['uuid', 'int_a', 'int_b', 'bool', 'bool_a', 'bool_c', 'float_a', 'float_b', 'datetime_d', 'datetime_z', 'string_a', 'string_b', 'enum_a', 'enum_b', 'list', 'json', 'map', 'struct'],
             \array_keys((new OrderEntriesTransformer(compare_entries_by_type_and_name()))->transform($rows, flow_context(config()))->toArray()[0])
         );
     }
@@ -148,13 +139,6 @@ final class OrderEntriesTransformerTest extends TestCase
                 str_entry('null', null),
                 uuid_entry('uuid', new \Flow\ETL\PHP\Value\Uuid(Uuid::uuid4())),
                 json_entry('json', ['id' => 1, 'status' => 'NEW']),
-                array_entry(
-                    'array',
-                    [
-                        ['id' => 1, 'status' => 'NEW'],
-                        ['id' => 2, 'status' => 'PENDING'],
-                    ]
-                ),
                 list_entry('list', [1, 2, 3], type_list(type_int())),
                 map_entry('map', [0 => 'zero', 1 => 'one', 2 => 'two'], type_map(type_int(), type_string())),
                 struct_entry(
@@ -180,17 +164,16 @@ final class OrderEntriesTransformerTest extends TestCase
                         ),
                     ]),
                 ),
-                object_entry('object', new \ArrayIterator([1, 2, 3])),
                 enum_entry('enum', BackedStringEnum::three)
             )
         );
 
         self::assertSame(
-            ['uuid', 'int', 'bool', 'float', 'datetime', 'null', 'enum', 'array', 'list', 'json', 'map', 'object', 'struct'],
+            ['uuid', 'int', 'bool', 'float', 'datetime', 'null', 'enum', 'list', 'json', 'map', 'struct'],
             \array_keys((new OrderEntriesTransformer(compare_entries_by_type()))->transform($rows, flow_context(config()))->toArray()[0])
         );
         self::assertSame(
-            array_reverse(['uuid', 'int', 'bool', 'float', 'datetime', 'null', 'enum', 'array', 'list', 'json', 'map', 'object', 'struct']),
+            array_reverse(['uuid', 'int', 'bool', 'float', 'datetime', 'null', 'enum', 'list', 'json', 'map', 'struct']),
             \array_keys((new OrderEntriesTransformer(compare_entries_by_type_desc()))->transform($rows, flow_context(config()))->toArray()[0])
         );
     }

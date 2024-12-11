@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Schema;
 
-use function Flow\ETL\DSL\{type_array,
-    type_boolean,
+use function Flow\ETL\DSL\{type_boolean,
+    type_date,
     type_datetime,
     type_enum,
     type_float,
@@ -13,14 +13,27 @@ use function Flow\ETL\DSL\{type_array,
     type_json,
     type_list,
     type_string,
+    type_time,
     type_uuid,
     type_xml,
     type_xml_element};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
 use Flow\ETL\PHP\Type\Logical\{ListType, MapType, StructureType};
-use Flow\ETL\PHP\Type\Native\ObjectType;
 use Flow\ETL\PHP\Type\{Type, TypeFactory};
-use Flow\ETL\Row\Entry\{ArrayEntry, BooleanEntry, DateTimeEntry, EnumEntry, FloatEntry, IntegerEntry, JsonEntry, ListEntry, MapEntry, ObjectEntry, StringEntry, StructureEntry, UuidEntry, XMLEntry};
+use Flow\ETL\Row\Entry\{BooleanEntry,
+    DateEntry,
+    DateTimeEntry,
+    EnumEntry,
+    FloatEntry,
+    IntegerEntry,
+    JsonEntry,
+    ListEntry,
+    MapEntry,
+    StringEntry,
+    StructureEntry,
+    TimeEntry,
+    UuidEntry,
+    XMLEntry};
 use Flow\ETL\Row\{Entry, EntryReference, Reference};
 
 final class Definition
@@ -46,14 +59,14 @@ final class Definition
         $this->ref = EntryReference::init($ref);
     }
 
-    public static function array(string|Reference $entry, bool $empty = false, bool $nullable = false, ?Metadata $metadata = null) : self
-    {
-        return new self($entry, ArrayEntry::class, type_array($empty, $nullable), $metadata);
-    }
-
     public static function boolean(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
         return new self($entry, BooleanEntry::class, type_boolean($nullable), $metadata);
+    }
+
+    public static function date(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
+    {
+        return new self($entry, DateEntry::class, type_date($nullable), $metadata);
     }
 
     public static function dateTime(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
@@ -100,7 +113,6 @@ final class Definition
         return new self(
             $definition['ref'],
             match ($definition['type']['type']) {
-                'array' => ArrayEntry::class,
                 'scalar' => match ($definition['type']['scalar_type']) {
                     'boolean' => BooleanEntry::class,
                     'float' => FloatEntry::class,
@@ -109,11 +121,12 @@ final class Definition
                     default => throw new InvalidArgumentException(\sprintf('Unknown scalar type "%s"', \json_encode($definition['type']['scalar_type']))),
                 },
                 'datetime' => DateTimeEntry::class,
+                'time' => TimeEntry::class,
+                'date' => DateEntry::class,
                 'enum' => EnumEntry::class,
-                'json' => JsonEntry::class,
+                'json', 'array' => JsonEntry::class,
                 'list' => ListEntry::class,
                 'map' => MapEntry::class,
-                'object' => ObjectEntry::class,
                 'structure' => StructureEntry::class,
                 'uuid' => UuidEntry::class,
                 'xml' => XMLEntry::class,
@@ -155,16 +168,6 @@ final class Definition
         );
     }
 
-    public static function object(string|Reference $entry, ObjectType $type, ?Metadata $metadata = null) : self
-    {
-        return new self(
-            $entry,
-            ObjectEntry::class,
-            $type,
-            $metadata
-        );
-    }
-
     public static function string(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
         return new self($entry, StringEntry::class, type_string($nullable), $metadata);
@@ -178,6 +181,11 @@ final class Definition
             $type,
             $metadata
         );
+    }
+
+    public static function time(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
+    {
+        return new self($entry, TimeEntry::class, type_time($nullable), $metadata);
     }
 
     public static function uuid(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
@@ -260,8 +268,8 @@ final class Definition
             if (!$this->type->isEqual($definition->type)) {
                 return new self(
                     $this->ref,
-                    ArrayEntry::class,
-                    type_array(false, $this->isNullable() || $definition->isNullable()),
+                    JsonEntry::class,
+                    type_json($this->isNullable() || $definition->isNullable()),
                     $this->metadata->merge($definition->metadata)
                 );
             }
@@ -287,20 +295,38 @@ final class Definition
             );
         }
 
+        if (\in_array(TimeEntry::class, $entryClasses, true) && \in_array(DateEntry::class, $entryClasses, true)) {
+            return new self(
+                $this->ref,
+                DateTimeEntry::class,
+                type_datetime($this->isNullable() || $definition->isNullable()),
+                $this->metadata->merge($definition->metadata)
+            );
+        }
+
+        if (\in_array(TimeEntry::class, $entryClasses, true) && \in_array(DateTimeEntry::class, $entryClasses, true)) {
+            return new self(
+                $this->ref,
+                DateTimeEntry::class,
+                type_datetime($this->isNullable() || $definition->isNullable()),
+                $this->metadata->merge($definition->metadata)
+            );
+        }
+
+        if (\in_array(DateEntry::class, $entryClasses, true) && \in_array(DateTimeEntry::class, $entryClasses, true)) {
+            return new self(
+                $this->ref,
+                DateTimeEntry::class,
+                type_datetime($this->isNullable() || $definition->isNullable()),
+                $this->metadata->merge($definition->metadata)
+            );
+        }
+
         if (\in_array(IntegerEntry::class, $entryClasses, true) && \in_array(FloatEntry::class, $entryClasses, true)) {
             return new self(
                 $this->ref,
                 FloatEntry::class,
                 type_float($this->isNullable() || $definition->isNullable()),
-                $this->metadata->merge($definition->metadata)
-            );
-        }
-
-        if (\in_array(ArrayEntry::class, $entryClasses, true)) {
-            return new self(
-                $this->ref,
-                ArrayEntry::class,
-                type_array(false, $this->isNullable() || $definition->isNullable()),
                 $this->metadata->merge($definition->metadata)
             );
         }

@@ -109,6 +109,14 @@ final class DefinitionTest extends TestCase
         );
     }
 
+    public function test_merging_date_with_datetime() : void
+    {
+        self::assertEquals(
+            Definition::datetime('datetime'),
+            Definition::datetime('datetime')->merge(Definition::date('datetime'))
+        );
+    }
+
     public function test_merging_different_entries() : void
     {
         $this->expectException(RuntimeException::class);
@@ -137,10 +145,26 @@ final class DefinitionTest extends TestCase
         );
     }
 
+    public function test_merging_time_with_date() : void
+    {
+        self::assertEquals(
+            Definition::datetime('datetime'),
+            Definition::date('datetime')->merge(Definition::time('datetime'))
+        );
+    }
+
+    public function test_merging_time_with_datetime() : void
+    {
+        self::assertEquals(
+            Definition::datetime('datetime'),
+            Definition::datetime('datetime')->merge(Definition::time('datetime'))
+        );
+    }
+
     public function test_merging_two_different_lists() : void
     {
         self::assertEquals(
-            Definition::array('list'),
+            Definition::json('list'),
             Definition::list('list', type_list(type_string()))->merge(Definition::list('list', type_list(type_int())))
         );
     }
@@ -148,7 +172,7 @@ final class DefinitionTest extends TestCase
     public function test_merging_two_different_maps() : void
     {
         self::assertEquals(
-            Definition::array('map'),
+            Definition::json('map'),
             Definition::map('map', type_map(type_string(), type_string()))->merge(Definition::map('map', type_map(type_string(), type_int())))
         );
     }
@@ -156,7 +180,7 @@ final class DefinitionTest extends TestCase
     public function test_merging_two_different_structures() : void
     {
         self::assertEquals(
-            Definition::array('structure'),
+            Definition::json('structure'),
             Definition::structure(
                 'structure',
                 struct_type([

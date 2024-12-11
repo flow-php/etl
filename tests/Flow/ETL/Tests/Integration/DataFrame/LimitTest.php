@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\{df, from_array, from_rows, ref};
+use function Flow\ETL\DSL\{df,
+    from_array,
+    from_rows,
+    ref,
+    struct_element,
+    type_int,
+    type_list,
+    type_map,
+    type_string,
+    type_structure};
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Row\Entry\{ArrayEntry, IntegerEntry};
+use Flow\ETL\Row\Entry\{IntegerEntry};
 use Flow\ETL\Tests\Integration\IntegrationTestCase;
 use Flow\ETL\{Extractor, FlowContext, Row, Rows};
 
@@ -124,11 +133,24 @@ final class LimitTest extends IntegrationTestCase
                 {
                     for ($i = 0; $i < 1000; $i++) {
                         yield new Rows(
-                            Row::create(new ArrayEntry('ids', [
-                                ['id' => $i + 1, 'more_ids' => [['more_id' => $i + 4], ['more_id' => $i + 7]]],
-                                ['id' => $i + 2, 'more_ids' => [['more_id' => $i + 5], ['more_id' => $i + 8]]],
-                                ['id' => $i + 3, 'more_ids' => [['more_id' => $i + 6], ['more_id' => $i + 9]]],
-                            ])),
+                            Row::create(
+                                new Row\Entry\ListEntry(
+                                    'ids',
+                                    [
+                                        ['id' => $i + 1, 'more_ids' => [['more_id' => $i + 4], ['more_id' => $i + 7]]],
+                                        ['id' => $i + 2, 'more_ids' => [['more_id' => $i + 5], ['more_id' => $i + 8]]],
+                                        ['id' => $i + 3, 'more_ids' => [['more_id' => $i + 6], ['more_id' => $i + 9]]],
+                                    ],
+                                    type_list(
+                                        type_structure(
+                                            [
+                                                struct_element('id', type_int()),
+                                                struct_element('more_ids', type_list(type_map(type_string(), type_int()))),
+                                            ]
+                                        )
+                                    )
+                                ),
+                            )
                         );
                     }
                 }

@@ -20,14 +20,12 @@ final class TypePriorities
         Entry\DateTimeEntry::class => 5,
         Entry\StringEntry::class => 6,
         Entry\EnumEntry::class => 7,
-        Entry\ArrayEntry::class => 8,
-        Entry\ListEntry::class => 9,
-        Entry\JsonEntry::class => 10,
-        Entry\MapEntry::class => 11,
-        Entry\ObjectEntry::class => 12,
-        Entry\StructureEntry::class => 13,
-        Entry\XMLEntry::class => 14,
-        Entry\XMLElementEntry::class => 15,
+        Entry\ListEntry::class => 8,
+        Entry\JsonEntry::class => 9,
+        Entry\MapEntry::class => 10,
+        Entry\StructureEntry::class => 11,
+        Entry\XMLEntry::class => 12,
+        Entry\XMLElementEntry::class => 13,
     ];
 
     /**

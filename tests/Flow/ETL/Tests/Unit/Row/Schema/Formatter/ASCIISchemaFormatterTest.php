@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Row\Schema\Formatter;
 
-use function Flow\ETL\DSL\{type_int, type_string};
+use function Flow\ETL\DSL\{type_int, type_list, type_string};
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
@@ -36,7 +36,7 @@ final class ASCIISchemaFormatterTest extends TestCase
                 ]),
             ),
             Schema\Definition::string('name', nullable: true),
-            Schema\Definition::array('tags'),
+            Schema\Definition::list('tags', type_list(type_string())),
             Schema\Definition::boolean('active'),
             Schema\Definition::xml('xml'),
             Schema\Definition::xml_element('xml_element'),
@@ -58,7 +58,7 @@ schema
 |        |-- city: ?string
 |        |-- country: ?string
 |-- name: ?string
-|-- tags: array<mixed>
+|-- tags: list<string>
 |-- active: boolean
 |-- xml: xml
 |-- xml_element: xml_element
@@ -75,7 +75,7 @@ SCHEMA,
     {
         $schema = new Schema(
             Schema\Definition::string('name', nullable: true),
-            Schema\Definition::array('tags'),
+            Schema\Definition::list('tags', type_list(type_string())),
             Schema\Definition::boolean('active'),
             Schema\Definition::xml('xml'),
             Schema\Definition::map('map', new MapType(MapKey::string(), MapValue::string())),
@@ -86,7 +86,7 @@ SCHEMA,
             <<<'SCHEMA'
 schema
 |-- name: ?string
-|-- tags: array<mixed>
+|-- tags: list<string>
 |-- active: boolean
 |-- xml: xml
 |-- map: map<string, string>

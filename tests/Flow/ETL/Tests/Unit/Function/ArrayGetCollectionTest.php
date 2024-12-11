@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, array_get_collection, array_get_collection_first, int_entry, ref};
+use function Flow\ETL\DSL\{array_get_collection, array_get_collection_first, int_entry, json_entry, ref};
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ final class ArrayGetCollectionTest extends TestCase
     public function test_getting_keys_from_simple_array() : void
     {
         $row = Row::create(
-            array_entry(
+            json_entry(
                 'array_entry',
                 [
                     'id' => 1,
@@ -39,7 +39,7 @@ final class ArrayGetCollectionTest extends TestCase
     public function test_getting_specific_keys_from_collection_of_array() : void
     {
         $row = Row::create(
-            array_entry(
+            json_entry(
                 'array_entry',
                 [
                     [
@@ -70,7 +70,7 @@ final class ArrayGetCollectionTest extends TestCase
     public function test_getting_specific_keys_from_first_element_in_collection_of_array() : void
     {
         $row = Row::create(
-            array_entry(
+            json_entry(
                 'array_entry',
                 [
                     [
@@ -102,7 +102,7 @@ final class ArrayGetCollectionTest extends TestCase
     public function test_getting_specific_keys_from_first_element_in_collection_of_array_when_first_index_does_not_exists() : void
     {
         $row = Row::create(
-            array_entry(
+            json_entry(
                 'array_entry',
                 [
                     2 => [

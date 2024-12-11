@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\PHP\Type;
 
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
+    DateType,
     JsonType,
     ListType,
     MapType,
     StructureType,
+    TimeType,
     UuidType,
     XMLElementType,
     XMLType};
@@ -33,6 +35,18 @@ final class TypeDetectorTest extends TestCase
             '{"one": "one", "two": "two", "three": "three"}',
             JsonType::class,
             'json',
+        ];
+
+        yield 'time' => [
+            new \DateInterval('PT1H'),
+            TimeType::class,
+            'time',
+        ];
+
+        yield 'date' => [
+            new \DateTime('2024-01-01'),
+            DateType::class,
+            'date',
         ];
 
         yield 'datetime' => [

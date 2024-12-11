@@ -23,9 +23,7 @@ final class RenameEntryTransformerTest extends TestCase
                     new Row\Entry\StringEntry('status', 'PENDING'),
                     new Row\Entry\BooleanEntry('enabled', true),
                     new Row\Entry\DateTimeEntry('datetime', new \DateTimeImmutable('2020-01-01 00:00:00 UTC')),
-                    new Row\Entry\ArrayEntry('array', ['foo', 'bar']),
                     new Row\Entry\JsonEntry('json', ['foo', 'bar']),
-                    new Row\Entry\ObjectEntry('object', new \stdClass()),
                     new Row\Entry\StringEntry('null', null)
                 ),
             ),
@@ -41,9 +39,7 @@ final class RenameEntryTransformerTest extends TestCase
                     new Row\Entry\StringEntry('status', 'PENDING'),
                     new Row\Entry\BooleanEntry('enabled', true),
                     new Row\Entry\DateTimeEntry('datetime', new \DateTimeImmutable('2020-01-01 00:00:00 UTC')),
-                    new Row\Entry\ArrayEntry('array', ['foo', 'bar']),
                     new Row\Entry\JsonEntry('json', ['foo', 'bar']),
-                    new Row\Entry\ObjectEntry('object', new \stdClass()),
                     new Row\Entry\IntegerEntry('new_int', 1000),
                     new Row\Entry\StringEntry('nothing', null)
                 ),

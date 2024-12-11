@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\{array_entry,
+use function Flow\ETL\DSL\{
     average,
     count,
     datetime_entry,
@@ -18,6 +18,7 @@ use function Flow\ETL\DSL\{array_entry,
     from_rows,
     int_entry,
     int_schema,
+    json_entry,
     list_schema,
     lit,
     max,
@@ -43,14 +44,14 @@ final class GroupByTest extends IntegrationTestCase
     {
         $rows = df()
             ->read(from_rows(rows(
-                row(int_entry('id', 1), int_entry('score', 20), array_entry('array', ['a', 'b', 'c', 'd'])),
-                row(int_entry('id', 2), int_entry('score', 20), array_entry('array', ['a', 'b', 'c', 'd'])),
-                row(int_entry('id', 3), int_entry('score', 25), array_entry('array', ['a', 'b', 'c'])),
-                row(int_entry('id', 4), int_entry('score', 30), array_entry('array', ['a', 'b', 'c'])),
-                row(int_entry('id', 5), int_entry('score', 40), array_entry('array', ['a', 'b'])),
-                row(int_entry('id', 6), int_entry('score', 40), array_entry('array', ['a', 'b'])),
-                row(int_entry('id', 7), int_entry('score', 45), array_entry('array', ['a', 'b'])),
-                row(int_entry('id', 9), int_entry('score', 50), array_entry('array', ['a'])),
+                row(int_entry('id', 1), int_entry('score', 20), json_entry('array', ['a', 'b', 'c', 'd'])),
+                row(int_entry('id', 2), int_entry('score', 20), json_entry('array', ['a', 'b', 'c', 'd'])),
+                row(int_entry('id', 3), int_entry('score', 25), json_entry('array', ['a', 'b', 'c'])),
+                row(int_entry('id', 4), int_entry('score', 30), json_entry('array', ['a', 'b', 'c'])),
+                row(int_entry('id', 5), int_entry('score', 40), json_entry('array', ['a', 'b'])),
+                row(int_entry('id', 6), int_entry('score', 40), json_entry('array', ['a', 'b'])),
+                row(int_entry('id', 7), int_entry('score', 45), json_entry('array', ['a', 'b'])),
+                row(int_entry('id', 9), int_entry('score', 50), json_entry('array', ['a'])),
             )))
             ->groupBy('array')
             ->aggregate(sum('score'), average('score'))

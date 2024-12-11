@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Double;
 
-use function Flow\ETL\DSL\{array_entry,
+use function Flow\ETL\DSL\{
     bool_entry,
     datetime_entry,
     enum_entry,
@@ -14,7 +14,6 @@ use function Flow\ETL\DSL\{array_entry,
     json_entry,
     list_entry,
     map_entry,
-    object_entry,
     row,
     rows,
     str_entry,
@@ -57,13 +56,6 @@ final class FakeExtractor implements Extractor
                     str_entry('null', null),
                     uuid_entry('uuid', new \Flow\ETL\PHP\Value\Uuid(Uuid::uuid4())),
                     json_entry('json', ['id' => $id, 'status' => 'NEW']),
-                    array_entry(
-                        'array',
-                        [
-                            ['id' => 1, 'status' => 'NEW'],
-                            ['id' => 2, 'status' => 'PENDING'],
-                        ]
-                    ),
                     list_entry('list', [1, 2, 3], type_list(type_int())),
                     list_entry('list_of_datetimes', [new \DateTimeImmutable(), new \DateTimeImmutable(), new \DateTimeImmutable()], type_list(type_datetime())),
                     map_entry(
@@ -94,7 +86,6 @@ final class FakeExtractor implements Extractor
                             ),
                         ]),
                     ),
-                    object_entry('object', new \ArrayIterator([1, 2, 3])),
                     enum_entry('enum', BackedStringEnum::three)
                 )
             );

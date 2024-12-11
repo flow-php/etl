@@ -6,17 +6,36 @@ namespace Flow\ETL\PHP\Type;
 
 use function Flow\ETL\DSL\{type_array,
     type_boolean,
+    type_date,
     type_datetime,
     type_float,
     type_integer,
     type_json,
     type_null,
     type_string,
+    type_time,
     type_uuid,
-    type_xml
-};
+    type_xml};
 use Flow\ETL\Exception\RuntimeException;
-use Flow\ETL\PHP\Type\Caster\{ArrayCastingHandler, BooleanCastingHandler, CastingContext, CastingHandler, DateTimeCastingHandler, EnumCastingHandler, FloatCastingHandler, IntegerCastingHandler, JsonCastingHandler, ListCastingHandler, MapCastingHandler, NullCastingHandler, ObjectCastingHandler, StringCastingHandler, StructureCastingHandler, UuidCastingHandler, XMLCastingHandler};
+use Flow\ETL\PHP\Type\Caster\{ArrayCastingHandler,
+    BooleanCastingHandler,
+    CastingContext,
+    CastingHandler,
+    DateCastingHandler,
+    DateTimeCastingHandler,
+    EnumCastingHandler,
+    FloatCastingHandler,
+    IntegerCastingHandler,
+    JsonCastingHandler,
+    ListCastingHandler,
+    MapCastingHandler,
+    NullCastingHandler,
+    ObjectCastingHandler,
+    StringCastingHandler,
+    StructureCastingHandler,
+    TimeCastingHandler,
+    UuidCastingHandler,
+    XMLCastingHandler};
 
 final class Caster
 {
@@ -38,6 +57,8 @@ final class Caster
             type_uuid()->toString() => new UuidCastingHandler(),
             'object' => new ObjectCastingHandler(),
             type_datetime()->toString() => new DateTimeCastingHandler(),
+            type_date()->toString() => new DateCastingHandler(),
+            type_time()->toString() => new TimeCastingHandler(),
             type_json()->toString() => new JsonCastingHandler(),
             type_array()->toString() => new ArrayCastingHandler(),
             'list' => new ListCastingHandler(),

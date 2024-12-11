@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, datetime_entry, int_entry, ref, str_entry};
+use function Flow\ETL\DSL\{datetime_entry, int_entry, json_entry, ref, str_entry};
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +38,7 @@ final class JsonEncodeTest extends TestCase
     {
         self::assertSame(
             '{"value":1}',
-            ref('value')->jsonEncode()->eval(Row::create(array_entry('value', ['value' => 1]))),
+            ref('value')->jsonEncode()->eval(Row::create(json_entry('value', ['value' => 1]))),
         );
     }
 }

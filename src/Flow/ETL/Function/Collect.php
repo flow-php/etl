@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Function;
 
-use function Flow\ETL\DSL\array_entry;
+use function Flow\ETL\DSL\to_entry;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row;
 use Flow\ETL\Row\{Entry, Reference};
@@ -41,6 +41,6 @@ final class Collect implements AggregatingFunction
             $this->ref->as($this->ref->name() . '_collection');
         }
 
-        return array_entry($this->ref->name(), $this->collection);
+        return to_entry($this->ref->name(), $this->collection);
     }
 }

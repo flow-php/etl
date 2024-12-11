@@ -63,22 +63,21 @@ final class JsonObjectEntryTest extends TestCase
     public function test_map() : void
     {
         $item = ['item-id' => 1, 'name' => 'one'];
-        $entry = (JsonEntry::object('item', $item))->map(function (string $value) {
-            $jsonValue = \json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-            \array_walk($jsonValue, function (&$v) : void {
+        $entry = (JsonEntry::object('item', $item))->map(function (array $value) {
+            \array_walk($value, function (&$v) : void {
                 if (\is_string($v)) {
                     $v = \mb_strtoupper($v);
                 }
             });
 
-            return \json_encode($jsonValue, JSON_THROW_ON_ERROR);
+            return \json_encode($value, JSON_THROW_ON_ERROR);
         });
 
         self::assertEquals(
             \json_encode(
                 ['item-id' => 1, 'name' => 'ONE']
             ),
-            $entry->value()
+            $entry->toString()
         );
     }
 
@@ -96,6 +95,6 @@ final class JsonObjectEntryTest extends TestCase
         $item = ['item-id' => 1, 'name' => 'one'];
         $entry = JsonEntry::object('item', $item);
 
-        self::assertEquals(\json_encode($item), $entry->value());
+        self::assertEquals(\json_encode($item), $entry->toString());
     }
 }

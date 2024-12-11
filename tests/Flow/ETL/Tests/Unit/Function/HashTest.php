@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, concat, datetime_entry, hash, lit, ref, str_entry};
+use function Flow\ETL\DSL\{concat, datetime_entry, hash, json_entry, lit, ref, str_entry};
 use Flow\ETL\Hash\NativePHPHash;
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ final class HashTest extends TestCase
     {
         self::assertSame(
             '4450cf82dc53848e2bbe9798b70b0a6a',
-            ref('value')->hash()->eval(Row::create(array_entry('value', ['test']))),
+            ref('value')->hash()->eval(Row::create(json_entry('value', ['test']))),
         );
     }
 

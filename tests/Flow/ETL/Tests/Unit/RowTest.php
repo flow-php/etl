@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
-use function Flow\ETL\DSL\{array_entry,
+use function Flow\ETL\DSL\{
     bool_entry,
     datetime_entry,
     float_entry,
     generate_random_int,
     int_entry,
+    json_entry,
     list_entry,
     map_entry,
-    object_entry,
     row,
     str_entry,
     struct_element,
@@ -21,13 +21,19 @@ use function Flow\ETL\DSL\{array_entry,
     type_int,
     type_list,
     type_map,
-    type_object,
     type_string};
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, MapType, StructureType};
-use Flow\ETL\Row\Entry\{ArrayEntry, BooleanEntry, DateTimeEntry, IntegerEntry, MapEntry, StringEntry, StructureEntry};
+use Flow\ETL\Row\Entry\{
+    BooleanEntry,
+    DateTimeEntry,
+    IntegerEntry,
+    JsonEntry,
+    MapEntry,
+    StringEntry,
+    StructureEntry};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Schema\Definition;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -54,8 +60,8 @@ final class RowTest extends TestCase
         ];
         yield 'simple same array entries' => [
             true,
-            row(new ArrayEntry('json', ['foo' => ['bar' => 'baz']])),
-            row(new ArrayEntry('json', ['foo' => ['bar' => 'baz']])),
+            row(new JsonEntry('json', ['foo' => ['bar' => 'baz']])),
+            row(new JsonEntry('json', ['foo' => ['bar' => 'baz']])),
         ];
         yield 'simple same collection entries' => [
             true,
@@ -101,7 +107,7 @@ final class RowTest extends TestCase
             bool_entry('deleted', false),
             datetime_entry('created-at', new \DateTimeImmutable('now')),
             str_entry('phase', null),
-            array_entry(
+            json_entry(
                 'array',
                 [
                     ['id' => 1, 'status' => 'NEW'],
@@ -122,7 +128,6 @@ final class RowTest extends TestCase
                 ['NEW', 'PENDING'],
                 type_map(type_int(), type_string())
             ),
-            object_entry('object', new \ArrayIterator([1, 2, 3]))
         );
 
         self::assertEquals(
@@ -132,7 +137,7 @@ final class RowTest extends TestCase
                 Definition::boolean('deleted'),
                 Definition::dateTime('created-at'),
                 Definition::string('phase', nullable: true),
-                Definition::array('array'),
+                Definition::json('array'),
                 Definition::structure(
                     'items',
                     new StructureType([
@@ -145,7 +150,6 @@ final class RowTest extends TestCase
                     new MapType(MapKey::integer(), MapValue::string())
                 ),
                 Definition::list('list', new ListType(ListElement::integer())),
-                Definition::object('object', type_object(\ArrayIterator::class)),
             ),
             $row->schema()
         );

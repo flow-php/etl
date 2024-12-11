@@ -4,7 +4,31 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\{array_entry, bool_entry, datetime_entry, df, enum_entry, float_entry, from_array, from_rows, int_entry, list_entry, map_entry, object_entry, ref, row, rows, str_entry, string_entry, struct_element, struct_entry, struct_type, type_int, type_list, type_map, type_string, xml_entry};
+use function Flow\ETL\DSL\{
+    bool_entry,
+    datetime_entry,
+    df,
+    enum_entry,
+    float_entry,
+    from_array,
+    from_rows,
+    int_entry,
+    json_entry,
+    list_entry,
+    map_entry,
+    ref,
+    row,
+    rows,
+    str_entry,
+    string_entry,
+    struct_element,
+    struct_entry,
+    struct_type,
+    type_int,
+    type_list,
+    type_map,
+    type_string,
+    xml_entry};
 use Flow\ETL\Tests\Fixtures\Enum\BackedStringEnum;
 use Flow\ETL\Tests\Integration\IntegrationTestCase;
 use Flow\ETL\{Extractor, FlowContext, Rows};
@@ -29,7 +53,7 @@ final class DisplayTest extends IntegrationTestCase
                                 bool_entry('deleted', false),
                                 datetime_entry('created-at', new \DateTimeImmutable('2020-07-13 15:00')),
                                 str_entry('phase', null),
-                                array_entry(
+                                json_entry(
                                     'array',
                                     [
                                         ['id' => 1, 'status' => 'NEW'],
@@ -54,7 +78,6 @@ final class DisplayTest extends IntegrationTestCase
                                         struct_element('name', type_string()),
                                     ])
                                 ),
-                                object_entry('object', new \ArrayIterator([1, 2, 3])),
                                 enum_entry('enum', BackedStringEnum::three),
                                 xml_entry('xml', '<xml><node id="123">test<foo>bar</foo></node></xml>'),
                             ),
@@ -66,15 +89,15 @@ final class DisplayTest extends IntegrationTestCase
 
         self::assertSame(
             <<<'ASCIITABLE'
-+------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+----------------------+-------+----------------------+
-|   id |  price | 100 | deleted |           created-at | phase |                array |    list |               map |                items |               object |  enum |                  xml |
-+------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+----------------------+-------+----------------------+
-| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | ArrayIterator Object | three | <xml><node id="123"> |
-| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | ArrayIterator Object | three | <xml><node id="123"> |
-| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | ArrayIterator Object | three | <xml><node id="123"> |
-| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | ArrayIterator Object | three | <xml><node id="123"> |
-| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | ArrayIterator Object | three | <xml><node id="123"> |
-+------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+----------------------+-------+----------------------+
++------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+-------+----------------------+
+|   id |  price | 100 | deleted |           created-at | phase |                array |    list |               map |                items |  enum |                  xml |
++------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+-------+----------------------+
+| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | three | <xml><node id="123"> |
+| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | three | <xml><node id="123"> |
+| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | three | <xml><node id="123"> |
+| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | three | <xml><node id="123"> |
+| 1234 | 123.45 | 100 |   false | 2020-07-13T15:00:00+ |       | [{"id":1,"status":"N | [1,2,3] | ["NEW","PENDING"] | {"item-id":"1","name | three | <xml><node id="123"> |
++------+--------+-----+---------+----------------------+-------+----------------------+---------+-------------------+----------------------+-------+----------------------+
 5 rows
 
 ASCIITABLE,

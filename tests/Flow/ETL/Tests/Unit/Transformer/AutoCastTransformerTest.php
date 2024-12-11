@@ -33,7 +33,7 @@ final class AutoCastTransformerTest extends TestCase
                     'integer' => 1,
                     'float' => 1.0,
                     'boolean' => true,
-                    'json' => '{"foo":"bar"}',
+                    'json' => ['foo' => 'bar'],
                     'datetime' => new \DateTimeImmutable('2021-01-01 00:00:00'),
                     'null' => null,
                     'nil' => null,

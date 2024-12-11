@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, ref, row, type_string};
+use function Flow\ETL\DSL\{json_entry, ref, row, type_string};
 use Flow\ETL\Adapter\Elasticsearch\Tests\Integration\TestCase;
 
 final class OnEachTest extends TestCase
@@ -16,7 +16,7 @@ final class OnEachTest extends TestCase
             ref('array')->onEach(ref('element')->cast(type_string()))
                 ->eval(
                     row(
-                        array_entry(
+                        json_entry(
                             'array',
                             [1, 2, 3, 4, 5]
                         )
@@ -32,7 +32,7 @@ final class OnEachTest extends TestCase
             ref('array')->onEach(ref('element')->cast(type_string()))
                 ->eval(
                     row(
-                        array_entry(
+                        json_entry(
                             'array',
                             []
                         )
@@ -48,7 +48,7 @@ final class OnEachTest extends TestCase
             ref('array')->onEach(ref('element')->cast(type_string()), true)
                 ->eval(
                     row(
-                        array_entry(
+                        json_entry(
                             'array',
                             ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5]
                         )
@@ -64,7 +64,7 @@ final class OnEachTest extends TestCase
             ref('array')->onEach(ref('element')->cast(type_string()), false)
                 ->eval(
                     row(
-                        array_entry(
+                        json_entry(
                             'array',
                             ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5]
                         )

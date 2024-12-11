@@ -81,11 +81,14 @@ use Flow\ETL\Memory\Memory;
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
-use Flow\ETL\PHP\Type\Logical\{DateTimeType,
+use Flow\ETL\PHP\Type\Logical\{
+    DateTimeType,
+    DateType,
     JsonType,
     ListType,
     MapType,
     StructureType,
+    TimeType,
     UuidType,
     XMLElementType,
     XMLType};
@@ -327,15 +330,6 @@ function to_branch(ScalarFunction $condition, Loader $loader) : Loader
     return new Loader\BranchingLoader($condition, $loader);
 }
 
-/**
- * @param array<mixed> $data
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
-function array_entry(string $array, ?array $data) : Entry\ArrayEntry
-{
-    return new Entry\ArrayEntry($array, $data);
-}
-
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
 function bool_entry(string $name, ?bool $value) : Entry\BooleanEntry
 {
@@ -352,6 +346,18 @@ function boolean_entry(string $name, ?bool $value) : Entry\BooleanEntry
 function datetime_entry(string $name, \DateTimeInterface|string|null $value) : Entry\DateTimeEntry
 {
     return new Entry\DateTimeEntry($name, $value);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
+function time_entry(string $name, \DateInterval|string|null $value) : Entry\TimeEntry
+{
+    return new Entry\TimeEntry($name, $value);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
+function date_entry(string $name, \DateTimeInterface|string|null $value) : Entry\DateEntry
+{
+    return new Entry\DateEntry($name, $value);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
@@ -395,18 +401,6 @@ function json_object_entry(string $name, array|string|null $data) : Entry\JsonEn
     }
 
     return Entry\JsonEntry::object($name, $data);
-}
-
-#[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
-function object_entry(string $name, ?object $data) : Entry\ObjectEntry
-{
-    return new Entry\ObjectEntry($name, $data);
-}
-
-#[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
-function obj_entry(string $name, ?object $data) : Entry\ObjectEntry
-{
-    return object_entry($name, $data);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
@@ -530,6 +524,18 @@ function type_json(bool $nullable = false) : JsonType
 function type_datetime(bool $nullable = false) : DateTimeType
 {
     return new DateTimeType($nullable);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
+function type_date(bool $nullable = false) : DateType
+{
+    return new DateType($nullable);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
+function type_time(bool $nullable = false) : TimeType
+{
+    return new TimeType($nullable);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
@@ -1044,6 +1050,15 @@ function number_format(ScalarFunction|int|float $value, ScalarFunction|int $deci
 }
 
 /**
+ * @param array<mixed> $data
+ */
+#[DocumentationDSL(module: Module::CORE, type: DSLType::DATA_FRAME)]
+function to_entry(string $name, mixed $data, EntryFactory $entryFactory = new NativeEntryFactory()) : Entry
+{
+    return $entryFactory->create($name, $data);
+}
+
+/**
  * @param array<array<mixed>>|array<mixed|string> $data
  * @param array<Partition>|Partitions $partitions
  */
@@ -1255,18 +1270,6 @@ function float_schema(string $name, bool $nullable = false, ?Schema\Metadata $me
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
-function array_schema(string $name, bool $empty = false, bool $nullable = false, ?Schema\Metadata $metadata = null) : Definition
-{
-    return Definition::array($name, $empty, $nullable, $metadata);
-}
-
-#[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
-function object_schema(string $name, ObjectType $type, ?Schema\Metadata $metadata = null) : Definition
-{
-    return Definition::object($name, $type, $metadata);
-}
-
-#[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
 function map_schema(string $name, MapType $type, ?Schema\Metadata $metadata = null) : Definition
 {
     return Definition::map($name, $type, $metadata);
@@ -1297,6 +1300,18 @@ function null_schema(string $name, ?Schema\Metadata $metadata = null) : Definiti
 function datetime_schema(string $name, bool $nullable = false, ?Schema\Metadata $metadata = null) : Definition
 {
     return Definition::datetime($name, $nullable, $metadata);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
+function time_schema(string $name, bool $nullable = false, ?Schema\Metadata $metadata = null) : Definition
+{
+    return Definition::time($name, $nullable, $metadata);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
+function date_schema(string $name, bool $nullable = false, ?Schema\Metadata $metadata = null) : Definition
+{
+    return Definition::date($name, $nullable, $metadata);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
@@ -1540,4 +1555,52 @@ function dom_element_to_string(\DOMElement $element, bool $format_output = false
     $doc->appendChild($importedNode);
 
     return $doc->saveXML($doc->documentElement);
+}
+
+function date_interval_to_milliseconds(\DateInterval $interval) : int
+{
+    if ($interval->y !== 0 || $interval->m !== 0) {
+        throw new InvalidArgumentException("Relative DateInterval (with months/years) can't be converted to milliseconds. Given" . \json_encode($interval, JSON_THROW_ON_ERROR));
+    }
+
+    $absoluteSeconds = $interval->d * 24 * 60 * 60
+        + $interval->h * 60 * 60
+        + $interval->i * 60
+        + $interval->s;
+
+    return $interval->invert
+        ? -(int) ($absoluteSeconds * 1000 + $interval->f * 1000)
+        : (int) ($absoluteSeconds * 1000 + $interval->f * 1000);
+}
+
+function date_interval_to_seconds(\DateInterval $interval) : int
+{
+    if ($interval->y !== 0 || $interval->m !== 0) {
+        throw new InvalidArgumentException("Relative DateInterval (with months/years) can't be converted to seconds. Given" . \json_encode($interval, JSON_THROW_ON_ERROR));
+    }
+
+    $absoluteSeconds = $interval->d * 24 * 60 * 60
+        + $interval->h * 60 * 60
+        + $interval->i * 60
+        + $interval->s;
+
+    return $interval->invert
+        ? -(int) ceil($absoluteSeconds + $interval->f)
+        : (int) ceil($absoluteSeconds + $interval->f);
+}
+
+function date_interval_to_microseconds(\DateInterval $interval) : int
+{
+    if ($interval->y !== 0 || $interval->m !== 0) {
+        throw new InvalidArgumentException("Relative DateInterval (with months/years) can't be converted to microseconds. Given" . \json_encode($interval, JSON_THROW_ON_ERROR));
+    }
+
+    $absoluteSeconds = $interval->d * 24 * 60 * 60
+        + $interval->h * 60 * 60
+        + $interval->i * 60
+        + $interval->s;
+
+    return $interval->invert
+        ? -(int) ($absoluteSeconds * 1000000 + $interval->f * 1000000)
+        : (int) ($absoluteSeconds * 1000000 + $interval->f * 1000000);
 }

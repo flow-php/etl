@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, array_expand, int_entry, ref};
+use function Flow\ETL\DSL\{array_expand, int_entry, json_entry, ref};
 use Flow\ETL\Function\ArrayExpand\ArrayExpand;
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ final class ArrayExpandTest extends TestCase
     public function test_expand_both() : void
     {
         $row = Row::create(
-            array_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
+            json_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
         );
 
         self::assertSame(
@@ -30,7 +30,7 @@ final class ArrayExpandTest extends TestCase
     public function test_expand_keys() : void
     {
         $row = Row::create(
-            array_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
+            json_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
         );
 
         self::assertSame(
@@ -42,7 +42,7 @@ final class ArrayExpandTest extends TestCase
     public function test_expand_values() : void
     {
         $row = Row::create(
-            array_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
+            json_entry('array', ['a' => 1, 'b' => 2, 'c' => 3]),
         );
 
         self::assertSame(

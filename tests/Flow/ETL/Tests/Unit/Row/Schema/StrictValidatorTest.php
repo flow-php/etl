@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Row\Schema;
 
-use function Flow\ETL\DSL\{bool_entry, int_entry, str_entry};
+use function Flow\ETL\DSL\{bool_entry, int_entry, str_entry, type_list, type_string};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Schema\StrictValidator;
 use Flow\ETL\{Row, Rows};
@@ -49,7 +49,7 @@ final class StrictValidatorTest extends TestCase
             Schema\Definition::integer('id'),
             Schema\Definition::string('name'),
             Schema\Definition::boolean('active'),
-            Schema\Definition::array('tags'),
+            Schema\Definition::list('tags', type_list(type_string())),
         );
 
         self::assertFalse(

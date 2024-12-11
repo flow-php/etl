@@ -6,6 +6,7 @@ namespace Flow\ETL\PHP\Type;
 
 use function Flow\ETL\DSL\{type_array,
     type_boolean,
+    type_date,
     type_datetime,
     type_float,
     type_int,
@@ -14,6 +15,7 @@ use function Flow\ETL\DSL\{type_array,
     type_null,
     type_object,
     type_string,
+    type_time,
     type_uuid,
     type_xml,
     type_xml_element};
@@ -95,6 +97,14 @@ final class TypeDetector
         if (\is_object($value)) {
             if (type_uuid()->isValid($value)) {
                 return type_uuid();
+            }
+
+            if (type_time()->isValid($value)) {
+                return type_time();
+            }
+
+            if (type_date()->isValid($value)) {
+                return type_date();
             }
 
             if (type_datetime()->isValid($value)) {

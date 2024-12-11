@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Row;
 
-use function Flow\ETL\DSL\{bool_schema, datetime_schema, float_schema, int_schema, object_schema, schema, str_schema, type_object};
+use function Flow\ETL\DSL\{bool_schema, datetime_schema, float_schema, int_schema, schema, str_schema};
 use PHPUnit\Framework\TestCase;
 
 final class SchemaMergeTest extends TestCase
@@ -142,10 +142,6 @@ final class SchemaMergeTest extends TestCase
         self::assertEquals(
             schema(float_schema('col', nullable: true)),
             schema(float_schema('col'))->merge(schema(float_schema('col', nullable: true)))
-        );
-        self::assertEquals(
-            schema(object_schema('col', type_object(\stdClass::class, nullable: true))),
-            schema(object_schema('col', type_object(\stdClass::class)))->merge(schema(object_schema('col', type_object(\stdClass::class, nullable: true))))
         );
         self::assertEquals(
             schema(datetime_schema('col', nullable: true)),

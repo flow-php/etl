@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{array_entry, datetime_entry, int_entry, lit, ref, str_entry, type_string};
+use function Flow\ETL\DSL\{datetime_entry, int_entry, json_entry, lit, ref, str_entry, type_string};
 use Flow\ETL\Function\{Contains, EndsWith, Equals, GreaterThan, GreaterThanEqual, IsIn, IsNotNull, IsNotNumeric, IsNull, IsNumeric, IsType, LessThan, LessThanEqual, NotEquals, NotSame, Same, StartsWith};
 use Flow\ETL\Row;
 use PHPUnit\Framework\TestCase;
@@ -56,8 +56,8 @@ final class BinaryComparisonsTest extends TestCase
     public function test_is_in() : void
     {
         $row = Row::with(
-            array_entry('a', [1, 2, 3, 4, 5]),
-            array_entry('b', ['a', 'b', 'c']),
+            json_entry('a', [1, 2, 3, 4, 5]),
+            json_entry('b', ['a', 'b', 'c']),
             str_entry('c', 'another'),
             int_entry('d', 4),
             str_entry('e', 'b'),

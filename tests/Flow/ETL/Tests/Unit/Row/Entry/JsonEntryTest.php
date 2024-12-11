@@ -85,8 +85,8 @@ final class JsonEntryTest extends TestCase
         $jsonEntry = new JsonEntry('empty', []);
         $jsonObjectEntry = JsonEntry::object('empty', []);
 
-        self::assertEquals('[]', $jsonEntry->value());
-        self::assertEquals('{}', $jsonObjectEntry->value());
+        self::assertEquals([], $jsonEntry->value());
+        self::assertEquals([], $jsonObjectEntry->value());
     }
 
     public function test_entry_name_can_be_zero() : void
@@ -115,26 +115,22 @@ final class JsonEntryTest extends TestCase
             ['item-id' => 2, 'name' => 'two'],
             ['item-id' => 3, 'name' => 'three'],
         ];
-        $entry = (new JsonEntry('items', $items))->map(function (string $value) {
-            $trimValue = \json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-
-            \array_walk_recursive($trimValue, function (&$v) : void {
+        $entry = (new JsonEntry('items', $items))->map(function (array $value) {
+            \array_walk_recursive($value, function (&$v) : void {
                 if (\is_string($v)) {
                     $v = \trim($v);
                 }
             });
 
-            return \json_encode($trimValue, JSON_THROW_ON_ERROR);
+            return \json_encode($value, JSON_THROW_ON_ERROR);
         });
 
         self::assertEquals(
-            \json_encode(
-                $items = [
-                    ['item-id' => 1, 'name' => 'one', 'address' => ['line1' => 'NO. 47 HENGSHAN ROAD, ECONOMIC TECHNOLOGICAL DEVELOPMENT ZONE, WUHU, ANHUI, 241000, CHINA']],
-                    ['item-id' => 2, 'name' => 'two'],
-                    ['item-id' => 3, 'name' => 'three'],
-                ]
-            ),
+            $items = [
+                ['item-id' => 1, 'name' => 'one', 'address' => ['line1' => 'NO. 47 HENGSHAN ROAD, ECONOMIC TECHNOLOGICAL DEVELOPMENT ZONE, WUHU, ANHUI, 241000, CHINA']],
+                ['item-id' => 2, 'name' => 'two'],
+                ['item-id' => 3, 'name' => 'three'],
+            ],
             $entry->value()
         );
     }
@@ -173,7 +169,7 @@ final class JsonEntryTest extends TestCase
         ];
         $entry = new JsonEntry('items', $items);
 
-        self::assertEquals(\json_encode($items), $entry->value());
+        self::assertEquals(\json_encode($items), $entry->toString());
     }
 
     public function test_serialization() : void

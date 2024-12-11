@@ -26,7 +26,7 @@ final class JsonEncodeTest extends TestCase
             [
                 [
                     'id' => 1,
-                    'json' => '{"id":1,"name":"test"}',
+                    'json' => ['id' => 1, 'name' => 'test'],
                 ],
             ],
             $memory->dump()
@@ -48,7 +48,7 @@ final class JsonEncodeTest extends TestCase
             [
                 [
                     'id' => 1,
-                    'json' => '[1,2,3]',
+                    'json' => [1, 2, 3],
                 ],
             ],
             $memory->dump()

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
-use function Flow\ETL\DSL\{array_entry,
+use function Flow\ETL\DSL\{
     average,
     bool_entry,
     compare_entries_by_name_desc,
@@ -14,6 +14,7 @@ use function Flow\ETL\DSL\{array_entry,
     from_array,
     from_rows,
     int_entry,
+    json_entry,
     lit,
     ref,
     refs,
@@ -510,7 +511,7 @@ final class DataFrameTest extends TestCase
         $rows = (new Flow())->process(
             new Rows(
                 Row::create(int_entry('id', 1), str_entry('name', 'foo'), bool_entry('active', true)),
-                Row::create(int_entry('id', 2), str_entry('name', null), array_entry('tags', ['foo', 'bar'])),
+                Row::create(int_entry('id', 2), str_entry('name', null), json_entry('tags', ['foo', 'bar'])),
                 Row::create(int_entry('id', 2), str_entry('name', 'bar'), bool_entry('active', false)),
             )
         )->validate(
@@ -521,7 +522,7 @@ final class DataFrameTest extends TestCase
         self::assertEquals(
             new Rows(
                 Row::create(int_entry('id', 1), str_entry('name', 'foo'), bool_entry('active', true)),
-                Row::create(int_entry('id', 2), str_entry('name', null), array_entry('tags', ['foo', 'bar'])),
+                Row::create(int_entry('id', 2), str_entry('name', null), json_entry('tags', ['foo', 'bar'])),
                 Row::create(int_entry('id', 2), str_entry('name', 'bar'), bool_entry('active', false)),
             ),
             $rows

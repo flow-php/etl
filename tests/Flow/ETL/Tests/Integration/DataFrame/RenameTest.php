@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\{array_entry, bool_entry, df, from_rows, int_entry, ref, str_entry};
+use function Flow\ETL\DSL\{bool_entry, df, from_rows, int_entry, json_entry, ref, str_entry};
 use Flow\ETL\Tests\Integration\IntegrationTestCase;
 use Flow\ETL\Transformer\StyleConverter\StringStyles;
 use Flow\ETL\{Row, Rows};
@@ -37,8 +37,8 @@ final class RenameTest extends IntegrationTestCase
     public function test_rename_all() : void
     {
         $rows = new Rows(
-            Row::create(array_entry('array', ['id' => 1, 'name' => 'name', 'active' => true])),
-            Row::create(array_entry('array', ['id' => 2, 'name' => 'name', 'active' => false]))
+            Row::create(json_entry('array', ['id' => 1, 'name' => 'name', 'active' => true])),
+            Row::create(json_entry('array', ['id' => 2, 'name' => 'name', 'active' => false]))
         );
 
         $ds = df()

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Extractor;
 
-use function Flow\ETL\DSL\{array_entry, row, rows, string_entry};
+use function Flow\ETL\DSL\{map_entry, row, rows, string_entry, type_map, type_string};
 use Flow\ETL\{Extractor, FlowContext};
 use Flow\Filesystem\{Partition, Path};
 
@@ -24,7 +24,7 @@ final class PathPartitionsExtractor implements Extractor, FileExtractor, Limitab
 
             $row = row(
                 string_entry('path', $fileStatus->path->uri()),
-                array_entry('partitions', \array_merge(...\array_values(\array_map(static fn (Partition $p) => [$p->name => $p->value], $partitions->toArray()))))
+                map_entry('partitions', \array_merge(...\array_values(\array_map(static fn (Partition $p) => [$p->name => $p->value], $partitions->toArray()))), type_map(type_string(), type_string()))
             );
 
             $signal = yield rows($row);
