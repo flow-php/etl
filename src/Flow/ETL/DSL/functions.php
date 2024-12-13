@@ -167,7 +167,8 @@ function from_path_partitions(Path|string $path) : Extractor\PathPartitionsExtra
  * @param null|Schema $schema - @deprecated use withSchema() method instead
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::EXTRACTOR)]
-#[DocumentationExample(topic: 'data_source', example: 'array')]
+#[DocumentationExample(topic: 'data_reading', example: 'array')]
+#[DocumentationExample(topic: 'data_frame', example: 'data_frame')]
 function from_array(iterable $array, ?Schema $schema = null) : ArrayExtractor
 {
     $extractor = new ArrayExtractor($array);
@@ -287,7 +288,7 @@ function to_memory(Memory $memory) : MemoryLoader
  * @param-out array<array<mixed>> $array
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::LOADER)]
-#[DocumentationExample(topic: 'data_sink', example: 'array')]
+#[DocumentationExample(topic: 'data_writing', example: 'array')]
 function to_array(array &$array) : ArrayLoader
 {
     return new ArrayLoader($array);
@@ -658,14 +659,14 @@ function col(string $entry) : EntryReference
  * An alias for `ref`.
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-#[DocumentationExample(topic: 'data_frame', example: 'create_entries')]
+#[DocumentationExample(topic: 'data_frame', example: 'create_columns')]
 function entry(string $entry) : EntryReference
 {
     return new EntryReference($entry);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-#[DocumentationExample(topic: 'data_frame', example: 'create_entries')]
+#[DocumentationExample(topic: 'data_frame', example: 'create_columns')]
 function ref(string $entry) : EntryReference
 {
     return new EntryReference($entry);
@@ -696,7 +697,7 @@ function optional(ScalarFunction $function) : Optional
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-#[DocumentationExample(topic: 'data_frame', example: 'create_entries')]
+#[DocumentationExample(topic: 'data_frame', example: 'create_columns')]
 function lit(mixed $value) : Literal
 {
     return new Literal($value);
