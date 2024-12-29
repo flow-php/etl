@@ -14,12 +14,12 @@ final class AnyTest extends TestCase
 {
     public function test_failure() : void
     {
-        $comparison1 = $this->createStub(Comparison::class);
+        $comparison1 = self::createStub(Comparison::class);
         $comparison1
             ->method('compare')
             ->willReturn(false);
 
-        $comparison2 = $this->createStub(Comparison::class);
+        $comparison2 = self::createStub(Comparison::class);
         $comparison2
             ->method('compare')
             ->willReturn(false);
@@ -35,12 +35,12 @@ final class AnyTest extends TestCase
 
     public function test_success() : void
     {
-        $comparison1 = $this->createStub(Comparison::class);
+        $comparison1 = self::createStub(Comparison::class);
         $comparison1
             ->method('compare')
             ->willReturn(true);
 
-        $comparison2 = $this->createStub(Comparison::class);
+        $comparison2 = self::createStub(Comparison::class);
         $comparison2
             ->method('compare')
             ->willReturn(false);
