@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{combine, lit};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CombineTest extends TestCase
+final class CombineTest extends FlowTestCase
 {
     public function test_array_combine() : void
     {

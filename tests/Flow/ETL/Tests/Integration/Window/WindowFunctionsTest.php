@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\Window;
 
 use function Flow\ETL\DSL\{dense_rank, from_all, from_array, rank, ref, window};
-use Flow\ETL\{Flow, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Flow, Rows, Tests\FlowTestCase};
 
-final class WindowFunctionsTest extends TestCase
+final class WindowFunctionsTest extends FlowTestCase
 {
     public function test_rank_on_partitioned_window() : void
     {

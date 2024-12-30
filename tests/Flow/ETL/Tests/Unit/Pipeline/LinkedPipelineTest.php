@@ -8,10 +8,9 @@ use function Flow\ETL\DSL\{bool_entry, int_entry, lit};
 use Flow\ETL\Extractor\RowsExtractor;
 use Flow\ETL\Pipeline\{LinkedPipeline, SynchronousPipeline};
 use Flow\ETL\Transformer\ScalarFunctionTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class LinkedPipelineTest extends TestCase
+final class LinkedPipelineTest extends FlowTestCase
 {
     public function test_linked_pipelines() : void
     {

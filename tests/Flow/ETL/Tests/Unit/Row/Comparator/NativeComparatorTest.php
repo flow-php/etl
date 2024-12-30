@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row\Comparator;
 
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class NativeComparatorTest extends TestCase
+final class NativeComparatorTest extends FlowTestCase
 {
     public function test_row_comparison() : void
     {

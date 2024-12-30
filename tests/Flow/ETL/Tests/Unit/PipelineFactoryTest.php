@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\config;
 use function Flow\Filesystem\DSL\path;
 use Flow\CLI\PipelineFactory;
 use Flow\ETL\Exception\{InvalidArgumentException, InvalidFileFormatException};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class PipelineFactoryTest extends TestCase
+final class PipelineFactoryTest extends FlowTestCase
 {
     public function test_empty_php_file() : void
     {

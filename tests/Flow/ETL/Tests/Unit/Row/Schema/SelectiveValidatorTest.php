@@ -7,10 +7,9 @@ namespace Flow\ETL\Tests\Unit\Row\Schema;
 use function Flow\ETL\DSL\{bool_entry, int_entry, str_entry};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Schema\SelectiveValidator;
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class SelectiveValidatorTest extends TestCase
+final class SelectiveValidatorTest extends FlowTestCase
 {
     public function test_rows_with_a_missing_entry() : void
     {

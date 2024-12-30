@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{int_entry, json_entry, ref};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayReverseTest extends TestCase
+final class ArrayReverseTest extends FlowTestCase
 {
     public function test_array_reverse_array_entry() : void
     {

@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 use function Flow\ETL\DSL\{from_array, ref, to_memory};
 use Flow\ETL\Flow;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayGetTest extends TestCase
+final class ArrayGetTest extends FlowTestCase
 {
     public function test_array_get() : void
     {

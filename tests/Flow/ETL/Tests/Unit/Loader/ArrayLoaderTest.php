@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Loader;
 
 use function Flow\ETL\DSL\{flow_context, int_entry, row, rows, str_entry, to_array};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayLoaderTest extends TestCase
+final class ArrayLoaderTest extends FlowTestCase
 {
     public function test_loads_rows_data_into_memory() : void
     {

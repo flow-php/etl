@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Formatter;
 
 use function Flow\ETL\DSL\{int_entry, str_entry};
 use Flow\ETL\Formatter\ASCII\ASCIITable;
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class ASCIITableTest extends TestCase
+final class ASCIITableTest extends FlowTestCase
 {
     public function test_ascii_table_with_mb_strings() : void
     {

@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Formatter\ASCII;
 
 use function Flow\ETL\DSL\{float_entry, int_entry, ref, row, rows, string_entry};
 use Flow\ETL\Formatter\ASCII\{ASCIIBody, Body, Headers};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ASCIIBodyTest extends TestCase
+final class ASCIIBodyTest extends FlowTestCase
 {
     public function test_printing_ascii_body() : void
     {

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Hash;
 
 use Flow\ETL\Hash\NativePHPHash;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class NativePHPHashTest extends TestCase
+final class NativePHPHashTest extends FlowTestCase
 {
     public static function test_hashing_xxh128_by_static_call() : void
     {

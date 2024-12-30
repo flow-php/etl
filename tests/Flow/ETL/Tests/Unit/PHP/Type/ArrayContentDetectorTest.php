@@ -11,10 +11,10 @@ use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, MapType, StructureType};
 use Flow\ETL\PHP\Type\Native\ArrayType;
 use Flow\ETL\PHP\Type\{ArrayContentDetector, Types};
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class ArrayContentDetectorTest extends TestCase
+final class ArrayContentDetectorTest extends FlowTestCase
 {
     public static function provide_list_data() : \Generator
     {

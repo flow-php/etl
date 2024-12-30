@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit;
 use function Flow\ETL\DSL\{bool_entry, int_entry, row, rows, str_entry};
 use Flow\ETL\Exception\{DuplicatedEntriesException, InvalidArgumentException};
 use Flow\ETL\Join\Expression;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class RowsJoinTest extends TestCase
+final class RowsJoinTest extends FlowTestCase
 {
     public function test_cross_join() : void
     {

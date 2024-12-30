@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Loader;
 
 use function Flow\ETL\DSL\to_transformation;
-use Flow\ETL\{Config, FlowContext, Loader, Rows, Transformer};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Loader, Rows, Tests\FlowTestCase, Transformer};
 
-final class TransformerLoaderTest extends TestCase
+final class TransformerLoaderTest extends FlowTestCase
 {
     public function test_transformer_loader() : void
     {

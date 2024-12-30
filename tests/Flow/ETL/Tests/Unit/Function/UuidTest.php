@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{lit, uuid_v4, uuid_v7};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class UuidTest extends TestCase
+final class UuidTest extends FlowTestCase
 {
     protected function setUp() : void
     {

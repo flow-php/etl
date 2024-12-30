@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Caster;
 use function Flow\ETL\DSL\{struct_type, structure_element, structure_type, type_integer, type_string};
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\StructureCastingHandler;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class StructureCastingHandlerTest extends TestCase
+final class StructureCastingHandlerTest extends FlowTestCase
 {
     public function test_casting_array_into_structure() : void
     {

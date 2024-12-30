@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\type_json;
 use Flow\ETL\Exception\CastingException;
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\JsonCastingHandler;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class JsonCastingHandlerTest extends TestCase
+final class JsonCastingHandlerTest extends FlowTestCase
 {
     public function test_casting_array_to_json() : void
     {

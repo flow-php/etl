@@ -7,11 +7,10 @@ namespace Flow\ETL\Tests\Unit\Loader;
 use function Flow\ETL\DSL\{int_entry, ref, row, rows, str_entry, to_output, to_stream};
 use Flow\ETL\Exception\RuntimeException;
 use Flow\ETL\Loader\StreamLoader;
-use Flow\ETL\{Config, FlowContext};
+use Flow\ETL\{Config, FlowContext, Tests\FlowTestCase};
 use Flow\Filesystem\Stream\Mode;
-use PHPUnit\Framework\TestCase;
 
-final class StreamLoaderTest extends TestCase
+final class StreamLoaderTest extends FlowTestCase
 {
     public function test_columns_count_to_php_output_stream() : void
     {

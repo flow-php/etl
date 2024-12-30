@@ -25,11 +25,10 @@ use Flow\ETL\Row\Comparator\{NativeComparator};
 use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry};
 use Flow\ETL\Row\Schema\Definition;
 use Flow\ETL\Row\{Comparator, Schema};
-use Flow\ETL\{Row, Rows};
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class RowsTest extends TestCase
+final class RowsTest extends FlowTestCase
 {
     public static function rows_diff_left_provider() : \Generator
     {

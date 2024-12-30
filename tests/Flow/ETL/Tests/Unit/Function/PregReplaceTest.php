@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{lit, regex_replace};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class PregReplaceTest extends TestCase
+final class PregReplaceTest extends FlowTestCase
 {
     public function test_preg_replace_expression_on_invalid_pattern() : void
     {

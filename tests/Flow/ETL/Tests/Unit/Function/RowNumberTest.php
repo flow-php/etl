@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{int_entry, ref, row_number, window};
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class RowNumberTest extends TestCase
+final class RowNumberTest extends FlowTestCase
 {
     public function test_row_number_function_on_collection_of_rows_sorted_by_id_descending() : void
     {

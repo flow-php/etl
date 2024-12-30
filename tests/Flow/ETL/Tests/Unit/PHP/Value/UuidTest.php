@@ -6,11 +6,11 @@ namespace Flow\ETL\Tests\Unit\PHP\Value;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\PHP\Value\Uuid;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 use Symfony\Component\Uid\Uuid as SymfonyUuid;
 
-final class UuidTest extends TestCase
+final class UuidTest extends FlowTestCase
 {
     public function test_construct_with_invalid_string_uuid_throws_exception() : void
     {

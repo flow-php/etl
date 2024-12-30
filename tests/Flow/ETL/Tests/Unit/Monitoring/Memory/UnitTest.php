@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Monitoring\Memory;
 
 use Flow\ETL\Monitoring\Memory\Unit;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class UnitTest extends TestCase
+final class UnitTest extends FlowTestCase
 {
     public function test_calculating_percentage_from_value() : void
     {

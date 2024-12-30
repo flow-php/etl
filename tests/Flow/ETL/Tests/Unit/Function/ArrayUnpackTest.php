@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{int_entry, json_entry, ref};
 use Flow\ETL\Function\ArrayUnpack;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayUnpackTest extends TestCase
+final class ArrayUnpackTest extends FlowTestCase
 {
     public function test_array_unpack() : void
     {

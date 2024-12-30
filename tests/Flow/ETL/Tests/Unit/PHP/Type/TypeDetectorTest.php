@@ -18,10 +18,10 @@ use Flow\ETL\PHP\Type\Native\{ArrayType, EnumType, NullType, ObjectType, ScalarT
 use Flow\ETL\PHP\Type\TypeDetector;
 use Flow\ETL\PHP\Value\Uuid;
 use Flow\ETL\Tests\Fixtures\Enum\BasicEnum;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class TypeDetectorTest extends TestCase
+final class TypeDetectorTest extends FlowTestCase
 {
     public static function provide_logical_types_data() : \Generator
     {

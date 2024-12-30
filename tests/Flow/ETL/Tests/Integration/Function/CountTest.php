@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 use function Flow\ETL\DSL\{from_array, ref, to_memory};
 use Flow\ETL\Flow;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CountTest extends TestCase
+final class CountTest extends FlowTestCase
 {
     public function test_count_on_array() : void
     {

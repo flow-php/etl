@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{list_entry, ref, row, struct_element, struct_entry, struct_type, type_int, type_list, type_string};
 use Flow\ETL\Function\StructureSelect;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class StructureSelectTest extends TestCase
+final class StructureSelectTest extends FlowTestCase
 {
     public function test_selecting_multiple_values_from_structure() : void
     {

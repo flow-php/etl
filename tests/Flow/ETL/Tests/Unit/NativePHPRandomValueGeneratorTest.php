@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit;
 
 use Flow\ETL\NativePHPRandomValueGenerator;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class NativePHPRandomValueGeneratorTest extends TestCase
+final class NativePHPRandomValueGeneratorTest extends FlowTestCase
 {
     public static function integers_provider() : \Generator
     {

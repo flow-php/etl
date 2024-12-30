@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 use function Flow\ETL\DSL\{array_exists, from_array, ref, to_memory};
 use Flow\ETL\Flow;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayPathExistsTest extends TestCase
+final class ArrayPathExistsTest extends FlowTestCase
 {
     public function test_array_path_exists() : void
     {

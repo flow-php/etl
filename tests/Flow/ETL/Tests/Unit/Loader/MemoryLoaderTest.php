@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Loader;
 
 use function Flow\ETL\DSL\{int_entry, str_entry, to_memory};
 use Flow\ETL\Memory\ArrayMemory;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class MemoryLoaderTest extends TestCase
+final class MemoryLoaderTest extends FlowTestCase
 {
     public function test_loads_rows_data_into_memory() : void
     {

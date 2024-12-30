@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 
 use function Flow\ETL\DSL\{df, from_array, lit, ref, to_memory};
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class BetweenTest extends TestCase
+final class BetweenTest extends FlowTestCase
 {
     public function test_between_comparisons() : void
     {

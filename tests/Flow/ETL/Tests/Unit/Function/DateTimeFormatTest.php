@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{date_time_format, datetime_entry, now, ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class DateTimeFormatTest extends TestCase
+final class DateTimeFormatTest extends FlowTestCase
 {
     public function test_date_time_format() : void
     {

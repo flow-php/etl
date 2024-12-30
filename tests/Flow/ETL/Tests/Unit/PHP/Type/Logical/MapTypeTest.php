@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Logical;
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\{ListType, MapType};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class MapTypeTest extends TestCase
+final class MapTypeTest extends FlowTestCase
 {
     public function test_equals() : void
     {

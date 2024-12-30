@@ -11,9 +11,9 @@ use Flow\ETL\PHP\Type\Logical\StructureType;
 use Flow\ETL\Row\Entries;
 use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry, EnumEntry, IntegerEntry, StructureEntry};
 use Flow\ETL\Tests\Fixtures\Enum\BasicEnum;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class EntriesTest extends TestCase
+final class EntriesTest extends FlowTestCase
 {
     public function test_add_entry() : void
     {

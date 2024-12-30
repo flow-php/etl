@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
 use function Flow\ETL\DSL\{df, from_rows, int_entry, row, rows, str_entry};
-use Flow\ETL\Adapter\Elasticsearch\Tests\Integration\TestCase;
 use Flow\ETL\Join\Expression;
-use Flow\ETL\{DataFrame, DataFrameFactory, Flow, Loader, Rows};
+use Flow\ETL\{DataFrame, DataFrameFactory, Flow, Loader, Rows, Tests\FlowTestCase};
 
-final class JoinEachTest extends TestCase
+final class JoinEachTest extends FlowTestCase
 {
     public function test_join_each() : void
     {

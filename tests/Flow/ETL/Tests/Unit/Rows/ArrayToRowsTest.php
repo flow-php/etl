@@ -18,9 +18,9 @@ use function Flow\ETL\DSL\{array_to_rows,
     type_list,
     type_string};
 use Flow\ETL\Row\Schema;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayToRowsTest extends TestCase
+final class ArrayToRowsTest extends FlowTestCase
 {
     public function test_building_array_to_rows_with_entry_that_is_list_of_strings() : void
     {

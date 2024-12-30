@@ -7,10 +7,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 use function Flow\ETL\DSL\{int_entry, row, rows, str_entry};
 use Flow\ETL\Join\Expression;
 use Flow\ETL\Transformer\JoinEachRowsTransformer;
-use Flow\ETL\{Config, DataFrame, DataFrameFactory, Flow, FlowContext, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, DataFrame, DataFrameFactory, Flow, FlowContext, Rows, Tests\FlowTestCase};
 
-final class JoinEachRowsTransformerTest extends TestCase
+final class JoinEachRowsTransformerTest extends FlowTestCase
 {
     public function test_inner_join_rows() : void
     {

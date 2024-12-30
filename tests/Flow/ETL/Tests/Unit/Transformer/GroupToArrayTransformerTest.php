@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Transformer\GroupToArrayTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class GroupToArrayTransformerTest extends TestCase
+final class GroupToArrayTransformerTest extends FlowTestCase
 {
     public function test_grouping_entries_to_array() : void
     {

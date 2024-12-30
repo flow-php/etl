@@ -33,11 +33,11 @@ use Flow\ETL\Row\Entry\{StructureEntry, TimeEntry};
 use Flow\ETL\Row\Factory\NativeEntryFactory;
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Tests\Fixtures\Enum\BackedIntEnum;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-final class NativeEntryFactoryTest extends TestCase
+final class NativeEntryFactoryTest extends FlowTestCase
 {
     public static function provide_unrecognized_data() : \Generator
     {

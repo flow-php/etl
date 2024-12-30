@@ -6,10 +6,10 @@ namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\Entry\TimeEntry;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class TimeEntryTest extends TestCase
+final class TimeEntryTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

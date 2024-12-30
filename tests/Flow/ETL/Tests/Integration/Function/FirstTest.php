@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\Function;
 
 use function Flow\ETL\DSL\{df, first, from_array};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class FirstTest extends TestCase
+final class FirstTest extends FlowTestCase
 {
     public function test_first_aggregation() : void
     {

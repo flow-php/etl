@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{average, int_entry, ref, str_entry, window};
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class AverageTest extends TestCase
+final class AverageTest extends FlowTestCase
 {
     public function test_aggregation_average_from_numeric_values() : void
     {

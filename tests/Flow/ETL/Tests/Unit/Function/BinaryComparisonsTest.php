@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{datetime_entry, int_entry, json_entry, lit, ref, str_entry, type_string};
 use Flow\ETL\Function\{Contains, EndsWith, Equals, GreaterThan, GreaterThanEqual, IsIn, IsNotNull, IsNotNumeric, IsNull, IsNumeric, IsType, LessThan, LessThanEqual, NotEquals, NotSame, Same, StartsWith};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class BinaryComparisonsTest extends TestCase
+final class BinaryComparisonsTest extends FlowTestCase
 {
     public function test_equals() : void
     {

@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Native;
 use function Flow\ETL\DSL\{type_callable, type_float};
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\MapType;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CallableTypeTest extends TestCase
+final class CallableTypeTest extends FlowTestCase
 {
     public function test_equals() : void
     {

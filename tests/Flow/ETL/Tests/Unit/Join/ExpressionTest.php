@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\{col, int_entry};
 use Flow\ETL\Join\Comparison\Equal;
 use Flow\ETL\Join\Expression;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ExpressionTest extends TestCase
+final class ExpressionTest extends FlowTestCase
 {
     public function test_expression() : void
     {

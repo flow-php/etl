@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Pipeline\HashJoin;
 use function Flow\ETL\DSL\{int_entry, refs, row, str_entry};
 use Flow\ETL\Hash\PlainText;
 use Flow\ETL\Pipeline\HashJoin\HashTable;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class HashTableTest extends TestCase
+final class HashTableTest extends FlowTestCase
 {
     public function test_putting_rows_to_buckets() : void
     {

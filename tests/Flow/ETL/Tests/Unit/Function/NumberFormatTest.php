@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{float_entry, int_entry, lit, ref, str_entry};
 use Flow\ETL\Function\NumberFormat;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class NumberFormatTest extends TestCase
+final class NumberFormatTest extends FlowTestCase
 {
     public function test_number_format() : void
     {

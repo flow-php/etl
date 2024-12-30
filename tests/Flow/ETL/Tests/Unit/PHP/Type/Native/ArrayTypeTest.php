@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\{type_array, type_float};
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\MapType;
 use Flow\ETL\PHP\Type\Native\ArrayType;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayTypeTest extends TestCase
+final class ArrayTypeTest extends FlowTestCase
 {
     public function test_equals() : void
     {

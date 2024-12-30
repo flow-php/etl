@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class StrReplaceTest extends TestCase
+final class StrReplaceTest extends FlowTestCase
 {
     public function test_str_replace_on_valid_string() : void
     {

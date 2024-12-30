@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\TypeDetector;
 
 use function Flow\ETL\DSL\{structure_element, type_boolean, type_int, type_map, type_string, type_structure};
 use Flow\ETL\PHP\Type\TypeDetector;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class StructuresTypeDetectorTest extends TestCase
+final class StructuresTypeDetectorTest extends FlowTestCase
 {
     public function test_detecting_structures_with_nested_arrays() : void
     {

@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{ref, row, str_entry, type_boolean, type_int, type_string};
 use Flow\ETL\Function\Parameter;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ParameterTest extends TestCase
+final class ParameterTest extends FlowTestCase
 {
     public function test_as_one_of() : void
     {

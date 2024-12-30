@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{any, lit, ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class AnyTest extends TestCase
+final class AnyTest extends FlowTestCase
 {
     public function test_any_expression_on_boolean_false_value() : void
     {

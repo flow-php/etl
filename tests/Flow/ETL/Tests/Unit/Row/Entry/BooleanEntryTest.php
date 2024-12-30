@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use Flow\ETL\Row\Entry\BooleanEntry;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class BooleanEntryTest extends TestCase
+final class BooleanEntryTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

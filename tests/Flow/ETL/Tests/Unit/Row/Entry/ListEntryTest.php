@@ -10,9 +10,9 @@ use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\ListType;
 use Flow\ETL\Row\Entry\ListEntry;
 use Flow\ETL\Row\Schema\Definition;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ListEntryTest extends TestCase
+final class ListEntryTest extends FlowTestCase
 {
     public function test_create_with_empty_name() : void
     {

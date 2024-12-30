@@ -6,10 +6,10 @@ namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use Flow\ETL\PHP\Value\Uuid;
 use Flow\ETL\Row\Entry\UuidEntry;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class UuidEntryTest extends TestCase
+final class UuidEntryTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

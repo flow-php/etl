@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Join\Comparison;
 
 use function Flow\ETL\DSL\int_entry;
-use Flow\ETL\Adapter\Elasticsearch\Tests\Integration\TestCase;
 use Flow\ETL\Join\Comparison;
 use Flow\ETL\Join\Comparison\All;
 use Flow\ETL\Row;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class AllTest extends TestCase
+final class AllTest extends FlowTestCase
 {
     public function test_failure() : void
     {

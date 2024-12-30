@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{dense_rank, int_entry, ref, window};
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class DenseRankTest extends TestCase
+final class DenseRankTest extends FlowTestCase
 {
     public function test_rank_function_on_collection_of_rows_sorted_by_id_descending() : void
     {

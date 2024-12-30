@@ -14,10 +14,9 @@ use function Flow\ETL\DSL\{int_entry,
     xml_entry};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Transformer\ScalarFunctionTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class ScalarFunctionTransformerTest extends TestCase
+final class ScalarFunctionTransformerTest extends FlowTestCase
 {
     public function test_lit_expression_on_empty_rows() : void
     {

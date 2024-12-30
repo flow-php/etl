@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{int_entry, lit, ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class PowerTest extends TestCase
+final class PowerTest extends FlowTestCase
 {
     public function test_power_non_numeric_values() : void
     {

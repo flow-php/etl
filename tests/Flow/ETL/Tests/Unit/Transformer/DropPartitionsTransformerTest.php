@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{array_to_rows, flow_context, ref};
+use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Transformer\DropPartitionsTransformer;
-use PHPUnit\Framework\TestCase;
 
-final class DropPartitionsTransformerTest extends TestCase
+final class DropPartitionsTransformerTest extends FlowTestCase
 {
     public function test_dropping_partitions() : void
     {

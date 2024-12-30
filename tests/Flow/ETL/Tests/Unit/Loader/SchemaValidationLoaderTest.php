@@ -8,10 +8,9 @@ use function Flow\ETL\DSL\{int_entry, str_entry};
 use Flow\ETL\Exception\SchemaValidationException;
 use Flow\ETL\Loader\SchemaValidationLoader;
 use Flow\ETL\Row\Schema;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class SchemaValidationLoaderTest extends TestCase
+final class SchemaValidationLoaderTest extends FlowTestCase
 {
     public function test_schema_validation_failed() : void
     {

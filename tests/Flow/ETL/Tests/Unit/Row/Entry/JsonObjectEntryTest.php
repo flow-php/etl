@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use Flow\ETL\Row\Entry\{IntegerEntry, JsonEntry};
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class JsonObjectEntryTest extends TestCase
+final class JsonObjectEntryTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\Sort\MemorySort;
 
 use function Flow\ETL\DSL\{flow_context, from_array, ref, refs};
-use Flow\ETL\Adapter\Elasticsearch\Tests\Integration\TestCase;
 use Flow\ETL\Monitoring\Memory\Unit;
 use Flow\ETL\Pipeline\SynchronousPipeline;
 use Flow\ETL\Sort\MemorySort;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class MemorySortTest extends TestCase
+final class MemorySortTest extends FlowTestCase
 {
     public function test_memory_implementation_of_external_sort_algorithm() : void
     {

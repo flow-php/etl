@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 
 use function Flow\ETL\DSL\{df, from_sequence_number, lit, ref, to_memory, when};
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class WhenTest extends TestCase
+final class WhenTest extends FlowTestCase
 {
     public function test_when_odd_even() : void
     {

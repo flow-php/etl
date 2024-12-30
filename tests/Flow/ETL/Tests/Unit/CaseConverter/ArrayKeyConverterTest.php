@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\CaseConverter;
 
+use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Transformer\StyleConverter\ArrayKeyConverter;
 use Jawira\CaseConverter\Convert;
-use PHPUnit\Framework\TestCase;
 
-final class ArrayKeyConverterTest extends TestCase
+final class ArrayKeyConverterTest extends FlowTestCase
 {
     public function test_converts_all_keys_to_snake_case() : void
     {

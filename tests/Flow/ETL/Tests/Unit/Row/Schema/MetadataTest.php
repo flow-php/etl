@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row\Schema;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\Schema\Metadata;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class MetadataTest extends TestCase
+final class MetadataTest extends FlowTestCase
 {
     public function test_equal_metadata() : void
     {

@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{int_entry, json_entry, row, rows, string_entry};
 use Flow\ETL\Transformer\DropEntriesTransformer;
-use Flow\ETL\{Config, FlowContext};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Tests\FlowTestCase};
 
-final class DropEntriesTransformerTest extends TestCase
+final class DropEntriesTransformerTest extends FlowTestCase
 {
     public function test_dropping_entries() : void
     {

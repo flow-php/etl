@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{coalesce, int_entry, lit, ref, row};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CoalesceTest extends TestCase
+final class CoalesceTest extends FlowTestCase
 {
     public function test_coalesce_entries() : void
     {

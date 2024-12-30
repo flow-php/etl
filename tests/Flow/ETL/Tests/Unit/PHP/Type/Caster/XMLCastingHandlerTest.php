@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\type_xml;
 use Flow\ETL\Exception\CastingException;
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\XMLCastingHandler;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class XMLCastingHandlerTest extends TestCase
+final class XMLCastingHandlerTest extends FlowTestCase
 {
     public function test_casting_integer_to_xml() : void
     {

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit;
 
 use function Flow\ETL\DSL\{date_interval_to_microseconds, date_interval_to_milliseconds, date_interval_to_seconds};
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\{DataProvider, TestWith};
-use PHPUnit\Framework\TestCase;
 
-final class DateIntervalFunctionsTest extends TestCase
+final class DateIntervalFunctionsTest extends FlowTestCase
 {
     public static function date_interval_provider() : \Generator
     {

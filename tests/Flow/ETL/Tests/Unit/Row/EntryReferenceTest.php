@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row;
 
 use function Flow\ETL\DSL\{int_entry, ref};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class EntryReferenceTest extends TestCase
+final class EntryReferenceTest extends FlowTestCase
 {
     public function test_executing_equals_expression() : void
     {

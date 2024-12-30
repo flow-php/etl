@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\Pipeline;
 
 use Flow\ETL\Pipeline\{CollectingPipeline, GroupByPipeline, SynchronousPipeline};
-use Flow\ETL\{GroupBy, Loader, Transformer};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{GroupBy, Loader, Tests\FlowTestCase, Transformer};
 
-final class PipelineTest extends TestCase
+final class PipelineTest extends FlowTestCase
 {
     public function test_getting_pipes_from_nested_pipelines() : void
     {

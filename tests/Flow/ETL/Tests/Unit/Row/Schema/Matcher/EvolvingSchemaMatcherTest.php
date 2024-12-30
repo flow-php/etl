@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row\Schema\Matcher;
 
 use function Flow\ETL\DSL\{bool_schema, int_schema, schema, str_schema};
 use Flow\ETL\Row\Schema\Matcher\EvolvingSchemaMatcher;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class EvolvingSchemaMatcherTest extends TestCase
+final class EvolvingSchemaMatcherTest extends FlowTestCase
 {
     public function test_right_having_less_definitions_than_left() : void
     {

@@ -7,10 +7,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Row\Entry;
 use Flow\ETL\Transformer\CallbackRowTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-class CallbackRowTransformerTest extends TestCase
+class CallbackRowTransformerTest extends FlowTestCase
 {
     public function test_replacing_dashes_in_entry_name_with_str_replace_callback() : void
     {

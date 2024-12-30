@@ -8,10 +8,10 @@ use function Flow\ETL\DSL\type_string;
 use Flow\ETL\Exception\CastingException;
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\StringCastingHandler;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class StringCastingHandlerTest extends TestCase
+final class StringCastingHandlerTest extends FlowTestCase
 {
     public static function string_castable_data_provider() : \Generator
     {

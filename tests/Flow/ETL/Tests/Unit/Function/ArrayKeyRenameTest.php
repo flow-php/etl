@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{array_key_rename, int_entry, json_entry, ref};
 use Flow\ArrayDot\Exception\InvalidPathException;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayKeyRenameTest extends TestCase
+final class ArrayKeyRenameTest extends FlowTestCase
 {
     public function test_for_not_array_entry() : void
     {

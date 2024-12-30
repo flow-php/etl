@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit;
 
 use function Flow\ETL\DSL\{int_entry, null_entry, ref, row, rows, str_entry, sum};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
-use Flow\ETL\{Config, FlowContext, GroupBy};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, GroupBy, Tests\FlowTestCase};
 
-final class GroupByTest extends TestCase
+final class GroupByTest extends FlowTestCase
 {
     public function test_group_by_missing_entry() : void
     {

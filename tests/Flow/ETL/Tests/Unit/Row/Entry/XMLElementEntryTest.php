@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\Entry\XMLElementEntry;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class XMLElementEntryTest extends TestCase
+final class XMLElementEntryTest extends FlowTestCase
 {
     public function test_create_from_string() : void
     {

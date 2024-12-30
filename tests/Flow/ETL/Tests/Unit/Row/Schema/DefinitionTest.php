@@ -22,9 +22,9 @@ use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
 use Flow\ETL\PHP\Type\Logical\List\ListElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, StructureType};
 use Flow\ETL\Row\Schema\{Definition, Metadata};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class DefinitionTest extends TestCase
+final class DefinitionTest extends FlowTestCase
 {
     public function test_creating_definition_without_class() : void
     {

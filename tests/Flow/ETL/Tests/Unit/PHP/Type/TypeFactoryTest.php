@@ -25,10 +25,10 @@ use function Flow\ETL\DSL\{structure_element,
     type_xml,
     type_xml_element};
 use Flow\ETL\PHP\Type\TypeFactory;
+use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Tests\Unit\PHP\Type\Fixtures\SomeEnum;
-use PHPUnit\Framework\TestCase;
 
-final class TypeFactoryTest extends TestCase
+final class TypeFactoryTest extends FlowTestCase
 {
     public function test_normalizing_and_creating_all_scalar() : void
     {

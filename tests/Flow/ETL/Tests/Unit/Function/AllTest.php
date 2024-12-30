@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{all, lit, ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class AllTest extends TestCase
+final class AllTest extends FlowTestCase
 {
     public function test_all_expression_on_is_null_expression() : void
     {

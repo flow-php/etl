@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Pipeline;
 
 use Flow\ETL\Loader\Closure;
 use Flow\ETL\Tests\Double\FakeExtractor;
-use Flow\ETL\{Flow, FlowContext, Loader, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Flow, FlowContext, Loader, Rows, Tests\FlowTestCase};
 
-final class ClosureTest extends TestCase
+final class ClosureTest extends FlowTestCase
 {
     public function test_loader_closure() : void
     {

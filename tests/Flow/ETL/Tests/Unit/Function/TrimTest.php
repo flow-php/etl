@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{ref, str_entry};
 use Flow\ETL\Function\Trim\Type;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class TrimTest extends TestCase
+final class TrimTest extends FlowTestCase
 {
     public function test_trim_both_valid_string() : void
     {

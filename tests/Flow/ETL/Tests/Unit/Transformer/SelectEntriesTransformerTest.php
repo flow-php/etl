@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{int_entry, json_entry, row, rows, str_entry, string_entry};
 use Flow\ETL\Transformer\SelectEntriesTransformer;
-use Flow\ETL\{Config, FlowContext};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Tests\FlowTestCase};
 
-final class SelectEntriesTransformerTest extends TestCase
+final class SelectEntriesTransformerTest extends FlowTestCase
 {
     public function test_selecting_entries() : void
     {

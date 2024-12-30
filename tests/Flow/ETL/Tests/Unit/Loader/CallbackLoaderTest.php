@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Loader;
 
 use function Flow\ETL\DSL\{int_entry, str_entry, to_callable};
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class CallbackLoaderTest extends TestCase
+final class CallbackLoaderTest extends FlowTestCase
 {
     public function test_callback_loader() : void
     {

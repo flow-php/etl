@@ -7,10 +7,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Transformer\EntryNameStyleConverterTransformer;
 use Flow\ETL\Transformer\StyleConverter\StringStyles;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class EntryNameStyleConverterTransformerTest extends TestCase
+final class EntryNameStyleConverterTransformerTest extends FlowTestCase
 {
     public function test_conversion_of_entry_names_style() : void
     {

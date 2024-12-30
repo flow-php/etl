@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Integration\Pipeline;
 
 use function Flow\ETL\DSL\{from_all, from_array};
 use Flow\ETL\Pipeline\{BatchingPipeline, SynchronousPipeline};
-use Flow\ETL\{Config, FlowContext, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Rows, Tests\FlowTestCase};
 
-final class BatchingPipelineTest extends TestCase
+final class BatchingPipelineTest extends FlowTestCase
 {
     public function test_batching_rows() : void
     {

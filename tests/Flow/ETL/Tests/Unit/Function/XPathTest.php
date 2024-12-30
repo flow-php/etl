@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\ref;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Factory\NativeEntryFactory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class XPathTest extends TestCase
+final class XPathTest extends FlowTestCase
 {
     public function test_xpath_on_simple_xml_with_only_one_node_returned() : void
     {

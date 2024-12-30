@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\PHP\Type\Native;
 
 use function Flow\ETL\DSL\{type_object};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ObjectTypeTest extends TestCase
+final class ObjectTypeTest extends FlowTestCase
 {
     public function test_valid() : void
     {

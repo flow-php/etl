@@ -7,10 +7,10 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Caster;
 use function Flow\ETL\DSL\{type_date};
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\{DateCastingHandler};
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class DateCastingHandlerTest extends TestCase
+final class DateCastingHandlerTest extends FlowTestCase
 {
     public static function date_castable_data_provider() : \Generator
     {

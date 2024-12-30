@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{last, ref, str_entry, string_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class LastTest extends TestCase
+final class LastTest extends FlowTestCase
 {
     public function test_aggregation_last_value() : void
     {

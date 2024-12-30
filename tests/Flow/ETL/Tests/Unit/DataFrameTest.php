@@ -24,10 +24,19 @@ use Flow\ETL\ErrorHandler\IgnoreError;
 use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry, IntegerEntry};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Tests\Double\AddStampToStringEntryTransformer;
-use Flow\ETL\{DataFrame, Extractor, Flow, FlowContext, Loader, Row, Rows, Transformation, Transformer};
-use PHPUnit\Framework\{Assert, TestCase};
+use Flow\ETL\{DataFrame,
+    Extractor,
+    Flow,
+    FlowContext,
+    Loader,
+    Row,
+    Rows,
+    Tests\FlowTestCase,
+    Transformation,
+    Transformer};
+use PHPUnit\Framework\{Assert};
 
-final class DataFrameTest extends TestCase
+final class DataFrameTest extends FlowTestCase
 {
     public function test_batch_size() : void
     {

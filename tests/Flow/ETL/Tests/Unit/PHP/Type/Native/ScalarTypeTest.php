@@ -8,9 +8,9 @@ use function Flow\ETL\DSL\{type_boolean, type_float, type_int, type_string};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\MapType;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ScalarTypeTest extends TestCase
+final class ScalarTypeTest extends FlowTestCase
 {
     public function test_equals() : void
     {

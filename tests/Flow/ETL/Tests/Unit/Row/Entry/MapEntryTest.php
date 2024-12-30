@@ -9,9 +9,9 @@ use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
 use Flow\ETL\PHP\Type\Logical\MapType;
 use Flow\ETL\Row\Entry\MapEntry;
 use Flow\ETL\Row\Schema\Definition;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class MapEntryTest extends TestCase
+final class MapEntryTest extends FlowTestCase
 {
     public function test_create_with_empty_name() : void
     {

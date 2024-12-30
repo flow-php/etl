@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Row;
 
 use Flow\ETL\Row\CartesianProduct;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CartesianProductTest extends TestCase
+final class CartesianProductTest extends FlowTestCase
 {
     public function test_cartesian_product_with_associative_arrays() : void
     {

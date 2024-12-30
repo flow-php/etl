@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{array_get_collection, array_get_collection_first, int_entry, json_entry, ref};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayGetCollectionTest extends TestCase
+final class ArrayGetCollectionTest extends FlowTestCase
 {
     public function test_for_not_array_entry() : void
     {

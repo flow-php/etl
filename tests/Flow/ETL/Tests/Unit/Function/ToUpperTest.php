@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{lit, upper};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ToUpperTest extends TestCase
+final class ToUpperTest extends FlowTestCase
 {
     public function test_string_to_upper() : void
     {

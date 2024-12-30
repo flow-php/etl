@@ -7,10 +7,10 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Caster;
 use function Flow\ETL\DSL\type_time;
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\TimeCastingHandler;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class TimeCastingHandlerTest extends TestCase
+final class TimeCastingHandlerTest extends FlowTestCase
 {
     public static function time_castable_data_provider() : \Generator
     {

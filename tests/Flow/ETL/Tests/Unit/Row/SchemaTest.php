@@ -26,9 +26,9 @@ use function Flow\ETL\DSL\{bool_schema,
     uuid_schema};
 use Flow\ETL\Exception\{InvalidArgumentException, SchemaDefinitionNotFoundException, SchemaDefinitionNotUniqueException};
 use Flow\ETL\Row\{EntryReference, Schema};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class SchemaTest extends TestCase
+final class SchemaTest extends FlowTestCase
 {
     public function test_adding_duplicated_definitions() : void
     {

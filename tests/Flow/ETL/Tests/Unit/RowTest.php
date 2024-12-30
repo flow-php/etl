@@ -35,10 +35,10 @@ use Flow\ETL\Row\Entry\{
     StructureEntry};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Schema\Definition;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class RowTest extends TestCase
+final class RowTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

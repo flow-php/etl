@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\PHP\Type\Caster\StringCastingHandler;
 
 use Flow\ETL\PHP\Type\Caster\StringCastingHandler\StringTypeChecker;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class StringTypeCheckerTest extends TestCase
+final class StringTypeCheckerTest extends FlowTestCase
 {
     public function test_detecting_boolean() : void
     {

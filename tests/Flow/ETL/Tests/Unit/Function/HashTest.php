@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 use function Flow\ETL\DSL\{concat, datetime_entry, hash, json_entry, lit, ref, str_entry};
 use Flow\ETL\Hash\NativePHPHash;
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class HashTest extends TestCase
+final class HashTest extends FlowTestCase
 {
     public function test_hashing_array_value() : void
     {

@@ -7,10 +7,10 @@ namespace Flow\ETL\Tests\Unit\PHP\Type\Caster;
 use function Flow\ETL\DSL\type_float;
 use Flow\ETL\PHP\Type\Caster;
 use Flow\ETL\PHP\Type\Caster\FloatCastingHandler;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class FloatCastingHandlerTest extends TestCase
+final class FloatCastingHandlerTest extends FlowTestCase
 {
     public static function float_castable_data_provider() : \Generator
     {

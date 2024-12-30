@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{int_entry, lit, ref, str_entry};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class SanitizeTest extends TestCase
+final class SanitizeTest extends FlowTestCase
 {
     public function test_sanitize_on_non_string_value() : void
     {

@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit;
 
 use function Flow\ETL\DSL\{ignore_error_handler, skip_rows_handler, string_entry, throw_error_handler};
 use Flow\ETL\Row\Entry\{BooleanEntry, DateTimeEntry, IntegerEntry};
-use Flow\ETL\{Extractor, Flow, FlowContext, Loader, Row, Rows, Transformer};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Extractor, Flow, FlowContext, Loader, Row, Rows, Tests\FlowTestCase, Transformer};
 
-final class ETLErrorHandlingTest extends TestCase
+final class ETLErrorHandlingTest extends FlowTestCase
 {
     public function test_default_handler() : void
     {

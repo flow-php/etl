@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{lit, sprintf};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class SprintfTest extends TestCase
+final class SprintfTest extends FlowTestCase
 {
     public function test_sprintf_expression_on_invalid_format() : void
     {

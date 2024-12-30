@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 use function Flow\ETL\DSL\{from_array, lit, ref, to_memory};
 use Flow\ETL\Flow;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class JsonEncodeTest extends TestCase
+final class JsonEncodeTest extends FlowTestCase
 {
     public function test_adding_json_as_object_from_string_entry() : void
     {

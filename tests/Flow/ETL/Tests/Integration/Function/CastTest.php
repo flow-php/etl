@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 
 use function Flow\ETL\DSL\{df, from_array, ref, to_memory};
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class CastTest extends TestCase
+final class CastTest extends FlowTestCase
 {
     public function test_cast() : void
     {

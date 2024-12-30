@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\PHP\Type\Logical;
 
 use function Flow\ETL\DSL\{type_int, type_time};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class TimeTypeTest extends TestCase
+final class TimeTypeTest extends FlowTestCase
 {
     public function test_equals() : void
     {

@@ -11,9 +11,9 @@ use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, MapType, StructureType};
 use Flow\ETL\Row\Schema;
 use Flow\ETL\Row\Schema\Formatter\ASCIISchemaFormatter;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ASCIISchemaFormatterTest extends TestCase
+final class ASCIISchemaFormatterTest extends FlowTestCase
 {
     public function test_format_nested_schema() : void
     {

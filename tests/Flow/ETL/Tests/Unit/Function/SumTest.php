@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{float_entry, int_entry, ref, str_entry, sum, window};
-use Flow\ETL\{Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 
-final class SumTest extends TestCase
+final class SumTest extends FlowTestCase
 {
     public function test_aggregation_sum_from_numeric_values() : void
     {

@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Transformer\RenameEntryTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class RenameEntryTransformerTest extends TestCase
+final class RenameEntryTransformerTest extends FlowTestCase
 {
     public function test_renaming_entries() : void
     {

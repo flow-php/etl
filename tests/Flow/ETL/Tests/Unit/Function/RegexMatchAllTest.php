@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{lit, regex_match_all};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class RegexMatchAllTest extends TestCase
+final class RegexMatchAllTest extends FlowTestCase
 {
     public function test_regex_match_all_expression_on_invalid_flags() : void
     {

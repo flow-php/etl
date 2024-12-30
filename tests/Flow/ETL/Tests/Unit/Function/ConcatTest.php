@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\{concat, json_entry, lit, ref};
 use Flow\ETL\Row;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ConcatTest extends TestCase
+final class ConcatTest extends FlowTestCase
 {
     public function test_concat_arrays() : void
     {

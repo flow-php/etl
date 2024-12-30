@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
 use function Flow\ETL\DSL\{bool_entry, df, from_rows, int_entry, row, rows, str_entry};
-use Flow\ETL\Adapter\Elasticsearch\Tests\Integration\TestCase;
-use Flow\ETL\{Flow, Loader};
+use Flow\ETL\{Flow, Loader, Tests\FlowTestCase};
 
-final class JoinCrossTest extends TestCase
+final class JoinCrossTest extends FlowTestCase
 {
     public function test_cross_join() : void
     {

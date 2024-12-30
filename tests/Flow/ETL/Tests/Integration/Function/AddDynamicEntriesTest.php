@@ -7,9 +7,9 @@ namespace Flow\ETL\Tests\Integration\Function;
 use function Flow\ETL\DSL\{from_array, lit, to_memory};
 use Flow\ETL\Flow;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class AddDynamicEntriesTest extends TestCase
+final class AddDynamicEntriesTest extends FlowTestCase
 {
     public function test_adding_new_entries() : void
     {

@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Memory;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Memory\ArrayMemory;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ArrayMemoryTest extends TestCase
+final class ArrayMemoryTest extends FlowTestCase
 {
     public function test_chunk_size_must_be_greater_than_0() : void
     {

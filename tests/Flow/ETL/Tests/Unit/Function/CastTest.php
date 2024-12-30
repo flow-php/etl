@@ -8,10 +8,10 @@ use function Flow\ETL\DSL\{cast, ref};
 use Flow\ETL\PHP\Value\Uuid;
 use Flow\ETL\Row;
 use Flow\ETL\Row\Factory\NativeEntryFactory;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class CastTest extends TestCase
+final class CastTest extends FlowTestCase
 {
     public static function cast_provider() : array
     {

@@ -6,9 +6,9 @@ namespace Flow\ETL\Tests\Unit\Row;
 
 use function Flow\ETL\DSL\{ref, refs};
 use Flow\ETL\Row\References;
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\Tests\FlowTestCase;
 
-final class ReferencesTest extends TestCase
+final class ReferencesTest extends FlowTestCase
 {
     public function test_lazy_without() : void
     {

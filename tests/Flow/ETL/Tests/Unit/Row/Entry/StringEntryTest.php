@@ -6,10 +6,10 @@ namespace Flow\ETL\Tests\Unit\Row\Entry;
 
 use function Flow\ETL\DSL\string_entry;
 use Flow\ETL\Row\Entry\StringEntry;
+use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 
-final class StringEntryTest extends TestCase
+final class StringEntryTest extends FlowTestCase
 {
     public static function is_equal_data_provider() : \Generator
     {

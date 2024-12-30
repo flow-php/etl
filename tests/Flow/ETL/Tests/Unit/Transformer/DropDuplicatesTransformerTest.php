@@ -7,10 +7,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 use function Flow\ETL\DSL\{int_entry, str_entry};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Transformer\DropDuplicatesTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class DropDuplicatesTransformerTest extends TestCase
+final class DropDuplicatesTransformerTest extends FlowTestCase
 {
     public function test_drop_duplicates_without_providing_entries() : void
     {

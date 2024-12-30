@@ -6,10 +6,9 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{int_entry, lit, ref};
 use Flow\ETL\Transformer\ScalarFunctionFilterTransformer;
-use Flow\ETL\{Config, FlowContext, Row, Rows};
-use PHPUnit\Framework\TestCase;
+use Flow\ETL\{Config, FlowContext, Row, Rows, Tests\FlowTestCase};
 
-final class ScalarFunctionFilterTransformerTest extends TestCase
+final class ScalarFunctionFilterTransformerTest extends FlowTestCase
 {
     public function test_equal() : void
     {
