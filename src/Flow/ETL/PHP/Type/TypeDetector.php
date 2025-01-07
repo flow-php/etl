@@ -20,8 +20,6 @@ use function Flow\ETL\DSL\{type_array,
     type_xml,
     type_xml_element};
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\PHP\Type\Logical\List\ListElement;
-use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{ListType, StructureType};
 use Flow\ETL\PHP\Type\Native\{ArrayType, EnumType};
 
@@ -68,7 +66,7 @@ final class TypeDetector
             );
 
             if ($detector->isList()) {
-                return new ListType(ListElement::fromType($detector->valueType()->makeNullable($valueTypes->has(type_null()))));
+                return new ListType($detector->valueType()->makeNullable($valueTypes->has(type_null())));
             }
 
             if ($detector->isMap()) {
@@ -82,7 +80,7 @@ final class TypeDetector
                 $elements = [];
 
                 foreach ($value as $key => $item) {
-                    $elements[] = new StructureElement($key, $this->detectType($item));
+                    $elements[$key] = $this->detectType($item);
                 }
 
                 return new StructureType($elements);

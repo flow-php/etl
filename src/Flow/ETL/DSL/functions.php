@@ -79,9 +79,6 @@ use Flow\ETL\Function\{All,
 use Flow\ETL\Loader\StreamLoader\Output;
 use Flow\ETL\Loader\{ArrayLoader, CallbackLoader, MemoryLoader, StreamLoader, TransformerLoader};
 use Flow\ETL\Memory\Memory;
-use Flow\ETL\PHP\Type\Logical\List\ListElement;
-use Flow\ETL\PHP\Type\Logical\Map\{MapKey, MapValue};
-use Flow\ETL\PHP\Type\Logical\Structure\StructureElement;
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
     DateType,
     JsonType,
@@ -481,48 +478,12 @@ function structure_entry(string $name, ?array $value, StructureType $type) : Ent
 }
 
 /**
- * @param array<StructureElement> $elements
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
-function struct_type(array $elements, bool $nullable = false) : StructureType
-{
-    return new StructureType($elements, $nullable);
-}
-
-/**
- * @param array<StructureElement> $elements
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
-function structure_type(array $elements, bool $nullable = false) : StructureType
-{
-    return new StructureType($elements, $nullable);
-}
-
-/**
- * @param array<StructureElement> $elements
+ * @param array<string, Type<mixed>> $elements
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
 function type_structure(array $elements, bool $nullable = false) : StructureType
 {
     return new StructureType($elements, $nullable);
-}
-
-/**
- * @param Type<mixed> $type
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
-function struct_element(string $name, Type $type) : StructureElement
-{
-    return new StructureElement($name, $type);
-}
-
-/**
- * @param Type<mixed> $type
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
-function structure_element(string $name, Type $type) : StructureElement
-{
-    return new StructureElement($name, $type);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
@@ -537,7 +498,7 @@ function list_entry(string $name, ?array $value, ListType $type) : Entry\ListEnt
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
 function type_list(Type $element, bool $nullable = false) : ListType
 {
-    return new ListType(new ListElement($element), $nullable);
+    return new ListType($element, $nullable);
 }
 
 /**
@@ -546,7 +507,7 @@ function type_list(Type $element, bool $nullable = false) : ListType
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
 function type_map(IntegerType|StringType $key_type, Type $value_type, bool $nullable = false) : MapType
 {
-    return new MapType(new MapKey($key_type), new MapValue($value_type), $nullable);
+    return new MapType($key_type, $value_type, $nullable);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
