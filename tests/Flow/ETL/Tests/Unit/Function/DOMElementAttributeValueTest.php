@@ -15,6 +15,7 @@ final class DOMElementAttributeValueTest extends FlowTestCase
         $xml = new \DOMDocument();
         $xml->loadXML('<root><foo baz="buz">bar</foo></root>');
 
+        self::assertInstanceOf(\DOMElement::class, $xml->documentElement);
         self::assertEquals(
             'buz',
             ref('value')->domElementAttributeValue('baz')->eval(
@@ -28,6 +29,7 @@ final class DOMElementAttributeValueTest extends FlowTestCase
         $xml = new \DOMDocument();
         $xml->loadXML('<root><foo baz="buz">bar</foo></root>');
 
+        self::assertInstanceOf(\DOMElement::class, $xml->documentElement);
         self::assertNull(
             ref('value')->domElementAttributeValue('bar')->eval(
                 row((new NativeEntryFactory())->create('value', $xml->documentElement->firstChild))

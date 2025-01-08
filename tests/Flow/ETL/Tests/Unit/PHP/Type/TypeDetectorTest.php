@@ -386,7 +386,7 @@ final class TypeDetectorTest extends FlowTestCase
     }
 
     #[DataProvider('provide_logical_types_data')]
-    public function test_logical_types($data, string $class, string $description) : void
+    public function test_logical_types(mixed $data, string $class, string $description) : void
     {
         $type = (new TypeDetector())->detectType($data);
 
@@ -400,6 +400,9 @@ final class TypeDetectorTest extends FlowTestCase
         self::assertInstanceOf(ObjectType::class, (new TypeDetector())->detectType($data));
     }
 
+    /**
+     * @param Type<mixed> $expectedType
+     */
     #[DataProvider('provide_scalar_data')]
     public function test_scalar_types(mixed $data, string $description, Type $expectedType) : void
     {

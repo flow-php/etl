@@ -30,7 +30,7 @@ final class CasterTest extends FlowTestCase
     {
         self::assertSame(
             '2021-01-01 00:00:00.000000',
-            caster()->to(type_datetime())->value('2021-01-01 00:00:00 UTC')->format('Y-m-d H:i:s.u')
+            caster()->to(type_datetime())->value('2021-01-01 00:00:00 UTC')?->format('Y-m-d H:i:s.u')
         );
     }
 
@@ -46,7 +46,7 @@ final class CasterTest extends FlowTestCase
     {
         self::assertSame(
             '<?xml version="1.0"?>' . "\n" . '<items><item>1</item></items>' . "\n",
-            caster()->to(type_xml())->value('<items><item>1</item></items>')->saveXML()
+            caster()->to(type_xml())->value('<items><item>1</item></items>')?->saveXML()
         );
     }
 

@@ -22,7 +22,7 @@ abstract class FlowIntegrationTestCase extends FlowTestCase
 
     protected Serializer $serializer;
 
-    private readonly string|false $baseMemoryLimit;
+    private readonly string $baseMemoryLimit;
 
     public function __construct(string $name)
     {
@@ -54,7 +54,13 @@ abstract class FlowIntegrationTestCase extends FlowTestCase
 
     protected function cleanFiles() : void
     {
-        foreach (\scandir($this->filesDirectory()) as $file) {
+        $files = \scandir($this->filesDirectory());
+
+        if ($files === false) {
+            return;
+        }
+
+        foreach ($files as $file) {
             if (\in_array($file, ['.', '..', '.gitignore'], true)) {
                 continue;
             }
@@ -91,7 +97,7 @@ abstract class FlowIntegrationTestCase extends FlowTestCase
     /**
      * @param array<string, array<string, string>|string> $datasets
      */
-    protected function setupFiles(array $datasets, $path = '') : void
+    protected function setupFiles(array $datasets, string $path = '') : void
     {
         foreach ($datasets as $name => $content) {
             if (\is_string($content)) {

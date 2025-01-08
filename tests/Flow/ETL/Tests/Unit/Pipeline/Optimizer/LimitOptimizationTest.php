@@ -36,6 +36,7 @@ final class LimitOptimizationTest extends FlowTestCase
 
         $optimizedPipeline = (new Optimizer(new LimitOptimization()))->optimize(new LimitTransformer(10), $pipeline);
 
+        self::assertInstanceOf(CSVExtractor::class, $pipeline->source());
         self::assertFalse($pipeline->source()->isLimited());
         self::assertCount(2, $optimizedPipeline->pipes()->all());
     }
@@ -47,6 +48,7 @@ final class LimitOptimizationTest extends FlowTestCase
 
         $optimizedPipeline = (new Optimizer(new LimitOptimization()))->optimize(new LimitTransformer(10), $pipeline);
 
+        self::assertInstanceOf(CSVExtractor::class, $pipeline->source());
         self::assertFalse($pipeline->source()->isLimited());
         self::assertCount(2, $optimizedPipeline->pipes()->all());
     }
@@ -60,6 +62,7 @@ final class LimitOptimizationTest extends FlowTestCase
 
         $optimizedPipeline = (new Optimizer(new LimitOptimization()))->optimize(new LimitTransformer(10), $pipeline);
 
+        self::assertInstanceOf(CSVExtractor::class, $pipeline->source());
         self::assertTrue($pipeline->source()->isLimited());
         self::assertCount(2, $optimizedPipeline->pipes()->all());
         self::assertInstanceOf(LimitTransformer::class, $optimizedPipeline->pipes()->all()[1]);
@@ -72,6 +75,7 @@ final class LimitOptimizationTest extends FlowTestCase
 
         $optimizedPipeline = (new Optimizer(new LimitOptimization()))->optimize(new LimitTransformer(10), $pipeline);
 
+        self::assertInstanceOf(CSVExtractor::class, $pipeline->source());
         self::assertTrue($pipeline->source()->isLimited());
         self::assertCount(1, $optimizedPipeline->pipes()->all());
     }
@@ -82,6 +86,7 @@ final class LimitOptimizationTest extends FlowTestCase
 
         $optimizedPipeline = (new Optimizer(new LimitOptimization()))->optimize(new LimitTransformer(10), $pipeline);
 
+        self::assertInstanceOf(CSVExtractor::class, $pipeline->source());
         self::assertTrue($pipeline->source()->isLimited());
         self::assertCount(0, $optimizedPipeline->pipes()->all());
     }

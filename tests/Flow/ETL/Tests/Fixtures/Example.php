@@ -8,10 +8,13 @@ final class Example
 {
     public int $foo = 1;
 
+    /** @phpstan-ignore-next-line */
     private readonly \DateTimeImmutable $bad;
 
+    /** @phpstan-ignore-next-line */
     private int $bar = 2;
 
+    /** @phpstan-ignore-next-line */
     private int $baz = 3;
 
     public function __construct()

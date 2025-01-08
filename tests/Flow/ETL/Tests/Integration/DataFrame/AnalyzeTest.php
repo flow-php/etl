@@ -23,6 +23,7 @@ final class AnalyzeTest extends FlowIntegrationTestCase
             ->autoCast()
             ->run(analyze: true);
 
+        self::assertNotNull($report);
         self::assertSame(5, $report->statistics()->totalRows());
         self::assertEquals(
             schema(
@@ -52,6 +53,7 @@ final class AnalyzeTest extends FlowIntegrationTestCase
             ->limit(2)
             ->run(analyze: true);
 
+        self::assertNotNull($report);
         self::assertSame(2, $report->statistics()->totalRows());
         self::assertEquals(
             schema(
@@ -74,6 +76,7 @@ final class AnalyzeTest extends FlowIntegrationTestCase
             ->read(from_text(__DIR__ . '/Fixtures/Partitioning/multi_partition_pruning_test/year=*/month=*/day=*/*.txt'))
             ->run(analyze: true);
 
+        self::assertNotNull($report);
         self::assertSame(7, $report->statistics()->totalRows());
         self::assertEquals(
             schema(

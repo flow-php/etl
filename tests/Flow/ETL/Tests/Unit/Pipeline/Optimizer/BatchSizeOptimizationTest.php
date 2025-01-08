@@ -15,13 +15,10 @@ final class BatchSizeOptimizationTest extends FlowTestCase
 {
     public function test_for_nested_pipeline_with_batching_pipeline() : void
     {
-        $pipeline = new LinkedPipeline(
-            new BatchingPipeline(new SynchronousPipeline(), 10),
-            new SynchronousPipeline()
-        );
+        $pipeline = new LinkedPipeline(new BatchingPipeline(new SynchronousPipeline(), 10));
 
         self::assertFalse(
-            (new BatchSizeOptimization())->isFor(new DbalLoader('test', [], []), $pipeline)
+            (new BatchSizeOptimization())->isFor(new DbalLoader('test', []), $pipeline)
         );
     }
 
@@ -30,7 +27,7 @@ final class BatchSizeOptimizationTest extends FlowTestCase
         $pipeline = new SynchronousPipeline();
 
         self::assertTrue(
-            (new BatchSizeOptimization())->isFor(new DbalLoader('test', [], []), $pipeline)
+            (new BatchSizeOptimization())->isFor(new DbalLoader('test', []), $pipeline)
         );
     }
 
@@ -57,7 +54,7 @@ final class BatchSizeOptimizationTest extends FlowTestCase
         $pipeline = new BatchingPipeline(new SynchronousPipeline(), 10);
 
         self::assertFalse(
-            (new BatchSizeOptimization())->isFor(new DbalLoader('test', [], []), $pipeline)
+            (new BatchSizeOptimization())->isFor(new DbalLoader('test', []), $pipeline)
         );
     }
 
@@ -66,7 +63,7 @@ final class BatchSizeOptimizationTest extends FlowTestCase
         $pipeline = new CollectingPipeline(new SynchronousPipeline());
 
         self::assertFalse(
-            (new BatchSizeOptimization())->isFor(new DbalLoader('test', [], []), $pipeline)
+            (new BatchSizeOptimization())->isFor(new DbalLoader('test', []), $pipeline)
         );
     }
 }
