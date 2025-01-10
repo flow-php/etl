@@ -9,14 +9,12 @@ use Flow\ETL\PHP\Type\Native\{IntegerType, NullType, StringType};
 use Flow\ETL\PHP\Type\{Type, TypeFactory};
 
 /**
- * @implements Type<array>
+ * @implements Type<array<array-key, mixed>>
  */
 final readonly class MapType implements Type
 {
     /**
-     * @param IntegerType|StringType $key
      * @param Type<mixed> $value
-     * @param bool $nullable
      */
     public function __construct(private StringType|IntegerType $key, private Type $value, private bool $nullable = false)
     {
@@ -30,7 +28,7 @@ final readonly class MapType implements Type
         $keyType = TypeFactory::fromArray($data['key']);
 
         if (!$keyType instanceof StringType && !$keyType instanceof IntegerType) {
-            throw new InvalidArgumentException('Invalid "key" key in ' . self::class . ' fromArray()');
+            throw new InvalidArgumentException('Map key must be string or integer');
         }
 
         return new self($keyType, TypeFactory::fromArray($data['value']), $data['nullable'] ?? false);

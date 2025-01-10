@@ -232,6 +232,9 @@ function filesystem_cache(Path|string|null $cache_dir = null, Filesystem $filesy
     return new FilesystemCache($filesystem, $serializer, \is_string($cache_dir) ? Path::realpath($cache_dir) : $cache_dir);
 }
 
+/**
+ * @param int<1, max> $chunk_size
+ */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::EXTRACTOR)]
 function chunks_from(Extractor $extractor, int $chunk_size) : Extractor\ChunkExtractor
 {
@@ -486,6 +489,9 @@ function type_structure(array $elements, bool $nullable = false) : StructureType
     return new StructureType($elements, $nullable);
 }
 
+/**
+ * @param list<mixed> $value
+ */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::ENTRY)]
 function list_entry(string $name, ?array $value, ListType $type) : Entry\ListEntry
 {
@@ -505,7 +511,7 @@ function type_list(Type $element, bool $nullable = false) : ListType
  * @param Type<mixed> $value_type
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TYPE)]
-function type_map(IntegerType|StringType $key_type, Type $value_type, bool $nullable = false) : MapType
+function type_map(StringType|IntegerType $key_type, Type $value_type, bool $nullable = false) : MapType
 {
     return new MapType($key_type, $value_type, $nullable);
 }
