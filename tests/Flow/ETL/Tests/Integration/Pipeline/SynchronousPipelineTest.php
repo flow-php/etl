@@ -13,6 +13,8 @@ final class SynchronousPipelineTest extends FlowIntegrationTestCase
 {
     protected function setUp() : void
     {
+        parent::setUp();
+
         if (!\file_exists(__DIR__ . '/var')) {
             \mkdir(__DIR__ . '/var');
         }

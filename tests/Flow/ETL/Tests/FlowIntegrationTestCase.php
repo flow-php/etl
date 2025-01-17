@@ -22,22 +22,17 @@ abstract class FlowIntegrationTestCase extends FlowTestCase
 
     protected Serializer $serializer;
 
-    private readonly string $baseMemoryLimit;
+    private string $baseMemoryLimit;
 
-    public function __construct(string $name)
+    protected function setUp() : void
     {
-        parent::__construct($name);
-
         $this->baseMemoryLimit = (\ini_get('memory_limit')) ?: '-1';
 
         $this->cacheDir = Path::realpath(\getenv(CacheConfig::CACHE_DIR_ENV));
         $this->fs = new NativeLocalFilesystem();
         $this->fstab = new FilesystemTable($this->fs, new StdOutFilesystem());
         $this->serializer = new Base64Serializer(new NativePHPSerializer());
-    }
 
-    protected function setUp() : void
-    {
         $this->cleanupCacheDir($this->cacheDir);
         \mkdir($this->cacheDir->path(), recursive: true);
     }

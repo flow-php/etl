@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ArraySortByKeyTest extends TestCase
 {
-    public function arrays() : \Generator
+    public static function arrays() : \Generator
     {
         yield 'simple array' => [
             ['name' => 'one', 'priority' => 'high', 'id' => 1, 'color' => 'red', 'active' => true],

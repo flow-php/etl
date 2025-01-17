@@ -11,6 +11,13 @@ use Flow\ETL\Tests\FlowIntegrationTestCase;
 
 final class ConfigBuilderTest extends FlowIntegrationTestCase
 {
+    protected function tearDown() : void
+    {
+        putenv(CacheConfig::CACHE_DIR_ENV . '=' . $this->cacheDir->path());
+
+        parent::tearDown();
+    }
+
     public function test_creating_custom_cache_dir() : void
     {
         putenv(CacheConfig::CACHE_DIR_ENV . '=' . __DIR__ . '/var/cache');
