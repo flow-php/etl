@@ -30,21 +30,17 @@ final class ConcatWithSeparator extends ScalarFunctionChain
             return '';
         }
 
-        $values = \array_map(fn (ScalarFunction|string $string) : mixed => \is_string($string) ? $string : Caster::default()->to(type_string(true))->value($string->eval($row)), $this->refs);
-
+        /** @var array<string> $concatValues */
         $concatValues = [];
 
-        foreach ($values as $value) {
+        foreach ($this->refs as $value) {
+            $value = \is_string($value) ? $value : Caster::default()->to(type_string(true))->value($value->eval($row));
+
             if (\is_string($value)) {
                 $concatValues[] = $value;
             }
         }
 
-        if (\count($concatValues) === 0) {
-            return '';
-        }
-
-        /** @var array<string> $values */
         return \implode($separator, $concatValues);
     }
 }
