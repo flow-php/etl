@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Benchmark\EntryFactory;
 
 use function Flow\ETL\DSL\array_to_rows;
-use Flow\ETL\Row\Factory\NativeEntryFactory;
+use Flow\ETL\Row\EntryFactory;
 use PhpBench\Attributes\{Groups, ParamProviders};
 
 #[Groups(['building_blocks'])]
-final class NativeEntryFactoryBench
+final class EntryFactoryBench
 {
     #[ParamProviders('provideRows')]
     public function bench_entry_factory(array $params) : void
     {
-        array_to_rows($params['rows'], new NativeEntryFactory());
+        array_to_rows($params['rows'], new EntryFactory());
     }
 
     public function provideRows() : \Generator

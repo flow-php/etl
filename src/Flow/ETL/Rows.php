@@ -8,10 +8,9 @@ use function Flow\ETL\DSL\{array_to_rows, row};
 use Flow\ETL\Exception\{DuplicatedEntriesException, InvalidArgumentException, RuntimeException};
 use Flow\ETL\Hash\{Algorithm, NativePHPHash};
 use Flow\ETL\Join\Expression;
-use Flow\ETL\Row\CartesianProduct;
 use Flow\ETL\Row\Comparator\NativeComparator;
-use Flow\ETL\Row\Factory\NativeEntryFactory;
-use Flow\ETL\Row\{Comparator, Entries, EntryFactory, Reference, References, Schema, SortOrder};
+use Flow\ETL\Row\{CartesianProduct, EntryFactory};
+use Flow\ETL\Row\{Comparator, Entries, Reference, References, Schema, SortOrder};
 use Flow\Filesystem\{Partition, Partitions};
 
 /**
@@ -33,7 +32,7 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->partitions = new Partitions();
     }
 
-    public static function fromArray(array $data, EntryFactory $entryFactory = new NativeEntryFactory()) : self
+    public static function fromArray(array $data, EntryFactory $entryFactory = new EntryFactory()) : self
     {
         return array_to_rows($data, $entryFactory);
     }
@@ -375,7 +374,7 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
             }
 
             if ($joinedRow === null) {
-                $entryFactory = new NativeEntryFactory();
+                $entryFactory = new EntryFactory();
 
                 $entries = [];
 
@@ -449,7 +448,7 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
             }
 
             if ($joinedRow === null) {
-                $entryFactory = new NativeEntryFactory();
+                $entryFactory = new EntryFactory();
 
                 $entries = [];
 
