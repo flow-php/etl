@@ -52,58 +52,44 @@ final readonly class Expression
 
     public function dropDuplicateLeftEntries(Row $left) : Row
     {
-        if ($this->joinPrefix === '') {
-            $leftEntries = [];
-            $rightEntries = [];
-
-            foreach ($this->left() as $leftReference) {
-                $leftEntries[] = $leftReference->name();
-            }
-
-            foreach ($this->right() as $rightReference) {
-                $rightEntries[] = $rightReference->name();
-            }
-
-            $dropLeft = [];
-
-            foreach ($leftEntries as $leftEntry) {
-                if (\in_array($leftEntry, $rightEntries, true)) {
-                    $dropLeft[] = $leftEntry;
-                }
-            }
-
-            return $left->remove(...$dropLeft);
+        if ($this->joinPrefix !== '') {
+            return $left;
         }
 
-        return $left;
+        $dropLeft = [];
+
+        foreach ($this->left() as $leftReference) {
+            foreach ($this->right() as $rightReference) {
+                if ($leftReference->name() === $rightReference->name()) {
+                    $dropLeft[] = $leftReference->name();
+
+                    continue 2;
+                }
+            }
+        }
+
+        return $left->remove(...$dropLeft);
     }
 
     public function dropDuplicateRightEntries(Row $right) : Row
     {
-        if ($this->joinPrefix === '') {
-            $leftEntries = [];
-            $rightEntries = [];
-
-            foreach ($this->left() as $leftReference) {
-                $leftEntries[] = $leftReference->name();
-            }
-
-            foreach ($this->right() as $rightReference) {
-                $rightEntries[] = $rightReference->name();
-            }
-
-            $dropRight = [];
-
-            foreach ($rightEntries as $rightEntry) {
-                if (\in_array($rightEntry, $leftEntries, true)) {
-                    $dropRight[] = $rightEntry;
-                }
-            }
-
-            return $right->remove(...$dropRight);
+        if ($this->joinPrefix !== '') {
+            return $right;
         }
 
-        return $right;
+        $dropRight = [];
+
+        foreach ($this->right() as $rightReference) {
+            foreach ($this->left() as $leftReference) {
+                if ($rightReference->name() === $leftReference->name()) {
+                    $dropRight[] = $rightReference->name();
+
+                    continue 2;
+                }
+            }
+        }
+
+        return $right->remove(...$dropRight);
     }
 
     /**
