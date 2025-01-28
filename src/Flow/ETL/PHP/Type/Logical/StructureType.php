@@ -102,6 +102,35 @@ final readonly class StructureType implements Type
         return true;
     }
 
+    public function isSame(Type $type) : bool
+    {
+        if (!$this->isEqual($type)) {
+            return false;
+        }
+
+        /**
+         * @var string $internalElementName
+         * @var Type<mixed> $internalElement
+         */
+        foreach ($this->elements as $internalElementName => $internalElement) {
+            /**
+             * @var string $elementName
+             * @var Type<mixed> $element
+             *
+             * @phpstan-ignore-next-line
+             */
+            foreach ($type->elements as $elementName => $element) {
+                if ($elementName === $internalElementName && $element->isSame($internalElement)) {
+                    continue 2;
+                }
+            }
+
+            return false;
+        }
+
+        return $this->nullable() === $type->nullable();
+    }
+
     public function isValid(mixed $value) : bool
     {
         if ($this->nullable && $value === null) {

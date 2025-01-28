@@ -24,6 +24,49 @@ final readonly class StringTypeChecker
         return \in_array(\strtolower($this->string), ['true', 'false', 'yes', 'no', 'on', 'off'], true);
     }
 
+    public function isDate() : bool
+    {
+        if ($this->string === '') {
+            return false;
+        }
+
+        $dateParts = \date_parse($this->string);
+
+        if ($dateParts['error_count'] > 0) {
+            return false;
+        }
+
+        if ($dateParts['year'] === false) {
+            return false;
+        }
+
+        if ($dateParts['month'] === false) {
+            return false;
+        }
+
+        if ($dateParts['day'] === false) {
+            return false;
+        }
+
+        if ($dateParts['hour'] !== false) {
+            return false;
+        }
+
+        if ($dateParts['minute'] !== false) {
+            return false;
+        }
+
+        if ($dateParts['second'] !== false) {
+            return false;
+        }
+
+        if ($dateParts['fraction'] !== false) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isDateTime() : bool
     {
         if ($this->string === '') {
