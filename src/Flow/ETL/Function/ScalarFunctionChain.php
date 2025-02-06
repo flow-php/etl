@@ -471,6 +471,11 @@ abstract class ScalarFunctionChain implements ScalarFunction
         return new StartsWith($this, $needle);
     }
 
+    public function stringFold() : self
+    {
+        return new StringFold($this);
+    }
+
     public function strPad(int $length, string $pad_string = ' ', int $type = STR_PAD_RIGHT) : self
     {
         return new StrPad($this, $length, $pad_string, $type);
