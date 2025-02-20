@@ -6,7 +6,7 @@ namespace Flow\ETL\Tests\Unit\Function;
 
 use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{ref, str_entry, type_string};
-use Flow\ETL\Function\StringTitle;
+use Flow\ETL\Function\{StringAfter};
 use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Tests\FlowTestCase;
 
@@ -14,8 +14,8 @@ final class StringAfterTest extends FlowTestCase
 {
     public function test_returns_method_returns_string_type() : void
     {
-        $stringTitleFunction = new StringTitle('str');
-        $returnType = $stringTitleFunction->returns();
+        $stringAfterFunction = new StringAfter('test', 'e');
+        $returnType = $stringAfterFunction->returns();
 
         self::assertInstanceOf(Type::class, $returnType);
 
@@ -53,6 +53,17 @@ final class StringAfterTest extends FlowTestCase
                 row(
                     str_entry('str', 'hello world'),
                     str_entry('needle', 'o')
+                )
+            )
+        );
+    }
+
+    public function test_string_after_returns_null() : void
+    {
+        self::assertNull(
+            ref('str')->stringAfter('x')->eval(
+                row(
+                    str_entry('str', null),
                 )
             )
         );
