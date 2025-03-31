@@ -34,10 +34,10 @@ use function Flow\ETL\DSL\{average,
     uuid_entry,
     uuid_schema,
     window};
+use Flow\ETL\{Loader, Rows};
 use Flow\ETL\Memory\ArrayMemory;
 use Flow\ETL\PHP\Value\Uuid;
 use Flow\ETL\Tests\FlowIntegrationTestCase;
-use Flow\ETL\{Loader, Rows};
 
 final class GroupByTest extends FlowIntegrationTestCase
 {

@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Unit\PHP\Type;
 
 use function Flow\ETL\DSL\{type_int, type_null, type_string};
 use function Flow\ETL\DSL\{type_integer, type_list, type_map, type_structure};
-use Flow\ETL\PHP\Type\Native\ArrayType;
 use Flow\ETL\PHP\Type\{ArrayContentDetector, Types};
+use Flow\ETL\PHP\Type\Native\ArrayType;
 use Flow\ETL\Tests\FlowTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 

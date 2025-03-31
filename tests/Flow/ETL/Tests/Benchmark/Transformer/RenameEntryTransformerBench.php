@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Benchmark\Transformer;
 
 use function Flow\ETL\DSL\{config, flow_context};
-use Flow\ETL\Transformer\RenameEntryTransformer;
 use Flow\ETL\{FlowContext, Rows};
+use Flow\ETL\Transformer\RenameEntryTransformer;
 use PhpBench\Attributes\{BeforeMethods, Groups};
 
 #[BeforeMethods('setUp')]

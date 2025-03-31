@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{array_keys_style_convert, int_entry, json_entry, ref};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Tests\FlowTestCase;
 

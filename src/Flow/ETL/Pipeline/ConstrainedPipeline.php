@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline;
 
-use Flow\ETL\Exception\{ConstraintViolationException, InvalidArgumentException};
 use Flow\ETL\{Constraint, Extractor, FlowContext, Loader, Pipeline, Transformer};
+use Flow\ETL\Exception\{ConstraintViolationException, InvalidArgumentException};
 
 final class ConstrainedPipeline implements Pipeline
 {

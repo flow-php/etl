@@ -6,8 +6,8 @@ namespace Flow\ETL\Constraint;
 
 use function Flow\ETL\DSL\refs;
 use Flow\ETL\Constraint\UniqueConstraint\{InMemoryStorage, Storage};
-use Flow\ETL\Row\{Reference, References};
 use Flow\ETL\{Constraint, Row};
+use Flow\ETL\Row\{Reference, References};
 
 final class UniqueConstraint implements Constraint
 {

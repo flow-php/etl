@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Loader;
 
 use function Flow\ETL\DSL\{df, from_rows};
+use Flow\ETL\{FlowContext, Loader, Rows, Transformation};
 use Flow\ETL\Function\ScalarFunction;
 use Flow\ETL\Transformer\ScalarFunctionFilterTransformer;
-use Flow\ETL\{FlowContext, Loader, Rows, Transformation};
 
 final class BranchingLoader implements Closure, Loader, OverridingLoader
 {

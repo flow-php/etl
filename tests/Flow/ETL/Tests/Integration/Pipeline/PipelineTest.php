@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\Pipeline;
 
-use Flow\ETL\Pipeline\{CollectingPipeline, GroupByPipeline, SynchronousPipeline};
 use Flow\ETL\{GroupBy, Loader, Tests\FlowTestCase, Transformer};
+use Flow\ETL\Pipeline\{CollectingPipeline, GroupByPipeline, SynchronousPipeline};
 
 final class PipelineTest extends FlowTestCase
 {

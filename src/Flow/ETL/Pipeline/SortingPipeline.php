@@ -6,10 +6,10 @@ namespace Flow\ETL\Pipeline;
 
 use function Flow\Filesystem\DSL\protocol;
 use Flow\ETL\Exception\OutOfMemoryException;
+use Flow\ETL\{Extractor, FlowContext, Loader, Pipeline, Transformer};
 use Flow\ETL\Monitoring\Memory\Unit;
 use Flow\ETL\Row\References;
 use Flow\ETL\Sort\{ExternalSort, MemorySort};
-use Flow\ETL\{Extractor, FlowContext, Loader, Pipeline, Transformer};
 
 final readonly class SortingPipeline implements Pipeline
 {

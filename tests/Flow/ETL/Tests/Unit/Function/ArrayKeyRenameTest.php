@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{array_key_rename, int_entry, json_entry, ref};
+use function Flow\ETL\DSL\row;
 use Flow\ArrayDot\Exception\InvalidPathException;
 use Flow\ETL\Tests\FlowTestCase;
 

@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{config, rows};
 use function Flow\ETL\DSL\{flow_context, integer_entry, string_entry};
-use Flow\ETL\Transformer\CallbackRowTransformer;
 use Flow\ETL\{Row, Tests\FlowTestCase};
+use Flow\ETL\Transformer\CallbackRowTransformer;
 
 class CallbackRowTransformerTest extends FlowTestCase
 {

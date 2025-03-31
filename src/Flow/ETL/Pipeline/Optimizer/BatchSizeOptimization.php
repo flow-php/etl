@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline\Optimizer;
 
-use Flow\ETL\Pipeline\{BatchingPipeline, CollectingPipeline, OverridingPipeline, PartitioningPipeline};
 use Flow\ETL\{Loader, Pipeline, Transformer};
+use Flow\ETL\Pipeline\{BatchingPipeline, CollectingPipeline, OverridingPipeline, PartitioningPipeline};
 
 /**
  * The goal of this optimizer is to detect if there is a loader that supports batching and optimize pipeline to use it.

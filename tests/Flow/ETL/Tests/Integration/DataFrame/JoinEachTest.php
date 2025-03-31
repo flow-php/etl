@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Integration\DataFrame;
 
 use function Flow\ETL\DSL\data_frame;
 use function Flow\ETL\DSL\{df, from_rows, int_entry, join_on, row, rows, str_entry};
-use Flow\ETL\Join\Expression;
 use Flow\ETL\{DataFrame, DataFrameFactory, Loader, Rows, Tests\FlowTestCase};
+use Flow\ETL\Join\Expression;
 
 final class JoinEachTest extends FlowTestCase
 {

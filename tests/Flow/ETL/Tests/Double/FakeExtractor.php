@@ -25,8 +25,8 @@ use function Flow\ETL\DSL\{bool_entry,
     type_string,
     type_structure,
     uuid_entry};
-use Flow\ETL\Tests\Fixtures\Enum\BackedStringEnum;
 use Flow\ETL\{Extractor, FlowContext, Rows};
+use Flow\ETL\Tests\Fixtures\Enum\BackedStringEnum;
 use Ramsey\Uuid\Uuid;
 
 final readonly class FakeExtractor implements Extractor

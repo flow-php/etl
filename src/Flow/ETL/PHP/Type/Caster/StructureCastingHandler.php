@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\PHP\Type\Caster;
 
 use Flow\ETL\Exception\CastingException;
-use Flow\ETL\PHP\Type\Logical\StructureType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Logical\StructureType;
 
 final class StructureCastingHandler implements CastingHandler
 {

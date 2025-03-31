@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\Function;
 
-use function Flow\ETL\DSL\data_frame;
 use function Flow\ETL\DSL\{array_sort, from_array, optional, ref, to_memory};
+use function Flow\ETL\DSL\data_frame;
 use Flow\ETL\Function\ArraySort\Sort;
 use Flow\ETL\Memory\ArrayMemory;
 use Flow\ETL\Tests\FlowTestCase;

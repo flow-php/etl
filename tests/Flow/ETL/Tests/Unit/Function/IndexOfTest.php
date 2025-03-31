@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{ref, str_entry, type_int};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\IndexOf;
 use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Tests\FlowTestCase;

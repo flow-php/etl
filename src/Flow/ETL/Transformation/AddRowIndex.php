@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformation;
 
 use function Flow\ETL\DSL\int_entry;
-use Flow\ETL\Transformation\AddRowIndex\StartFrom;
 use Flow\ETL\{DataFrame, Row, Transformation};
+use Flow\ETL\Transformation\AddRowIndex\StartFrom;
 
 final readonly class AddRowIndex implements Transformation
 {

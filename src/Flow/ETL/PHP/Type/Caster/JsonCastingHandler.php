@@ -6,8 +6,8 @@ namespace Flow\ETL\PHP\Type\Caster;
 
 use function Flow\ETL\DSL\type_json;
 use Flow\ETL\Exception\CastingException;
-use Flow\ETL\PHP\Type\Logical\JsonType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Logical\JsonType;
 
 final class JsonCastingHandler implements CastingHandler
 {

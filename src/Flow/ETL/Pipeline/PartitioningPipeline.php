@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Flow\ETL\Pipeline;
 
 use function Flow\ETL\DSL\{from_all, from_cache};
-use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Extractor\CollectingExtractor;
-use Flow\ETL\Row\Reference;
 use Flow\ETL\{Cache\CacheIndex,
     Extractor,
     FlowContext,
@@ -16,6 +13,9 @@ use Flow\ETL\{Cache\CacheIndex,
     Loader,
     Pipeline,
     Transformer};
+use Flow\ETL\Exception\InvalidArgumentException;
+use Flow\ETL\Extractor\CollectingExtractor;
+use Flow\ETL\Row\Reference;
 use Flow\Filesystem\Partition;
 
 final readonly class PartitioningPipeline implements Pipeline

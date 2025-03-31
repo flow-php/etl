@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{lit, regex_all};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class RegexAllTest extends FlowTestCase

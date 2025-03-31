@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
-use function Flow\ETL\DSL\data_frame;
 use function Flow\ETL\DSL\{average,
     bool_entry,
     compare_entries_by_name_desc,
@@ -22,10 +21,7 @@ use function Flow\ETL\DSL\{average,
     string_entry,
     to_callable};
 use function Flow\ETL\DSL\{bool_schema, boolean_entry, integer_entry, integer_schema, schema, string_schema};
-use Flow\ETL\ErrorHandler\IgnoreError;
-use Flow\ETL\Row\Entry\{DateTimeEntry};
-use Flow\ETL\Row\Schema\SelectiveValidator;
-use Flow\ETL\Tests\Double\AddStampToStringEntryTransformer;
+use function Flow\ETL\DSL\data_frame;
 use Flow\ETL\{DataFrame,
     Extractor,
     FlowContext,
@@ -35,6 +31,10 @@ use Flow\ETL\{DataFrame,
     Tests\FlowTestCase,
     Transformation,
     Transformer};
+use Flow\ETL\ErrorHandler\IgnoreError;
+use Flow\ETL\Row\Entry\{DateTimeEntry};
+use Flow\ETL\Row\Schema\SelectiveValidator;
+use Flow\ETL\Tests\Double\AddStampToStringEntryTransformer;
 use PHPUnit\Framework\{Assert};
 
 final class DataFrameTest extends FlowTestCase

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{int_entry, json_entry, lit, not, ref, string_entry, type_integer};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class NotTest extends FlowTestCase

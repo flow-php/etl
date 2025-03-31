@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Extractor;
 
 use function Flow\ETL\DSL\array_to_rows;
-use Flow\ETL\Memory\Memory;
 use Flow\ETL\{Extractor, FlowContext};
+use Flow\ETL\Memory\Memory;
 
 final readonly class MemoryExtractor implements Extractor
 {

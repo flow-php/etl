@@ -4,14 +4,41 @@ declare(strict_types=1);
 
 namespace Flow\ETL\DSL;
 
+use Flow\ETL\{Analyze,
+    Attribute\DocumentationDSL,
+    Attribute\DocumentationExample,
+    Attribute\Module,
+    Attribute\Type as DSLType,
+    Cache\Implementation\FilesystemCache,
+    Config,
+    Config\ConfigBuilder,
+    Constraint\UniqueConstraint,
+    DataFrame,
+    Extractor,
+    Extractor\ArrayExtractor,
+    Flow,
+    FlowContext,
+    Formatter,
+    Hash\Algorithm,
+    Hash\NativePHPHash,
+    Join\Comparison,
+    Join\Comparison\Equal,
+    Join\Comparison\Identical,
+    Join\Expression,
+    Loader,
+    NativePHPRandomValueGenerator,
+    Pipeline,
+    RandomValueGenerator,
+    Row,
+    Rows,
+    Transformation,
+    Transformer,
+    Window,
+    WithEntry};
 use Flow\ETL\ErrorHandler\{IgnoreError, SkipRows, ThrowError};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException, SchemaDefinitionNotFoundException};
 use Flow\ETL\Extractor\FilesExtractor;
 use Flow\ETL\Filesystem\{SaveMode};
-use Flow\ETL\Function\ArrayExpand\ArrayExpand;
-use Flow\ETL\Function\ArraySort\Sort;
-use Flow\ETL\Function\Between\Boundary;
-use Flow\ETL\Function\StyleConverter\StringStyles;
 use Flow\ETL\Function\{All,
     Any,
     ArrayGet,
@@ -76,9 +103,14 @@ use Flow\ETL\Function\{All,
     Ulid,
     Uuid,
     When};
-use Flow\ETL\Loader\StreamLoader\Output;
+use Flow\ETL\Function\ArrayExpand\ArrayExpand;
+use Flow\ETL\Function\ArraySort\Sort;
+use Flow\ETL\Function\Between\Boundary;
+use Flow\ETL\Function\StyleConverter\StringStyles;
 use Flow\ETL\Loader\{ArrayLoader, CallbackLoader, MemoryLoader, StreamLoader, TransformerLoader};
+use Flow\ETL\Loader\StreamLoader\Output;
 use Flow\ETL\Memory\Memory;
+use Flow\ETL\PHP\Type\{Caster, Caster\Options, Type, TypeDetector};
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
     DateType,
     JsonType,
@@ -99,44 +131,12 @@ use Flow\ETL\PHP\Type\Native\{ArrayType,
     ObjectType,
     ResourceType,
     StringType};
-use Flow\ETL\PHP\Type\{Caster, Caster\Options, Type, TypeDetector};
-use Flow\ETL\Row\EntryFactory;
-use Flow\ETL\Row\Schema\Formatter\ASCIISchemaFormatter;
-use Flow\ETL\Row\Schema\{Definition, Matcher\EvolvingSchemaMatcher, Matcher\StrictSchemaMatcher, SchemaFormatter};
 use Flow\ETL\Row\{Entry, EntryReference, Reference, References, Schema};
-use Flow\ETL\{Analyze,
-    Attribute\DocumentationDSL,
-    Attribute\DocumentationExample,
-    Attribute\Module,
-    Attribute\Type as DSLType,
-    Cache\Implementation\FilesystemCache,
-    Config,
-    Config\ConfigBuilder,
-    Constraint\UniqueConstraint,
-    DataFrame,
-    Extractor,
-    Extractor\ArrayExtractor,
-    Flow,
-    FlowContext,
-    Formatter,
-    Hash\Algorithm,
-    Hash\NativePHPHash,
-    Join\Comparison,
-    Join\Comparison\Equal,
-    Join\Comparison\Identical,
-    Join\Expression,
-    Loader,
-    NativePHPRandomValueGenerator,
-    Pipeline,
-    RandomValueGenerator,
-    Row,
-    Rows,
-    Transformation,
-    Transformer,
-    Window,
-    WithEntry};
-use Flow\Filesystem\Stream\Mode;
+use Flow\ETL\Row\EntryFactory;
+use Flow\ETL\Row\Schema\{Definition, Matcher\EvolvingSchemaMatcher, Matcher\StrictSchemaMatcher, SchemaFormatter};
+use Flow\ETL\Row\Schema\Formatter\ASCIISchemaFormatter;
 use Flow\Filesystem\{Filesystem, Local\NativeLocalFilesystem, Partition, Partitions, Path};
+use Flow\Filesystem\Stream\Mode;
 use Flow\Serializer\{NativePHPSerializer, Serializer};
 
 /**

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformer;
 
 use function Flow\ETL\DSL\{row, rows, str_entry};
-use Flow\ETL\Row\{Reference, References};
 use Flow\ETL\{FlowContext, Rows, Transformer};
+use Flow\ETL\Row\{Reference, References};
 
 final readonly class SelectEntriesTransformer implements Transformer
 {

@@ -6,8 +6,8 @@ namespace Flow\ETL\PHP\Type\Caster;
 
 use Flow\ETL\Exception\CastingException;
 use Flow\ETL\PHP\Type\Caster\XML\XMLConverter;
-use Flow\ETL\PHP\Type\Native\ArrayType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Native\ArrayType;
 
 final class ArrayCastingHandler implements CastingHandler
 {

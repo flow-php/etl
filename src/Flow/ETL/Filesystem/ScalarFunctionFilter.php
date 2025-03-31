@@ -8,8 +8,8 @@ use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\ScalarFunction;
 use Flow\ETL\PHP\Type\AutoCaster;
 use Flow\ETL\Row\EntryFactory;
-use Flow\Filesystem\Path\Filter;
 use Flow\Filesystem\{FileStatus, Partition};
+use Flow\Filesystem\Path\Filter;
 
 final readonly class ScalarFunctionFilter implements Filter
 {

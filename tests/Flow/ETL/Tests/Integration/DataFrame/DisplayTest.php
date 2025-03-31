@@ -27,9 +27,9 @@ use function Flow\ETL\DSL\{bool_entry,
     type_string,
     type_structure,
     xml_entry};
+use Flow\ETL\{Extractor, FlowContext, Rows};
 use Flow\ETL\Tests\Fixtures\Enum\BackedStringEnum;
 use Flow\ETL\Tests\FlowIntegrationTestCase;
-use Flow\ETL\{Extractor, FlowContext, Rows};
 
 final class DisplayTest extends FlowIntegrationTestCase
 {

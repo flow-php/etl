@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Rows;
 
-use function Flow\ETL\DSL\schema;
 use function Flow\ETL\DSL\{array_to_rows,
     bool_entry,
     bool_schema,
@@ -18,6 +17,7 @@ use function Flow\ETL\DSL\{array_to_rows,
     str_schema,
     type_list,
     type_string};
+use function Flow\ETL\DSL\schema;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class ArrayToRowsTest extends FlowTestCase

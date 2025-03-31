@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL;
 
-use Flow\ETL\Exception\KeyNotInCacheException;
 use Flow\ETL\{Cache\CacheIndex};
+use Flow\ETL\Exception\KeyNotInCacheException;
 
 interface Cache
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{int_entry, json_entry, lit, ref};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\ArrayMerge;
 use Flow\ETL\Tests\FlowTestCase;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\max;
 use function Flow\ETL\DSL\{datetime_entry, float_entry, int_entry, ref, row, str_entry};
+use function Flow\ETL\DSL\max;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class MaxTest extends FlowTestCase

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Flow\ETL\Pipeline;
 
 use function Flow\ETL\DSL\{from_rows, refs, row, rows, schema};
+use Flow\ETL\{DataFrame, Extractor, FlowContext, Loader, Pipeline, Row, Rows, Transformer};
 use Flow\ETL\Exception\{DuplicatedEntriesException, JoinException};
 use Flow\ETL\Hash\NativePHPHash;
 use Flow\ETL\Join\{Expression, Join};
 use Flow\ETL\Pipeline\HashJoin\HashTable;
 use Flow\ETL\Row\Entry;
-use Flow\ETL\{DataFrame, Extractor, FlowContext, Loader, Pipeline, Row, Rows, Transformer};
 
 final readonly class HashJoinPipeline implements Pipeline
 {

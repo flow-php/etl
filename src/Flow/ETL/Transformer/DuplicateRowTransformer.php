@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Transformer;
 
-use Flow\ETL\Function\Parameter;
 use Flow\ETL\{FlowContext, Rows, Transformer, WithEntry};
+use Flow\ETL\Function\Parameter;
 
 final readonly class DuplicateRowTransformer implements Transformer
 {

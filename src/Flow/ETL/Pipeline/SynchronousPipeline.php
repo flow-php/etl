@@ -7,8 +7,8 @@ namespace Flow\ETL\Pipeline;
 use function Flow\ETL\DSL\from_rows;
 use Flow\ETL\Exception\LimitReachedException;
 use Flow\ETL\Extractor\Signal;
-use Flow\ETL\Loader\Closure;
 use Flow\ETL\{Extractor, FlowContext, Loader, Pipeline, Rows, Transformer};
+use Flow\ETL\Loader\Closure;
 
 final readonly class SynchronousPipeline implements Pipeline
 {

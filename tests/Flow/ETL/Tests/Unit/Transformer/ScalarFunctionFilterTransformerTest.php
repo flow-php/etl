@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{config, flow_context, row, rows};
 use function Flow\ETL\DSL\{int_entry, lit, ref};
-use Flow\ETL\Transformer\ScalarFunctionFilterTransformer;
 use Flow\ETL\{Tests\FlowTestCase};
+use Flow\ETL\Transformer\ScalarFunctionFilterTransformer;
 
 final class ScalarFunctionFilterTransformerTest extends FlowTestCase
 {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flow\ETL\DataFrame;
 
+use Flow\ETL\{DataFrame, GroupBy, Pipeline};
 use Flow\ETL\Function\AggregatingFunction;
 use Flow\ETL\Row\Reference;
-use Flow\ETL\{DataFrame, GroupBy, Pipeline};
 
 final readonly class GroupedDataFrame
 {

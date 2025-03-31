@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Transformer;
 
+use Flow\ETL\{FlowContext, Row, Rows, Transformer};
 use Flow\ETL\PHP\Type\AutoCaster;
 use Flow\ETL\Row\Entry;
-use Flow\ETL\{FlowContext, Row, Rows, Transformer};
 
 final readonly class AutoCastTransformer implements Transformer
 {

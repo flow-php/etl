@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{json_entry, ref, str_entry};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\ArraySort\Sort;
 use Flow\ETL\Tests\FlowTestCase;
 

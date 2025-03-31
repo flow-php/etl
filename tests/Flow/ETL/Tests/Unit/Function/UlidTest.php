@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{lit, ulid};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Tests\FlowTestCase;
 use Symfony\Component\Uid\Ulid;
 

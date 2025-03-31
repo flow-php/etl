@@ -6,8 +6,8 @@ namespace Flow\ETL\Row;
 
 use function Flow\ETL\DSL\schema;
 use Flow\ETL\Exception\{InvalidArgumentException, SchemaDefinitionNotFoundException, SchemaDefinitionNotUniqueException};
-use Flow\ETL\Row\Schema\{Definition, Matcher\StrictSchemaMatcher, Metadata, SchemaMatcher};
 use Flow\ETL\{FlowContext, Pipeline};
+use Flow\ETL\Row\Schema\{Definition, Matcher\StrictSchemaMatcher, Metadata, SchemaMatcher};
 
 final class Schema implements \Countable
 {

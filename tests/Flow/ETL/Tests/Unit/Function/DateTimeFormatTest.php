@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{date_time_format, datetime_entry, now, ref, str_entry};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class DateTimeFormatTest extends FlowTestCase

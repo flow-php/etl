@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\PHP\Type\Caster;
 
-use Flow\ETL\PHP\Type\Native\NullType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Native\NullType;
 
 final class NullCastingHandler implements CastingHandler
 {

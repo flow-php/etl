@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Join;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{col, int_entry};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Join\Comparison\Equal;
 use Flow\ETL\Join\Expression;
 use Flow\ETL\Tests\FlowTestCase;

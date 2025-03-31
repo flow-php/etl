@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformer;
 
 use function Flow\ETL\DSL\{ref, row, str_entry};
-use Flow\ETL\Row\Reference;
 use Flow\ETL\{FlowContext, Row, Rows, Transformer};
+use Flow\ETL\Row\Reference;
 
 final readonly class SerializeTransformer implements Transformer
 {

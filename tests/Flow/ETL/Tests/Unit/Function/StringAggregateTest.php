@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{int_entry, ref, str_entry, string_agg};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Row\SortOrder;
 use Flow\ETL\Tests\FlowTestCase;
 

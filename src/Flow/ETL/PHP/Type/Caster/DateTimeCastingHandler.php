@@ -6,8 +6,8 @@ namespace Flow\ETL\PHP\Type\Caster;
 
 use function Flow\ETL\DSL\type_datetime;
 use Flow\ETL\Exception\CastingException;
-use Flow\ETL\PHP\Type\Logical\DateTimeType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Logical\DateTimeType;
 
 final class DateTimeCastingHandler implements CastingHandler
 {

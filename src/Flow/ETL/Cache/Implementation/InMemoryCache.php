@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Cache\Implementation;
 
 use Flow\ETL\Cache\{CacheIndex};
-use Flow\ETL\Exception\KeyNotInCacheException;
 use Flow\ETL\{Cache, Row, Rows};
+use Flow\ETL\Exception\KeyNotInCacheException;
 
 final class InMemoryCache implements Cache
 {

@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Unit\Transformer;
 
 use function Flow\ETL\DSL\{config, row, rows};
 use function Flow\ETL\DSL\{float_entry, flow_context, integer_entry, string_entry};
-use Flow\ETL\Transformer\GroupToArrayTransformer;
 use Flow\ETL\{Tests\FlowTestCase};
+use Flow\ETL\Transformer\GroupToArrayTransformer;
 
 final class GroupToArrayTransformerTest extends FlowTestCase
 {

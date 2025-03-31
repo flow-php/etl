@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{df,
     from_array,
     from_rows,
@@ -15,9 +14,10 @@ use function Flow\ETL\DSL\{df,
     type_string,
     type_structure};
 use function Flow\ETL\DSL\{integer_entry, list_entry};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Tests\FlowIntegrationTestCase;
 use Flow\ETL\{Extractor, FlowContext, Rows};
+use Flow\ETL\Tests\FlowIntegrationTestCase;
 
 final class LimitTest extends FlowIntegrationTestCase
 {

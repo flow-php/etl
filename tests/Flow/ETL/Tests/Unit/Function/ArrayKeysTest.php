@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{
     map_entry,
     ref,
@@ -12,6 +11,7 @@ use function Flow\ETL\DSL\{
     type_int,
     type_map,
     type_string};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Tests\FlowTestCase;
 
 final class ArrayKeysTest extends FlowTestCase

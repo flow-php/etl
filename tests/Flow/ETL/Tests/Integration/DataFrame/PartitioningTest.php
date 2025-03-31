@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
 use function Flow\ETL\Adapter\Text\{from_text, to_text};
-use function Flow\ETL\DSL\generate_random_string;
 use function Flow\ETL\DSL\{collect,
     df,
     from_array,
@@ -20,9 +19,10 @@ use function Flow\ETL\DSL\{collect,
     rows,
     rows_partitioned,
     str_entry};
+use function Flow\ETL\DSL\generate_random_string;
 use function Flow\Filesystem\DSL\partition;
-use Flow\ETL\Tests\FlowIntegrationTestCase;
 use Flow\ETL\{Rows};
+use Flow\ETL\Tests\FlowIntegrationTestCase;
 use Flow\Filesystem\Partition;
 
 final class PartitioningTest extends FlowIntegrationTestCase

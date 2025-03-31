@@ -15,8 +15,8 @@ use function Flow\ETL\DSL\{analyze,
     schema,
     str_schema};
 use Flow\Clock\FakeClock;
-use Flow\ETL\Tests\FlowIntegrationTestCase;
 use Flow\ETL\{Dataset\Statistics\Columns, Dataset\Statistics\HighResolutionTime, FlowContext, Rows};
+use Flow\ETL\Tests\FlowIntegrationTestCase;
 
 final class AnalyzeTest extends FlowIntegrationTestCase
 {

@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Integration\DataFrame;
 
 use function Flow\ETL\DSL\{bool_entry, df, from_rows, int_entry, json_entry, ref, str_entry};
 use function Flow\ETL\DSL\{row, rows};
-use Flow\ETL\Tests\FlowIntegrationTestCase;
 use Flow\ETL\{Function\StyleConverter\StringStyles};
+use Flow\ETL\Tests\FlowIntegrationTestCase;
 
 final class RenameTest extends FlowIntegrationTestCase
 {

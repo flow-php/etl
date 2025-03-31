@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\data_frame;
 use function Flow\ETL\DSL\{bool_entry, df, from_rows, int_entry, row, rows, str_entry};
+use function Flow\ETL\DSL\data_frame;
 use Flow\ETL\{Loader, Tests\FlowTestCase};
 
 final class JoinCrossTest extends FlowTestCase

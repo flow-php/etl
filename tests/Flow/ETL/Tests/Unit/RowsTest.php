@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit;
 
-use function Flow\ETL\DSL\schema;
 use function Flow\ETL\DSL\{bool_entry,
     datetime_entry,
     int_entry,
@@ -19,11 +18,12 @@ use function Flow\ETL\DSL\{bool_entry,
     type_list,
     type_string};
 use function Flow\ETL\DSL\{boolean_entry, integer_schema, json_schema, list_schema, string_schema, type_integer};
+use function Flow\ETL\DSL\schema;
 use function Flow\Filesystem\DSL\{partition, partitions};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
 use Flow\ETL\Row\Comparator\{NativeComparator};
-use Flow\ETL\Row\Entry\{DateTimeEntry};
 use Flow\ETL\Row\{Comparator};
+use Flow\ETL\Row\Entry\{DateTimeEntry};
 use Flow\ETL\{Row, Rows, Tests\FlowTestCase};
 use PHPUnit\Framework\Attributes\DataProvider;
 

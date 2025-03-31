@@ -14,8 +14,8 @@ use function Flow\ETL\DSL\{int_entry,
     type_xml_element,
     xml_entry};
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\Transformer\ScalarFunctionTransformer;
 use Flow\ETL\{Tests\FlowTestCase};
+use Flow\ETL\Transformer\ScalarFunctionTransformer;
 
 final class ScalarFunctionTransformerTest extends FlowTestCase
 {

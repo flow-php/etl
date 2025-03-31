@@ -6,8 +6,8 @@ namespace Flow\ETL\PHP\Type\Caster;
 
 use function Flow\ETL\DSL\{type_string, type_xml};
 use Flow\ETL\Exception\CastingException;
-use Flow\ETL\PHP\Type\Logical\XMLType;
 use Flow\ETL\PHP\Type\{Caster, Type};
+use Flow\ETL\PHP\Type\Logical\XMLType;
 
 final class XMLCastingHandler implements CastingHandler
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformer;
 
 use function Flow\ETL\DSL\ref;
-use Flow\ETL\Row\Reference;
 use Flow\ETL\{FlowContext, Row, Rows, Transformer};
+use Flow\ETL\Row\Reference;
 use Flow\Serializer\Exception\SerializationException;
 
 final readonly class UnserializeTransformer implements Transformer

@@ -8,8 +8,8 @@ use function Flow\ETL\DSL\type_float;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\PHP\Type\Native\FloatType;
 use Flow\ETL\PHP\Type\Type;
-use Flow\ETL\Row\Schema\Definition;
 use Flow\ETL\Row\{Entry, Reference, Schema\Metadata};
+use Flow\ETL\Row\Schema\Definition;
 
 /**
  * @implements Entry<?float, ?float>

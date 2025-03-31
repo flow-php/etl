@@ -6,8 +6,8 @@ namespace Flow\ETL\Tests\Unit\Pipeline\Optimizer;
 
 use Flow\ETL\Adapter\Doctrine\DbalLoader;
 use Flow\ETL\Loader\StreamLoader;
-use Flow\ETL\Pipeline\Optimizer\BatchSizeOptimization;
 use Flow\ETL\Pipeline\{BatchingPipeline, CollectingPipeline, LinkedPipeline, SynchronousPipeline};
+use Flow\ETL\Pipeline\Optimizer\BatchSizeOptimization;
 use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Transformer;
 

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Transformer;
 
 use function Flow\ETL\DSL\row;
-use Flow\ETL\Transformer\OrderEntries\Comparator;
 use Flow\ETL\{FlowContext, Row, Rows, Transformer};
+use Flow\ETL\Transformer\OrderEntries\Comparator;
 
 final readonly class OrderEntriesTransformer implements Transformer
 {

@@ -36,6 +36,7 @@ use Flow\ETL\Exception\{CastingException,
     RuntimeException,
     SchemaDefinitionNotFoundException};
 use Flow\ETL\PHP\Type\Caster\StringCastingHandler\StringTypeChecker;
+use Flow\ETL\PHP\Type\{Caster, Type, TypeDetector};
 use Flow\ETL\PHP\Type\Logical\{DateTimeType,
     DateType,
     JsonType,
@@ -54,7 +55,6 @@ use Flow\ETL\PHP\Type\Native\{ArrayType,
     NullType,
     ObjectType,
     StringType};
-use Flow\ETL\PHP\Type\{Caster, Type, TypeDetector};
 use Flow\ETL\Row\{Schema\Definition, Schema\Metadata};
 
 final readonly class EntryFactory

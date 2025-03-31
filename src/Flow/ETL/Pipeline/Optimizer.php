@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Pipeline;
 
-use Flow\ETL\Pipeline\Optimizer\Optimization;
 use Flow\ETL\{Loader, Pipeline, Transformer};
+use Flow\ETL\Pipeline\Optimizer\Optimization;
 
 final readonly class Optimizer
 {

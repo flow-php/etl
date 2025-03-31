@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{ref, str_entry, type_string};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Function\StringStyle;
 use Flow\ETL\Function\StyleConverter\StringStyles;
 use Flow\ETL\PHP\Type\Type;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Pipeline;
 
 use function Flow\ETL\DSL\data_frame;
+use Flow\ETL\{FlowContext, Loader, Rows, Tests\FlowTestCase};
 use Flow\ETL\Loader\Closure;
 use Flow\ETL\Tests\Double\FakeExtractor;
-use Flow\ETL\{FlowContext, Loader, Rows, Tests\FlowTestCase};
 
 final class ClosureTest extends FlowTestCase
 {

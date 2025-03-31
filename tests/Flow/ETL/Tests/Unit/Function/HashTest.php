@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\row;
 use function Flow\ETL\DSL\{concat, datetime_entry, hash, json_entry, lit, ref, str_entry};
+use function Flow\ETL\DSL\row;
 use Flow\ETL\Hash\NativePHPHash;
 use Flow\ETL\Tests\FlowTestCase;
 

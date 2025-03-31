@@ -7,8 +7,8 @@ namespace Flow\ETL\Tests\Unit\Pipeline;
 use function Flow\ETL\DSL\{bool_entry, int_entry, lit};
 use function Flow\ETL\DSL\{config, flow_context, from_rows, row, rows};
 use Flow\ETL\Pipeline\{LinkedPipeline, SynchronousPipeline};
-use Flow\ETL\Transformer\ScalarFunctionTransformer;
 use Flow\ETL\{Tests\FlowTestCase};
+use Flow\ETL\Transformer\ScalarFunctionTransformer;
 
 final class LinkedPipelineTest extends FlowTestCase
 {

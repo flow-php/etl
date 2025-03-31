@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Transformer;
 
-use Flow\ETL\Row\Entry;
 use Flow\ETL\{FlowContext, Row, Rows, Transformer};
+use Flow\ETL\Row\Entry;
 
 final readonly class GroupToArrayTransformer implements Transformer
 {

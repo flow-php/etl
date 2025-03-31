@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flow\ETL\Loader;
 
 use Flow\ETL\Exception\SchemaValidationException;
-use Flow\ETL\Row\Schema;
 use Flow\ETL\{FlowContext, Loader, Rows, SchemaValidator};
+use Flow\ETL\Row\Schema;
 
 final readonly class SchemaValidationLoader implements Loader
 {
