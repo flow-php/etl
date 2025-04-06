@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Flow\ETL\Function;
 
 use function Flow\ETL\DSL\lit;
+use Flow\ETL\Function\ScalarFunction\ScalarResult;
 use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Row;
+use Flow\ETL\Row\{Entry, Reference};
 
 final readonly class Parameter
 {
@@ -23,7 +25,7 @@ final readonly class Parameter
      */
     public function as(Row $row, Type $type, Type ...$types) : mixed
     {
-        $value = $this->function->eval($row);
+        $value = $this->eval($row);
 
         foreach (\array_merge([$type], $types) as $nextType) {
             if ($nextType->isValid($value)) {
@@ -36,14 +38,26 @@ final readonly class Parameter
 
     public function asArray(Row $row) : ?array
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_array($result) ? $result : null;
     }
 
     public function asBoolean(Row $row) : bool
     {
-        return (bool) $this->function->eval($row);
+        return (bool) $this->eval($row);
+    }
+
+    /**
+     * @return null|Entry<mixed, mixed>
+     */
+    public function asEntry(Row $row) : ?Entry
+    {
+        if ($this->function instanceof Reference) {
+            return $row->has($this->function) ? $row->get($this->function) : null;
+        }
+
+        return null;
     }
 
     /**
@@ -56,14 +70,14 @@ final readonly class Parameter
      */
     public function asEnum(Row $row, string $enumClass) : ?\UnitEnum
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_a($result, $enumClass) ? $result : null;
     }
 
     public function asFloat(Row $row) : ?float
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_float($result) ? $result : null;
     }
@@ -78,7 +92,7 @@ final readonly class Parameter
      */
     public function asInstanceOf(Row $row, string $class) : ?object
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_a($result, $class) ? $result : null;
     }
@@ -88,14 +102,14 @@ final readonly class Parameter
      */
     public function asInt(Row $row, ?int $default = null) : ?int
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_int($result) ? $result : $default;
     }
 
     public function asListOfObjects(Row $row, string $class) : ?array
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         if (!\is_array($result)) {
             return null;
@@ -115,7 +129,7 @@ final readonly class Parameter
      */
     public function asNumber(Row $row, int|float|null $default = null) : int|float|null
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         if (\is_string($result)) {
             return $default;
@@ -126,7 +140,7 @@ final readonly class Parameter
 
     public function asObject(Row $row) : ?object
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_object($result) ? $result : null;
     }
@@ -136,13 +150,19 @@ final readonly class Parameter
      */
     public function asString(Row $row, ?string $default = null) : ?string
     {
-        $result = $this->function->eval($row);
+        $result = $this->eval($row);
 
         return \is_string($result) ? $result : $default;
     }
 
     public function eval(Row $row) : mixed
     {
-        return $this->function->eval($row);
+        $result = $this->function->eval($row);
+
+        if ($result instanceof ScalarResult) {
+            return $result->value;
+        }
+
+        return $result;
     }
 }

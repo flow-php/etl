@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Flow\ETL\Function;
 
 use function Flow\ETL\DSL\{float_entry, int_entry};
+use Flow\Calculator\Calculator;
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
 use Flow\ETL\Row\{Entry, Reference};
 use Flow\ETL\{Row, Rows, Window};
 
 final class Sum implements AggregatingFunction, WindowFunction
 {
-    private float $sum;
+    private int $precision = 0;
+
+    private float|int $sum;
 
     private ?Window $window;
 
@@ -24,12 +27,18 @@ final class Sum implements AggregatingFunction, WindowFunction
     public function aggregate(Row $row) : void
     {
         try {
-            /** @var mixed $value */
-            $value = $row->valueOf($this->ref);
+            $entry = $row->get($this->ref);
+
+            if ($entry instanceof Entry\FloatEntry) {
+                $this->precision = max($this->precision, $entry->precision);
+            }
+
+            $value = $entry->value();
 
             if (\is_numeric($value)) {
-                $this->sum += $value;
+                $this->sum = (new Calculator())->add($this->sum, $value, $this->precision);
             }
+
         } catch (InvalidArgumentException) {
             // do nothing?
         }
@@ -38,13 +47,19 @@ final class Sum implements AggregatingFunction, WindowFunction
     public function apply(Row $row, Rows $partition) : mixed
     {
         $sum = 0;
+        $precision = 0;
 
         foreach ($partition->sortBy(...$this->window()->order()) as $partitionRow) {
-            /** @var mixed $value */
-            $value = $partitionRow->valueOf($this->ref);
+            $entry = $partitionRow->get($this->ref);
+
+            if ($entry instanceof Entry\FloatEntry) {
+                $precision = max($precision, $entry->precision);
+            }
+
+            $value = $entry->value();
 
             if (\is_numeric($value)) {
-                $sum += $value;
+                $sum = (new Calculator())->add($sum, $value, $precision);
             }
         }
 
@@ -67,13 +82,11 @@ final class Sum implements AggregatingFunction, WindowFunction
             $this->ref->as($this->ref->to() . '_sum');
         }
 
-        $resultInt = (int) $this->sum;
-
-        if ($this->sum - $resultInt === 0.0) {
+        if ($this->precision === 0) {
             return int_entry($this->ref->name(), (int) $this->sum);
         }
 
-        return float_entry($this->ref->name(), $this->sum);
+        return float_entry($this->ref->name(), $this->sum, $this->precision);
     }
 
     public function toString() : string
