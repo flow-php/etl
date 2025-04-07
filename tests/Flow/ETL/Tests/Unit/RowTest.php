@@ -75,7 +75,7 @@ final class RowTest extends FlowTestCase
     {
         $row = row(
             int_entry('id', generate_random_int(100, 100000)),
-            float_entry('price', generate_random_int(100, 100000) / 100),
+            float_entry('price', \number_format(generate_random_int(100, 100000) / 100, 2, '.', '')),
             bool_entry('deleted', false),
             datetime_entry('created-at', new \DateTimeImmutable('now')),
             str_entry('phase', null),
@@ -103,7 +103,7 @@ final class RowTest extends FlowTestCase
         );
 
         self::assertEquals(
-            schema(integer_schema('id'), float_schema('price'), bool_schema('deleted'), datetime_schema('created-at'), string_schema('phase', nullable: true), json_schema('array'), structure_schema('items', type_structure([
+            schema(integer_schema('id'), float_schema('price', precision: 2), bool_schema('deleted'), datetime_schema('created-at'), string_schema('phase', nullable: true), json_schema('array'), structure_schema('items', type_structure([
                 'item-id' => type_int(),
                 'name' => type_string(),
             ])), map_schema('statuses', type_map(type_integer(), type_string())), list_schema('list', type_list(type_integer()))),
