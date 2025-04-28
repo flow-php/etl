@@ -49,9 +49,9 @@ final readonly class LinkedPipeline implements OverridingPipeline, Pipeline
 
         $pipelines[] = $this->pipeline;
 
-        if ($this->nextPipeline instanceof OverridingPipeline) {
-            $pipelines = \array_merge($pipelines, $this->nextPipeline->pipelines());
-        }
+        //        if ($this->nextPipeline instanceof OverridingPipeline) {
+        //            $pipelines = \array_merge($pipelines, $this->nextPipeline->pipelines());
+        //        }
 
         $pipelines[] = $this->nextPipeline;
 
