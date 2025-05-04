@@ -28,7 +28,8 @@ use Flow\ETL\Pipeline\{BatchingPipeline,
     VoidPipeline};
 use Flow\ETL\Row\{Formatter\ASCIISchemaFormatter, Reference, References};
 use Flow\ETL\Schema\Definition;
-use Flow\ETL\Transformer\{AutoCastTransformer,
+use Flow\ETL\Transformer\{
+    AutoCastTransformer,
     CallbackRowTransformer,
     CrossJoinRowsTransformer,
     DropDuplicatesTransformer,
@@ -41,14 +42,18 @@ use Flow\ETL\Transformer\{AutoCastTransformer,
     OrderEntriesTransformer,
     OrderEntries\Comparator,
     OrderEntries\TypeComparator,
-    RenameAllCaseTransformer,
+    RenameEachEntryTransformer,
     RenameEntryTransformer,
-    RenameStrReplaceAllEntriesTransformer,
+    Rename\RenameCaseEntryStrategy,
+    Rename\RenameEntryStrategy,
+    Rename\RenameReplaceEntryStrategy,
+    Rename\Style,
     ScalarFunctionFilterTransformer,
     ScalarFunctionTransformer,
     SelectEntriesTransformer,
     UntilTransformer,
-    WindowFunctionTransformer};
+    WindowFunctionTransformer
+};
 use Flow\Filesystem\Path\Filter;
 
 final class DataFrame
@@ -84,7 +89,8 @@ final class DataFrame
      * Merge/Split Rows yielded by Extractor into batches of given size.
      * For example, when Extractor is yielding one row at time, this method will merge them into batches of given size
      * before passing them to the next pipeline element.
-     * Similarly when Extractor is yielding batches of rows, this method will split them into smaller batches of given size.
+     * Similarly when Extractor is yielding batches of rows, this method will split them into smaller batches of given
+     * size.
      *
      * In order to merge all Rows into a single batch use DataFrame::collect() method or set size to -1 or 0.
      *
@@ -210,7 +216,8 @@ final class DataFrame
 
     /**
      * @param int $limit maximum numbers of rows to display
-     * @param bool|int $truncate false or if set to 0 columns are not truncated, otherwise default truncate to 20 characters
+     * @param bool|int $truncate false or if set to 0 columns are not truncated, otherwise default truncate to 20
+     *                           characters
      * @param Formatter $formatter
      *
      * @trigger
@@ -258,7 +265,8 @@ final class DataFrame
     }
 
     /**
-     * Drop all partitions from Rows, additionally when $dropPartitionColumns is set to true, partition columns are also removed.
+     * Drop all partitions from Rows, additionally when $dropPartitionColumns is set to true, partition columns are
+     * also removed.
      *
      * @lazy
      */
@@ -625,28 +633,32 @@ final class DataFrame
 
     /**
      * @lazy
-     * Iterate over all entry names and replace given search string with replace string.
+     * Iterate over all entry names and replace the given search string with replace string.
+     *
+     * @deprecated use DataFrame::renameEach() with a RenameReplaceStrategy
      */
     public function renameAll(string $search, string $replace) : self
     {
-        $this->pipeline->add(new RenameStrReplaceAllEntriesTransformer($search, $replace));
+        $this->renameEach(new RenameReplaceEntryStrategy($search, $replace));
 
         return $this;
     }
 
     /**
      * @lazy
+     *
+     * @deprecated use DataFrame::renameEach() with a selected Style
      */
     public function renameAllLowerCase() : self
     {
-        $this->pipeline->add(new RenameAllCaseTransformer(lower: true));
+        $this->renameEach(new RenameCaseEntryStrategy(Style::LOWER));
 
         return $this;
     }
 
     /**
      * @lazy
-     * Rename all entries to given style.
+     * Rename all entries to a given style.
      * Please look into \Flow\ETL\Function\StyleConverter\StringStyles class for all available styles.
      */
     public function renameAllStyle(StringStyles|string $style) : self
@@ -658,30 +670,43 @@ final class DataFrame
 
     /**
      * @lazy
+     *
+     * @deprecated use DataFrame::renameEach() with a selected Style
      */
     public function renameAllUpperCase() : self
     {
-        $this->pipeline->add(new RenameAllCaseTransformer(upper: true));
+        $this->renameEach(new RenameCaseEntryStrategy(Style::UPPER));
 
         return $this;
     }
 
     /**
      * @lazy
+     *
+     * @deprecated use DataFrame::renameEach() with a selected Style
      */
     public function renameAllUpperCaseFirst() : self
     {
-        $this->pipeline->add(new RenameAllCaseTransformer(ucfirst: true));
+        $this->renameEach(new RenameCaseEntryStrategy(Style::UCFIRST));
 
         return $this;
     }
 
     /**
      * @lazy
+     *
+     * @deprecated use DataFrame::renameEach() with a selected Style
      */
     public function renameAllUpperCaseWord() : self
     {
-        $this->pipeline->add(new RenameAllCaseTransformer(ucwords: true));
+        $this->renameEach(new RenameCaseEntryStrategy(Style::UCWORDS));
+
+        return $this;
+    }
+
+    public function renameEach(RenameEntryStrategy $strategy) : self
+    {
+        $this->pipeline->add(new RenameEachEntryTransformer($strategy));
 
         return $this;
     }
@@ -825,8 +850,8 @@ final class DataFrame
     }
 
     /**
-     * The difference between filter and until is that filter will keep filtering rows until extractors finish yielding rows.
-     * Until will send a STOP signal to the Extractor when the condition is not met.
+     * The difference between filter and until is that filter will keep filtering rows until extractors finish yielding
+     * rows. Until will send a STOP signal to the Extractor when the condition is not met.
      *
      * @lazy
      */
