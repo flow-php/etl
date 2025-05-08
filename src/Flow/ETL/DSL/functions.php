@@ -34,9 +34,9 @@ use Flow\ETL\{Analyze,
     Rows,
     Schema,
     Schema\SchemaFormatter,
+    String\StringStyles,
     Transformation,
     Transformer,
-    Transformer\Rename\Style,
     Window,
     WithEntry};
 use Flow\ETL\ErrorHandler\{IgnoreError, SkipRows, ThrowError};
@@ -98,6 +98,7 @@ use Flow\ETL\Function\{All,
     Sprintf,
     StringAggregate,
     StructureFunctions,
+    StyleConverter\StringStyles as OldStringStyles,
     Sum,
     ToDate,
     ToDateTime,
@@ -110,7 +111,6 @@ use Flow\ETL\Function\{All,
 use Flow\ETL\Function\ArrayExpand\ArrayExpand;
 use Flow\ETL\Function\ArraySort\Sort;
 use Flow\ETL\Function\Between\Boundary;
-use Flow\ETL\Function\StyleConverter\StringStyles;
 use Flow\ETL\Loader\{ArrayLoader, CallbackLoader, MemoryLoader, StreamLoader, TransformerLoader};
 use Flow\ETL\Loader\StreamLoader\Output;
 use Flow\ETL\Memory\Memory;
@@ -349,7 +349,7 @@ function to_branch(ScalarFunction $condition, Loader $loader) : Loader\Branching
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::TRANSFORMER)]
-function rename_style(Style $style) : Transformer\Rename\RenameCaseEntryStrategy
+function rename_style(OldStringStyles|StringStyles $style) : Transformer\Rename\RenameCaseEntryStrategy
 {
     return new Transformer\Rename\RenameCaseEntryStrategy($style);
 }
@@ -793,8 +793,12 @@ function array_key_rename(ScalarFunction $ref, ScalarFunction|string $path, Scal
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-function array_keys_style_convert(ScalarFunction $ref, StringStyles|string $style = StringStyles::SNAKE) : ArrayKeysStyleConvert
+function array_keys_style_convert(ScalarFunction $ref, OldStringStyles|\Flow\ETL\String\StringStyles|string $style = StringStyles::SNAKE) : ArrayKeysStyleConvert
 {
+    if ($style instanceof OldStringStyles) {
+        $style = StringStyles::fromString($style->value);
+    }
+
     return new ArrayKeysStyleConvert($ref, $style instanceof StringStyles ? $style : StringStyles::fromString($style));
 }
 

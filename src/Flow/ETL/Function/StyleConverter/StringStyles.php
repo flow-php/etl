@@ -4,66 +4,19 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Function\StyleConverter;
 
-use function Symfony\Component\String\u;
-use Flow\ETL\Exception\InvalidArgumentException;
-use Symfony\Component\String\UnicodeString;
-
+/**
+ * @deprecated use Flow\ETL\String\String
+ */
 enum StringStyles : string
 {
+    case ASCII = 'ascii';
     case CAMEL = 'camel';
-
     case KEBAB = 'kebab';
-
     case LOWER = 'lower';
-
+    case SLUG = 'slug';
     case SNAKE = 'snake';
-
     case TITLE = 'title';
-
+    case UCFIRST = 'ucfirst';
+    case UCWORDS = 'ucwords';
     case UPPER = 'upper';
-
-    /**
-     * @return array<string>
-     */
-    public static function all() : array
-    {
-        $cases = [];
-
-        foreach (self::cases() as $case) {
-            $cases[] = $case->value;
-        }
-
-        return $cases;
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public static function fromString(string $style) : self
-    {
-        foreach (self::cases() as $case) {
-            if ($style === $case->value) {
-                return $case;
-            }
-        }
-
-        throw new InvalidArgumentException("Unrecognized style {$style}, please use one of following: " . \implode(', ', self::all()));
-    }
-
-    public function convert(string $value) : string
-    {
-        /** @phpstan-ignore-next-line */
-        $hasKebabMethod = method_exists(UnicodeString::class, 'kebab');
-
-        return match ($this) {
-            self::CAMEL => u($value)->camel()->toString(),
-            self::KEBAB => $hasKebabMethod
-                ? u($value)->kebab()->toString()
-                : u($value)->snake()->replace('_', '-')->toString(),
-            self::LOWER => u($value)->lower()->toString(),
-            self::SNAKE => u($value)->snake()->toString(),
-            self::TITLE => u($value)->title()->toString(),
-            self::UPPER => u($value)->upper()->toString(),
-        };
-    }
 }
