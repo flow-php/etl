@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Function;
 
-use function Flow\ETL\DSL\{list_entry,
-    ref,
-    row,
-    struct_entry,
-    type_int,
-    type_list,
-    type_string,
-    type_structure};
+use function Flow\ETL\DSL\{list_entry, ref, row, struct_entry};
+use function Flow\Types\DSL\{type_integer, type_optional};
+use function Flow\Types\DSL\{type_list, type_string, type_structure};
 use Flow\ETL\Function\StructureSelect;
 use Flow\ETL\Tests\FlowTestCase;
 
@@ -26,7 +21,7 @@ final class StructureSelectTest extends FlowTestCase
                 'name' => 'test',
             ],
             type_structure([
-                'id' => type_int(),
+                'id' => type_integer(),
                 'name' => type_string(),
             ])
         );
@@ -47,7 +42,7 @@ final class StructureSelectTest extends FlowTestCase
                 'name' => 'test',
             ],
             type_structure([
-                'id' => type_int(),
+                'id' => type_integer(),
                 'name' => type_string(),
             ])
         );
@@ -68,7 +63,7 @@ final class StructureSelectTest extends FlowTestCase
                 'name' => 'test',
             ],
             type_structure([
-                'id' => type_int(),
+                'id' => type_integer(),
                 'name' => type_string(),
             ])
         );
@@ -85,12 +80,14 @@ final class StructureSelectTest extends FlowTestCase
         $structure = struct_entry(
             'struct',
             [
+                'id' => null,
                 'email' => 'email@email.com',
+                'name' => null,
             ],
             type_structure([
-                'id' => type_int(true),
+                'id' => type_optional(type_integer()),
                 'email' => type_string(),
-                'name' => type_string(true),
+                'name' => type_optional(type_string()),
             ])
         );
 
@@ -111,7 +108,7 @@ final class StructureSelectTest extends FlowTestCase
             ],
             type_list(
                 type_structure([
-                    'id' => type_int(),
+                    'id' => type_integer(),
                     'name' => type_string(),
                 ])
             )

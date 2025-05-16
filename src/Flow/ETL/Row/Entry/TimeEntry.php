@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Entry;
 
-use function Flow\ETL\DSL\{date_interval_to_microseconds, type_time};
+use function Flow\ETL\DSL\{date_interval_to_microseconds};
+use function Flow\Types\DSL\{type_equals, type_time};
+use DateInterval;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\PHP\Type\Logical\TimeType;
-use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Row\{Entry, Reference};
 use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\Types\Type\Logical\TimeType;
+use Flow\Types\Type\Type;
 
 /**
- * @implements Entry<?\DateInterval, ?\DateInterval>
+ * @implements Entry<?DateInterval, DateInterval>
  */
 final class TimeEntry implements Entry
 {
@@ -84,7 +86,7 @@ final class TimeEntry implements Entry
         }
 
         $this->metadata = $metadata ?: Metadata::empty();
-        $this->type = type_time($this->value === null);
+        $this->type = type_time();
     }
 
     public static function fromDays(string $name, int $days) : self
@@ -141,7 +143,7 @@ final class TimeEntry implements Entry
 
     public function definition() : Definition
     {
-        return new Definition($this->name, $this->type, $this->metadata);
+        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
     public function duplicate() : Entry
@@ -173,7 +175,7 @@ final class TimeEntry implements Entry
 
         return $this->is($entry->name())
             && $entry instanceof self
-            && $this->type->isEqual($entry->type)
+            && type_equals($this->type, $entry->type)
             && date_interval_to_microseconds($thisValue) == date_interval_to_microseconds($entryValue);
     }
 

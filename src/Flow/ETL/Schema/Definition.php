@@ -4,24 +4,12 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Schema;
 
-use function Flow\ETL\DSL\{
-    type_boolean,
-    type_date,
-    type_datetime,
-    type_enum,
-    type_float,
-    type_int,
-    type_json,
-    type_list,
-    type_string,
-    type_time,
-    type_uuid,
-    type_xml,
-    type_xml_element};
+use function Flow\ETL\DSL\{is_nullable};
+use function Flow\Types\DSL\{type_boolean, type_date, type_datetime, type_enum, type_equals, type_float, type_integer, type_is, type_is_any, type_json, type_list, type_optional, type_string, type_time, type_uuid, type_xml, type_xml_element, types};
 use Flow\ETL\Exception\{InvalidArgumentException, RuntimeException};
-use Flow\ETL\PHP\Type\Logical\{DateTimeType, DateType, ListType, MapType, StructureType, TimeType};
-use Flow\ETL\PHP\Type\{Native\FloatType, Native\IntegerType, Native\StringType, Type, TypeFactory};
 use Flow\ETL\Row\{Entry, EntryReference, Reference};
+use Flow\Types\Type\Logical\{ListType, MapType, OptionalType, StructureType};
+use Flow\Types\Type\{Native\FloatType, Native\IntegerType, Native\UnionType, Type, TypeFactory};
 
 final class Definition
 {
@@ -35,8 +23,12 @@ final class Definition
     public function __construct(
         string|Reference $ref,
         private readonly Type $type,
+        private readonly bool $nullable = false,
         ?Metadata $metadata = null,
     ) {
+        if ($type instanceof UnionType || $type instanceof OptionalType) {
+            throw new InvalidArgumentException('Schema definition can\'t does not accept UnionType or OptionalType');
+        }
 
         $this->metadata = $metadata ?? Metadata::empty();
         $this->ref = EntryReference::init($ref);
@@ -44,17 +36,17 @@ final class Definition
 
     public static function boolean(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_boolean($nullable), $metadata);
+        return new self($entry, type_boolean(), $nullable, $metadata);
     }
 
     public static function date(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_date($nullable), $metadata);
+        return new self($entry, type_date(), $nullable, $metadata);
     }
 
     public static function dateTime(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_datetime($nullable), $metadata);
+        return new self($entry, type_datetime(), $nullable, $metadata);
     }
 
     /**
@@ -68,14 +60,15 @@ final class Definition
 
         return new self(
             $entry,
-            type_enum($type, $nullable),
+            type_enum($type),
+            $nullable,
             $metadata
         );
     }
 
-    public static function float(string|Reference $entry, bool $nullable = false, int $precision = 6, ?Metadata $metadata = null) : self
+    public static function float(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_float($nullable, $precision), $metadata);
+        return new self($entry, type_float(), $nullable, $metadata);
     }
 
     public static function fromArray(array $definition) : self
@@ -95,70 +88,78 @@ final class Definition
         return new self(
             $definition['ref'],
             TypeFactory::fromArray($definition['type']),
+            $definition['nullable'] ?? false,
             Metadata::fromArray($definition['metadata'] ?? [])
         );
     }
 
     public static function integer(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_int($nullable), $metadata);
+        return new self($entry, type_integer(), $nullable, $metadata);
     }
 
     public static function json(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_json($nullable), $metadata);
+        return new self($entry, type_json(), $nullable, $metadata);
     }
 
-    public static function list(string|Reference $entry, ListType $type, ?Metadata $metadata = null) : self
+    /**
+     * @param ListType<mixed> $type
+     */
+    public static function list(string|Reference $entry, ListType $type, bool $nullable = false, ?Metadata $metadata = null) : self
     {
         return new self(
             $entry,
             $type,
+            $nullable,
             $metadata
         );
     }
 
-    public static function map(string|Reference $entry, MapType $type, ?Metadata $metadata = null) : self
+    /**
+     * @param MapType<array-key, mixed> $type
+     */
+    public static function map(string|Reference $entry, MapType $type, bool $nullable = false, ?Metadata $metadata = null) : self
     {
         return new self(
             $entry,
             $type,
+            $nullable,
             $metadata
         );
     }
 
     public static function string(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_string($nullable), $metadata);
+        return new self($entry, type_string(), $nullable, $metadata);
     }
 
-    public static function structure(string|Reference $entry, StructureType $type, ?Metadata $metadata = null) : self
+    /**
+     * @param StructureType<array> $type
+     */
+    public static function structure(string|Reference $entry, StructureType $type, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self(
-            $entry,
-            $type,
-            $metadata
-        );
+        return new self($entry, $type, $nullable, $metadata);
     }
 
     public static function time(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_time($nullable), $metadata);
+        return new self($entry, type_time(), $nullable, $metadata);
     }
 
     public static function uuid(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_uuid($nullable), $metadata);
+        return new self($entry, type_uuid(), $nullable, $metadata);
     }
 
     public static function xml(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_xml($nullable), $metadata);
+        return new self($entry, type_xml(), $nullable, $metadata);
     }
 
     public static function xml_element(string|Reference $entry, bool $nullable = false, ?Metadata $metadata = null) : self
     {
-        return new self($entry, type_xml_element($nullable), $metadata);
+        return new self($entry, type_xml_element(), $nullable, $metadata);
     }
 
     public function addMetadata(string $key, int|string|bool|float|array $value) : self
@@ -173,19 +174,118 @@ final class Definition
         return $this->ref;
     }
 
+    /**
+     * Checks if another type is compatible with this type. Nullability is validated from a schema evolution perspective.
+     * This means that when current type is nullable and the other type is not nullable, it is still compatible.
+     * When given type is not nullable and current type is nullable, it is not compatible.
+     */
     public function isCompatible(self $definition) : bool
     {
-        return $this->type->isCompatible($definition->type);
+        if (!$this->ref->is($definition->ref)) {
+            return false;
+        }
+
+        if (!$this->nullable && $definition->nullable) {
+            return false;
+        }
+
+        if ($this->type instanceof ListType && $definition->type instanceof ListType) {
+            $thisElement = $this->type->element();
+            $thisElementNullable = false;
+            $definitionElement = $definition->type->element();
+            $definitionElementNullable = false;
+
+            if ($thisElement instanceof OptionalType) {
+                $thisElement = $thisElement->base();
+                $thisElementNullable = true;
+            }
+
+            if ($definitionElement instanceof OptionalType) {
+                $definitionElement = $definitionElement->base();
+                $definitionElementNullable = true;
+            }
+
+            return (new self($this->ref->name() . '.element', $thisElement, $thisElementNullable))
+                ->isCompatible(new self($definition->ref->name() . '.element', $definitionElement, $definitionElementNullable));
+        }
+
+        if ($this->type instanceof MapType && $definition->type instanceof MapType) {
+            $thisKey = $this->type->key();
+            $definitionKey = $definition->type->key();
+
+            $thisValue = $this->type->value();
+            $thisValueNullable = false;
+            $definitionValue = $definition->type->value();
+            $definitionValueNullable = false;
+
+            if ($thisValue instanceof OptionalType) {
+                $thisValue = $thisValue->base();
+                $thisValueNullable = true;
+            }
+
+            if ($definitionValue instanceof OptionalType) {
+                $definitionValue = $definitionValue->base();
+                $definitionValueNullable = true;
+            }
+
+            return (new self($this->ref->name() . '.key', $thisKey, false))
+                    ->isCompatible(new self($definition->ref->name() . '.key', $definitionKey, false))
+                && (new self($this->ref->name() . '.value', $thisValue, $thisValueNullable))
+                    ->isCompatible(new self($definition->ref->name() . '.value', $definitionValue, $definitionValueNullable));
+        }
+
+        if ($this->type instanceof StructureType && $definition->type instanceof StructureType) {
+            $thisElements = $this->type->elements();
+            $definitionElements = $definition->type->elements();
+
+            if (\count($thisElements) !== \count($definitionElements)) {
+                return false;
+            }
+
+            foreach ($thisElements as $name => $element) {
+                if (!\array_key_exists($name, $definitionElements)) {
+                    return false;
+                }
+
+                $thisElement = $element;
+                $thisElementNullable = false;
+                $definitionElement = $definitionElements[$name];
+                $definitionElementNullable = false;
+
+                if ($thisElement instanceof OptionalType) {
+                    $thisElement = $thisElement->base();
+                    $thisElementNullable = true;
+                }
+
+                if ($definitionElement instanceof OptionalType) {
+                    $definitionElement = $definitionElement->base();
+                    $definitionElementNullable = true;
+                }
+
+                if (!(new self($this->ref->name() . '.' . $name, $thisElement, $thisElementNullable))
+                    ->isCompatible(new self($definition->ref->name() . '.' . $name, $definitionElement, $definitionElementNullable))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return type_equals($this->type, $definition->type);
     }
 
     public function isNullable() : bool
     {
-        return $this->type->nullable();
+        return $this->nullable;
     }
 
     public function isSame(self $definition) : bool
     {
-        if ($this->type->isSame($definition->type) === false) {
+        if ($this->nullable !== $definition->nullable) {
+            return false;
+        }
+
+        if (!type_equals($this->type, $definition->type)) {
             return false;
         }
 
@@ -194,7 +294,7 @@ final class Definition
 
     public function makeNullable(bool $nullable = true) : self
     {
-        return new self($this->ref, $this->type->makeNullable($nullable), $this->metadata);
+        return new self($this->ref, $this->type, $nullable, $this->metadata);
     }
 
     /**
@@ -210,11 +310,16 @@ final class Definition
             return false;
         }
 
-        return $this->type->isEqual($entry->type());
+        return type_equals($this->type, $entry->type());
     }
 
     public function merge(self $definition) : self
     {
+        $thisType = $this->type;
+        $definitionType = $definition->type;
+
+        $types = types($thisType, $definitionType);
+
         if (!$this->ref->is($definition->ref)) {
             throw new RuntimeException(\sprintf('Cannot merge different definitions, %s and %s', $this->ref->name(), $definition->ref->name()));
         }
@@ -222,7 +327,8 @@ final class Definition
         if ($this->metadata->has(Metadata::FROM_NULL) && $definition->metadata()->has(Metadata::FROM_NULL)) {
             return new self(
                 $this->ref,
-                $this->type()->makeNullable($this->isNullable() || $definition->isNullable()),
+                $thisType,
+                true,
                 $this->metadata->merge($definition->metadata)
             );
         }
@@ -230,7 +336,8 @@ final class Definition
         if ($this->metadata->has(Metadata::FROM_NULL)) {
             return new self(
                 $this->ref,
-                $definition->type()->makeNullable($this->isNullable() || $definition->isNullable()),
+                $definitionType,
+                true,
                 $definition->metadata->remove(Metadata::FROM_NULL)->merge($this->metadata->remove(Metadata::FROM_NULL))
             );
         }
@@ -238,121 +345,81 @@ final class Definition
         if ($definition->metadata()->has(Metadata::FROM_NULL)) {
             return new self(
                 $this->ref,
-                $this->type()->makeNullable($this->isNullable() || $definition->isNullable()),
+                $thisType,
+                true,
                 $this->metadata->remove(Metadata::FROM_NULL)->merge($definition->metadata->remove(Metadata::FROM_NULL))
             );
         }
 
-        if ($this->type instanceof ListType && $definition->type instanceof ListType && !$this->type->isEqual($definition->type)) {
-            $thisElementTypeString = $this->type->element()->toString();
-            $definitionElementTypeString = $definition->type->element()->toString();
+        if (type_is($thisType, ListType::class) && type_is($definitionType, ListType::class) && !type_equals($thisType, $definitionType)) {
+            /** @var ListType<mixed> $thisType */
+            $thisElementType = $thisType->element();
+            /** @var ListType<mixed> $definitionType */
+            $definitionElementType = $definitionType->element();
 
-            if (\in_array($thisElementTypeString, ['integer', 'float', '?integer', '?float'], true) && \in_array($definitionElementTypeString, ['integer', 'float', '?integer', '?float'], true)) {
-
-                if (\in_array($thisElementTypeString, ['integer', '?integer'], true) && \in_array($definitionElementTypeString, ['integer', '?integer'], true)) {
-                    return new self(
-                        $this->ref,
-                        type_list(
-                            type_int(
-                                $this->type->element()->nullable() || $definition->type->element()->nullable(),
-                            )
-                        ),
-                        $this->metadata->merge($definition->metadata)
-                    );
-                }
-
+            if (type_is_any($thisElementType, IntegerType::class, FloatType::class) && type_is_any($definitionElementType, IntegerType::class, FloatType::class)) {
                 return new self(
                     $this->ref,
                     type_list(
-                        type_float(
-                            $this->type->element()->nullable() || $definition->type->element()->nullable(),
-                            precision: \max(
-                                $this->type->element() instanceof FloatType ? $this->type->element()->precision : 0,
-                                $definition->type->element() instanceof FloatType ? $definition->type->element()->precision : 0
-                            )
-                        )
+                        is_nullable($thisElementType) || is_nullable($definitionElementType)
+                            ? type_optional(type_float())
+                            : type_float()
                     ),
+                    $this->nullable || $definition->nullable,
                     $this->metadata->merge($definition->metadata)
                 );
             }
         }
 
-        if ($this->type::class === $definition->type::class && \in_array($this->type::class, [ListType::class, MapType::class, StructureType::class], true)) {
-            if (!$this->type->isEqual($definition->type)) {
+        if ($thisType::class === $definitionType::class && type_is_any($thisType, ListType::class, MapType::class, StructureType::class)) {
+            if (!type_equals($thisType, $definitionType)) {
                 return new self(
                     $this->ref,
-                    type_json($this->isNullable() || $definition->isNullable()),
+                    type_json(),
+                    $this->nullable || $definition->nullable,
                     $this->metadata->merge($definition->metadata)
                 );
             }
         }
 
-        if ($this->type instanceof FloatType && $definition->type instanceof FloatType) {
-            $precision = \max($this->type->precision, $definition->type->precision);
-
+        if (type_equals($thisType, $definitionType)) {
             return new self(
                 $this->ref,
-                type_float($this->isNullable() || $definition->isNullable(), $precision),
+                $thisType,
+                $this->nullable || $definition->nullable,
                 $this->metadata->merge($definition->metadata)
             );
         }
 
-        if ($this->type->isEqual($definition->type)) {
+        if ($types->has(type_string())) {
             return new self(
                 $this->ref,
-                $this->type()->merge($definition->type()),
+                type_string(),
+                $this->nullable || $definition->nullable,
                 $this->metadata->merge($definition->metadata)
             );
         }
 
-        $types = [$this->type::class, $definition->type::class];
-
-        if (\in_array(StringType::class, $types, true)) {
+        if (($types->has(type_time()) && $types->has(type_date())) || ($types->has(type_time()) && $types->has(type_datetime())) || ($types->has(type_date()) && $types->has(type_datetime()))) {
             return new self(
                 $this->ref,
-                type_string($this->isNullable() || $definition->isNullable()),
+                type_datetime(),
+                $this->nullable || $definition->nullable,
                 $this->metadata->merge($definition->metadata)
             );
         }
 
-        if (\in_array(TimeType::class, $types, true) && \in_array(DateType::class, $types, true)) {
+        if ($types->has(type_integer()) && $types->has(type_float())) {
+
             return new self(
                 $this->ref,
-                type_datetime($this->isNullable() || $definition->isNullable()),
+                type_float(),
+                $this->nullable || $definition->nullable,
                 $this->metadata->merge($definition->metadata)
             );
         }
 
-        if (\in_array(TimeType::class, $types, true) && \in_array(DateTimeType::class, $types, true)) {
-            return new self(
-                $this->ref,
-                type_datetime($this->isNullable() || $definition->isNullable()),
-                $this->metadata->merge($definition->metadata)
-            );
-        }
-
-        if (\in_array(DateType::class, $types, true) && \in_array(DateTimeType::class, $types, true)) {
-            return new self(
-                $this->ref,
-                type_datetime($this->isNullable() || $definition->isNullable()),
-                $this->metadata->merge($definition->metadata)
-            );
-        }
-
-        if (\in_array(IntegerType::class, $types, true) && \in_array(FloatType::class, $types, true)) {
-            $precision = \max(
-                $this->type instanceof FloatType ? $this->type->precision : 0,
-                $definition->type instanceof FloatType ? $definition->type->precision : 0
-            );
-
-            return new self(
-                $this->ref,
-                type_float($this->isNullable() || $definition->isNullable(), $precision),
-                $this->metadata->merge($definition->metadata)
-            );
-        }
-
-        throw new RuntimeException(\sprintf('Cannot merge definitions for entries, "%s (%s)" and "%s (%s)"', $this->ref->name(), $this->type->toString(), $definition->ref->name(), $definition->type->toString()));
+        throw new RuntimeException(\sprintf('Cannot merge definitions for entries, "%s (%s)" and "%s (%s)"', $this->ref->name(), $thisType->toString(), $definition->ref->name(), $definitionType->toString()));
     }
 
     public function metadata() : Metadata
@@ -365,6 +432,7 @@ final class Definition
         return [
             'ref' => $this->ref->name(),
             'type' => $this->type->normalize(),
+            'nullable' => $this->nullable,
             'metadata' => $this->metadata->normalize(),
         ];
     }
@@ -382,6 +450,7 @@ final class Definition
         return new self(
             $newName,
             $this->type,
+            $this->nullable,
             $this->metadata
         );
     }

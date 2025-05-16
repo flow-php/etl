@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Entry;
 
-use function Flow\ETL\DSL\type_xml;
+use function Flow\Types\DSL\{type_equals, type_xml};
+use DOMDocument;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\PHP\Type\Logical\XMLType;
-use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Row\{Entry, Reference};
 use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\Types\Type\Logical\XMLType;
+use Flow\Types\Type\Type;
 
 /**
- * @implements Entry<?\DOMDocument, ?\DOMDocument>
+ * @implements Entry<?DOMDocument, DOMDocument>
  */
 final class XMLEntry implements Entry
 {
@@ -42,7 +43,7 @@ final class XMLEntry implements Entry
         }
 
         $this->metadata = $metadata ?: Metadata::empty();
-        $this->type = type_xml($this->value === null);
+        $this->type = type_xml();
     }
 
     public function __serialize() : array
@@ -89,7 +90,7 @@ final class XMLEntry implements Entry
 
     public function definition() : Definition
     {
-        return new Definition($this->name, $this->type, $this->metadata);
+        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
     public function duplicate() : Entry
@@ -112,7 +113,7 @@ final class XMLEntry implements Entry
             return false;
         }
 
-        if (!$this->type->isEqual($entry->type)) {
+        if (!type_equals($this->type, $entry->type)) {
             return false;
         }
 

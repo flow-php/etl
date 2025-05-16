@@ -29,15 +29,14 @@ use function Flow\ETL\DSL\{average,
     schema,
     str_entry,
     sum,
-    type_list,
-    type_string,
     uuid_entry,
     uuid_schema,
     window};
+use function Flow\Types\DSL\{type_list, type_string};
 use Flow\ETL\{Loader, Rows};
 use Flow\ETL\Memory\ArrayMemory;
-use Flow\ETL\PHP\Value\Uuid;
 use Flow\ETL\Tests\FlowIntegrationTestCase;
+use Flow\Types\Value\Uuid;
 
 final class GroupByTest extends FlowIntegrationTestCase
 {
@@ -59,7 +58,7 @@ final class GroupByTest extends FlowIntegrationTestCase
             ->fetch();
 
         self::assertEquals(
-            schema(list_schema('array', type_list(type_string())), int_schema('score_sum'), float_schema('score_avg', precision: 2)),
+            schema(list_schema('array', type_list(type_string())), int_schema('score_sum'), float_schema('score_avg')),
             $rows->schema()
         );
         self::assertEquals(
@@ -91,7 +90,7 @@ final class GroupByTest extends FlowIntegrationTestCase
             ->fetch();
 
         self::assertEquals(
-            schema(datetime_schema('date'), int_schema('score_sum'), float_schema('score_avg', precision: 2)),
+            schema(datetime_schema('date'), int_schema('score_sum'), float_schema('score_avg')),
             $rows->schema()
         );
         self::assertEquals(
@@ -343,7 +342,7 @@ final class GroupByTest extends FlowIntegrationTestCase
             ->fetch();
 
         self::assertEquals(
-            schema(uuid_schema('uuid'), int_schema('score_sum'), float_schema('score_avg', precision: 2)),
+            schema(uuid_schema('uuid'), int_schema('score_sum'), float_schema('score_avg')),
             $rows->schema()
         );
         self::assertEquals(

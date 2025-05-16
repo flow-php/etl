@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Entry;
 
+use function Flow\Types\DSL\type_equals;
 use Flow\ArrayComparison\ArrayComparison;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\PHP\Type\Logical\StructureType;
-use Flow\ETL\PHP\Type\{Type, TypeDetector};
 use Flow\ETL\Row\{Entry, Reference};
 use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\Types\Type\Logical\StructureType;
+use Flow\Types\Type\Type;
+use Flow\Types\Type\{TypeDetector};
 
 /**
- * @implements Entry<?array<string, mixed>, ?array<string, mixed>>
+ * @template T of array<array-key, mixed>
+ *
+ * @implements Entry<?array<array-key, mixed>, T>
  */
 final class StructureEntry implements Entry
 {
@@ -20,10 +24,14 @@ final class StructureEntry implements Entry
 
     private Metadata $metadata;
 
+    /**
+     * @var StructureType<T>
+     */
     private readonly StructureType $type;
 
     /**
      * @param ?array<array-key, mixed> $value
+     * @param StructureType<T> $type
      *
      * @throws InvalidArgumentException
      */
@@ -41,12 +49,13 @@ final class StructureEntry implements Entry
             throw InvalidArgumentException::because('Structure must have at least one entry, ' . $name . ' got none.');
         }
 
-        if (!$type->isValid($value)) {
+        /** @phpstan-ignore-next-line */
+        if ($value !== null && !$type->isValid($value)) {
             throw InvalidArgumentException::because('Expected ' . $type->toString() . ' got different types: ' . (new TypeDetector())->detectType($this->value)->toString());
         }
 
         $this->metadata = $metadata ?: Metadata::empty();
-        $this->type = $value === null ? $type->makeNullable(true) : $type;
+        $this->type = $type;
     }
 
     public function __toString() : string
@@ -56,10 +65,10 @@ final class StructureEntry implements Entry
 
     public function definition() : Definition
     {
-        return new Definition($this->name, $this->type, $this->metadata);
+        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : Entry
     {
         return new self($this->name, $this->value, $this->type, $this->metadata);
     }
@@ -87,10 +96,10 @@ final class StructureEntry implements Entry
         }
 
         if ($entryValue === null && $thisValue === null) {
-            return $this->is($entry->name()) && $entry instanceof self && $this->type->isEqual($entry->type);
+            return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type);
         }
 
-        return $this->is($entry->name()) && $entry instanceof self && $this->type->isEqual($entry->type) && (new ArrayComparison())->equals($thisValue, $entryValue);
+        return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type) && (new ArrayComparison())->equals($thisValue, $entryValue);
     }
 
     public function map(callable $mapper) : Entry

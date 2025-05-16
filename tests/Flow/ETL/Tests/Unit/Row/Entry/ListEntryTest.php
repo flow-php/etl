@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Row\Entry;
 
-use function Flow\ETL\DSL\{list_entry, type_boolean, type_datetime, type_int, type_list, type_string};
-use function Flow\ETL\DSL\{list_schema, type_float, type_integer, type_object};
+use function Flow\ETL\DSL\{list_entry};
+use function Flow\ETL\DSL\{list_schema};
+use function Flow\Types\DSL\{
+    type_boolean,
+    type_datetime,
+    type_float,
+    type_instance_of,
+    type_integer,
+    type_list,
+    type_string
+};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Tests\FlowTestCase;
 
@@ -32,7 +41,7 @@ final class ListEntryTest extends FlowTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected list<object<DateTimeInterface>> got different types: array<mixed>');
 
-        list_entry('list', ['string', new \DateTimeImmutable()], type_list(type_object(\DateTimeInterface::class)));
+        list_entry('list', ['string', new \DateTimeImmutable()], type_list(type_instance_of(\DateTimeInterface::class)));
     }
 
     public function test_creating_float_list_from_wrong_value_types() : void
@@ -92,7 +101,7 @@ final class ListEntryTest extends FlowTestCase
         );
         self::assertFalse(
             list_entry('strings', ['one', 'two', 'three'], type_list(type_string()))
-                ->isEqual(list_entry('strings', [1, 2, 3], type_list(type_int())))
+                ->isEqual(list_entry('strings', [1, 2, 3], type_list(type_integer())))
         );
         self::assertTrue(
             list_entry('strings', ['two', 'one', 'three'], type_list(type_string()))

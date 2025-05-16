@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Row\Entry;
 
-use function Flow\ETL\DSL\type_date;
+use function Flow\Types\DSL\{type_date, type_equals};
+use DateTimeInterface;
 use Flow\ETL\Exception\InvalidArgumentException;
-use Flow\ETL\PHP\Type\Logical\DateType;
-use Flow\ETL\PHP\Type\Type;
 use Flow\ETL\Row\{Entry, Reference};
 use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\Types\Type\Logical\DateType;
+use Flow\Types\Type\Type;
 
 /**
- * @implements Entry<?\DateTimeInterface, ?\DateTimeInterface>
+ * @implements Entry<?DateTimeInterface, DateTimeInterface>
  */
 final class DateEntry implements Entry
 {
@@ -48,7 +49,7 @@ final class DateEntry implements Entry
         }
 
         $this->metadata = $metadata ?: Metadata::empty();
-        $this->type = type_date($this->value === null);
+        $this->type = type_date();
     }
 
     public function __toString() : string
@@ -58,7 +59,7 @@ final class DateEntry implements Entry
 
     public function definition() : Definition
     {
-        return new Definition($this->name, $this->type, $this->metadata);
+        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
     public function duplicate() : Entry
@@ -77,7 +78,7 @@ final class DateEntry implements Entry
 
     public function isEqual(Entry $entry) : bool
     {
-        return $this->is($entry->name()) && $entry instanceof self && $this->type->isEqual($entry->type) && $this->value() == $entry->value();
+        return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type) && $this->value() == $entry->value();
     }
 
     public function map(callable $mapper) : Entry

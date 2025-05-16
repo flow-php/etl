@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Integration\DataFrame;
 
-use function Flow\ETL\DSL\{df,
-    from_array,
-    int_schema,
-    list_schema,
-    schema,
-    type_list,
-    type_string};
+use function Flow\ETL\DSL\{df, from_array, int_schema, list_schema, schema};
+use function Flow\Types\DSL\{type_list, type_string};
 use Flow\ETL\Row;
 use Flow\ETL\Row\Entry;
 use Flow\ETL\Tests\FlowIntegrationTestCase;
@@ -30,7 +25,7 @@ final class MapTest extends FlowIntegrationTestCase
                 )->withSchema(
                     schema(
                         int_schema('id'),
-                        list_schema('tags', type_list(type_string(), true))
+                        list_schema('tags', type_list(type_string()), true)
                     )
                 )
             )
