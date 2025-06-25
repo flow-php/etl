@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Memory;
 
+use function Flow\Types\DSL\{type_integer, type_optional};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Memory\ArrayMemory;
 use Flow\ETL\Tests\FlowTestCase;
@@ -33,6 +34,7 @@ final class ArrayMemoryTest extends FlowTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Memory expects nested array data structure: array<array<mixed>>');
 
+        /** @phpstan-ignore-next-line */
         new ArrayMemory([1, 2, 3]);
     }
 
@@ -47,7 +49,10 @@ final class ArrayMemoryTest extends FlowTestCase
     {
         $memory = new ArrayMemory([['id' => 1], ['id' => 2]]);
 
-        self::assertSame([1, 2], $memory->map(fn (array $data) : int => $data['id']));
+        self::assertSame(
+            [1, 2],
+            $memory->map(fn (?array $data) : int => type_optional(type_integer())->assert($data['id'] ?? null))
+        );
     }
 
     public function test_save_memory_from_invalid_data_structure() : void
@@ -56,6 +61,7 @@ final class ArrayMemoryTest extends FlowTestCase
         $this->expectExceptionMessage('Memory expects nested array data structure: array<array<mixed>>');
 
         $memory = new ArrayMemory();
+        /** @phpstan-ignore-next-line */
         $memory->save([1, 2, 3]);
     }
 

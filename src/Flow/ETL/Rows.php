@@ -34,6 +34,9 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->partitions = new Partitions();
     }
 
+    /**
+     * @param array<array-key, mixed> $data
+     */
     public static function fromArray(array $data, EntryFactory $entryFactory = new EntryFactory()) : self
     {
         return array_to_rows($data, $entryFactory);
@@ -41,6 +44,7 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * @param array<int, Row>|array<Row> $rows
+     * @param array<Partition>|array<string, string>|Partitions $partitions
      */
     public static function partitioned(array $rows, array|Partitions $partitions) : self
     {
@@ -48,9 +52,26 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
             return new self();
         }
 
-        $partitions = \is_array($partitions) ? new Partitions(...$partitions) : $partitions;
+        if (\is_array($partitions)) {
+            $allArePartitions = \count($partitions) > 0 && \array_reduce(
+                $partitions,
+                fn ($carry, $item) => $carry && $item instanceof Partition,
+                true
+            );
+
+            if ($allArePartitions) {
+                // All elements are Partition objects, safe to spread
+                $partitions = new Partitions(...\array_filter($partitions, fn ($item) => $item instanceof Partition));
+            } else {
+                // Convert associative array to Partitions
+                /** @var array<string, string> $typedPartitions */
+                $typedPartitions = $partitions;
+                $partitions = new Partitions(...Partition::fromArray($typedPartitions));
+            }
+        }
 
         $rows = new self(...$rows);
+        /** @var Partitions $partitions */
         $rows->partitions = $partitions;
 
         return $rows;
@@ -614,14 +635,19 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function reduceToArray(string|Reference $reference) : array
     {
-        return $this->reduce(
-            function (array $ids, Row $row) use ($reference) : array {
+        $result = $this->reduce(
+            function (mixed $ids, Row $row) use ($reference) : mixed {
+                if (!\is_array($ids)) {
+                    $ids = [];
+                }
                 $ids[] = $row->get($reference)->value();
 
                 return $ids;
             },
             []
         );
+
+        return \is_array($result) ? $result : [];
     }
 
     public function remove(int $offset) : self
@@ -641,6 +667,9 @@ final class Rows implements \ArrayAccess, \Countable, \IteratorAggregate
         return self::partitioned(\array_reverse($this->rows), $this->partitions);
     }
 
+    /**
+     * @return Schema
+     */
     public function schema() : Schema
     {
         if (!$this->count()) {

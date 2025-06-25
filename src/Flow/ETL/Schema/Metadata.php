@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Schema;
 
+use function Flow\Types\DSL\{type_array};
 use Flow\ArrayComparison\ArrayComparison;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\Types\{Type};
@@ -13,7 +14,7 @@ final class Metadata
     public const FROM_NULL = 'from_null';
 
     /**
-     * @param array<string, array<bool|float|int|string>|bool|float|int|string> $map
+     * @param array<string, array<array-key, mixed>|bool|float|int|string> $map
      */
     private function __construct(private array $map)
     {
@@ -26,16 +27,18 @@ final class Metadata
     }
 
     /**
-     * @param array<string, array<bool|float|int|string>|bool|float|int|string> $map
+     * @param array<string, array<array-key, mixed>|bool|float|int|string> $map
      */
     public static function fromArray(array $map) : self
     {
+        type_array()->assert($map);
+
         return new self($map);
     }
 
     /**
      * @param string $key
-     * @param array<bool|float|int|string>|bool|float|int|string $value
+     * @param array<array-key, mixed>|bool|float|int|string $value
      */
     public static function with(string $key, int|string|bool|float|array $value) : self
     {
@@ -44,7 +47,7 @@ final class Metadata
 
     /**
      * @param string $key
-     * @param array<bool|float|int|string>|bool|float|int|string $value
+     * @param array<array-key, mixed>|bool|float|int|string $value
      */
     public function add(string $key, int|string|bool|float|array $value) : self
     {
@@ -60,7 +63,7 @@ final class Metadata
      *
      * @throws InvalidArgumentException
      *
-     * @return array<bool|float|int|string>|bool|float|int|string
+     * @return array<array-key, mixed>|bool|float|int|string
      */
     public function get(string $key) : int|string|bool|float|array
     {
@@ -114,6 +117,7 @@ final class Metadata
      */
     public function normalize() : array
     {
+        /** @var array<string, array<bool|float|int|string>|bool|float|int|string> */
         return $this->map;
     }
 
@@ -130,6 +134,9 @@ final class Metadata
         return new self($map);
     }
 
+    /**
+     * @param array<array-key, mixed> $array
+     */
     private function assertArray(array $array) : void
     {
         foreach ($array as $value) {

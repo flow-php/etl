@@ -21,8 +21,12 @@ final readonly class Parameter
     }
 
     /**
-     * @param Type<mixed> $type
-     * @param Type<mixed> ...$types
+     * @template T
+     *
+     * @param Type<T> $type
+     * @param Type<T> ...$types
+     *
+     * @return null|T
      */
     public function as(Row $row, Type $type, Type ...$types) : mixed
     {
@@ -37,6 +41,9 @@ final readonly class Parameter
         return null;
     }
 
+    /**
+     * @return null|array<array-key, mixed>
+     */
     public function asArray(Row $row) : ?array
     {
         $result = $this->eval($row);
@@ -46,11 +53,13 @@ final readonly class Parameter
 
     public function asBoolean(Row $row) : bool
     {
-        return (bool) $this->eval($row);
+        $result = $this->eval($row);
+
+        return \is_scalar($result) ? (bool) $result : false;
     }
 
     /**
-     * @return null|Entry<mixed, mixed>
+     * @return null|Entry<mixed>
      */
     public function asEntry(Row $row) : ?Entry
     {
@@ -73,7 +82,7 @@ final readonly class Parameter
     {
         $result = $this->eval($row);
 
-        return \is_a($result, $enumClass) ? $result : null;
+        return \is_object($result) && \is_a($result, $enumClass) ? $result : null;
     }
 
     public function asFloat(Row $row) : ?float
@@ -95,7 +104,7 @@ final readonly class Parameter
     {
         $result = $this->eval($row);
 
-        return \is_a($result, $class) ? $result : null;
+        return \is_object($result) && \is_a($result, $class) ? $result : null;
     }
 
     /**
@@ -108,6 +117,9 @@ final readonly class Parameter
         return \is_int($result) ? $result : $default;
     }
 
+    /**
+     * @return null|array<object>
+     */
     public function asListOfObjects(Row $row, string $class) : ?array
     {
         $result = $this->eval($row);
@@ -122,7 +134,10 @@ final readonly class Parameter
             }
         }
 
-        return $result;
+        /** @var array<object> $objectArray */
+        $objectArray = $result;
+
+        return $objectArray;
     }
 
     /**

@@ -50,6 +50,9 @@ final class StructureEntryTest extends FlowTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected structure{id: integer, name: string} got different types: list<integer>');
 
+        /**
+         * @phpstan-ignore argument.type
+         */
         structure_entry('test', [1, 2, 3], type_structure([
             'id' => type_integer(),
             'name' => type_string(),
@@ -93,10 +96,10 @@ final class StructureEntryTest extends FlowTestCase
 
     public function test_duplicating_entry() : void
     {
-        $entry = structure_entry('name', ['1' => 1, '2' => 2, '3' => 3], type_structure([
-            '1' => type_integer(),
-            '2' => type_integer(),
-            '3' => type_integer(),
+        $entry = structure_entry('name', ['a1' => 1, 'a2' => 2, 'a3' => 3], type_structure([
+            'a1' => type_integer(),
+            'a2' => type_integer(),
+            'a3' => type_integer(),
         ]));
         $duplicated = $entry->duplicate();
 
@@ -115,8 +118,8 @@ final class StructureEntryTest extends FlowTestCase
     }
 
     /**
-     * @param StructureEntry<array> $entry
-     * @param StructureEntry<array> $nextEntry
+     * @param StructureEntry<array<mixed>> $entry
+     * @param StructureEntry<array<mixed>> $nextEntry
      */
     #[DataProvider('is_equal_data_provider')]
     public function test_is_equal(bool $equals, StructureEntry $entry, StructureEntry $nextEntry) : void
@@ -130,7 +133,7 @@ final class StructureEntryTest extends FlowTestCase
 
         self::assertEquals(
             $entry,
-            $entry->map(fn (array $entries) : array => $entries)
+            $entry->map(fn (?array $entries) : ?array => $entries)
         );
     }
 
@@ -169,7 +172,7 @@ final class StructureEntryTest extends FlowTestCase
         $string = structure_entry('name', ['json' => ['5' => 5, '2' => 2, '3' => 3]], type_structure(['json' => type_array()]));
 
         $serialized = \serialize($string);
-        /** @var StructureEntry<array> $unserialized */
+        /** @var StructureEntry<array<array-key, mixed>> $unserialized */
         $unserialized = \unserialize($serialized);
 
         self::assertTrue($string->isEqual($unserialized));
@@ -178,23 +181,51 @@ final class StructureEntryTest extends FlowTestCase
     public function test_structure_element_names_as_numbers() : void
     {
         self::assertNotEquals(
-            structure_entry('name', ['1' => 1, '2' => '2'], type_structure([
-                '1' => type_integer(),
-                '2' => type_string(),
-            ])),
-            structure_entry('name', ['1' => 1, '2' => '2', '3' => '3'], type_structure([
-                '1' => type_integer(),
-                '2' => type_string(),
-                '3' => type_string(),
-            ])),
+            structure_entry(
+                'name',
+                /** @phpstan-ignore-next-line */
+                ['1' => 1, '2' => '2'],
+                /** @phpstan-ignore-next-line */
+                type_structure([
+                    '1' => type_integer(),
+                    '2' => type_string(),
+                ])
+            ),
+            structure_entry(
+                'name',
+                /** @phpstan-ignore-next-line */
+                ['1' => 1, '2' => '2', '3' => '3'],
+                /** @phpstan-ignore-next-line */
+                type_structure([
+                    '1' => type_integer(),
+                    '2' => type_string(),
+                    '3' => type_string(),
+                ])
+            ),
         );
         self::assertEquals(
-            structure_entry('name', ['1' => 1, '2' => 2, '3' => 3], type_structure([
-                '1' => type_integer(),
-                '2' => type_integer(),
-                '3' => type_integer(),
-            ])),
-            structure_entry('name', ['1' => 1, '2' => 2, '3' => 3], type_structure(['1' => type_integer(), '2' => type_integer(), '3' => type_integer()])),
+            structure_entry(
+                'name',
+                /** @phpstan-ignore-next-line */
+                ['1' => 1, '2' => 2, '3' => 3],
+                /** @phpstan-ignore-next-line */
+                type_structure([
+                    '1' => type_integer(),
+                    '2' => type_integer(),
+                    '3' => type_integer(),
+                ])
+            ),
+            structure_entry(
+                'name',
+                /** @phpstan-ignore-next-line */
+                ['1' => 1, '2' => 2, '3' => 3],
+                /** @phpstan-ignore-next-line */
+                type_structure([
+                    '1' => type_integer(),
+                    '2' => type_integer(),
+                    '3' => type_integer(),
+                ])
+            ),
         );
     }
 }

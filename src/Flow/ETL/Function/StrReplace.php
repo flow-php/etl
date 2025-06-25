@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Function;
 
-use function Flow\Types\DSL\{type_list, type_string};
+use function Flow\Types\DSL\{type_list, type_string, type_union};
 use Flow\ETL\Row;
 
 final class StrReplace extends ScalarFunctionChain
 {
+    /**
+     * @param ScalarFunction|string $value
+     * @param array<array-key, mixed>|ScalarFunction|string $search
+     * @param array<array-key, mixed>|ScalarFunction|string $replace
+     */
     public function __construct(
         private readonly ScalarFunction|string $value,
         private readonly ScalarFunction|string|array $search,
@@ -26,6 +31,9 @@ final class StrReplace extends ScalarFunctionChain
             return null;
         }
 
-        return \str_replace($search, $replace, $value);
+        $typedSearch = type_union(type_string(), type_list(type_string()))->assert($search);
+        $typedReplace = type_union(type_string(), type_list(type_string()))->assert($replace);
+
+        return \str_replace($typedSearch, $typedReplace, $value);
     }
 }
