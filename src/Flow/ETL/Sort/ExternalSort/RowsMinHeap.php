@@ -6,12 +6,11 @@ namespace Flow\ETL\Sort\ExternalSort;
 
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Reference, References, SortOrder};
-use SplMinHeap;
 
 /**
  * @template HeapElement
  *
- * @implements SplMinHeap<HeapElement>
+ * @implements \SplMinHeap<HeapElement>
  */
 final class RowsMinHeap extends \SplMinHeap
 {
