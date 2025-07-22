@@ -26,12 +26,10 @@ final class Trim extends ScalarFunctionChain
             return null;
         }
 
-        foreach (Type::cases() as $case) {
-            if ($type->name === $case->name) {
-                return ($case->value)($value, $characters);
-            }
-        }
-
-        return null;
+        return match ($type) {
+            Type::LEFT => \ltrim($value, $characters),
+            Type::RIGHT => \rtrim($value, $characters),
+            Type::BOTH => \trim($value, $characters),
+        };
     }
 }
