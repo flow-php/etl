@@ -241,9 +241,19 @@ abstract class ScalarFunctionChain implements ScalarFunction
         return new DOMElementAttributeValue($this, $attribute);
     }
 
+    public function domElementNextSibling(bool $allowOnlyElement = false) : DOMElementNextSibling
+    {
+        return new DOMElementNextSibling($this, $allowOnlyElement);
+    }
+
     public function domElementParent() : DOMElementParent
     {
         return new DOMElementParent($this);
+    }
+
+    public function domElementPreviousSibling(bool $allowOnlyElement = false) : DOMElementPreviousSibling
+    {
+        return new DOMElementPreviousSibling($this, $allowOnlyElement);
     }
 
     public function domElementValue() : DOMElementValue
