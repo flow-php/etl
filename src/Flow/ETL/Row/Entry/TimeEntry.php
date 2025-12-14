@@ -8,7 +8,8 @@ use function Flow\ETL\DSL\date_interval_to_microseconds;
 use function Flow\Types\DSL\{type_equals, type_instance_of, type_optional, type_time};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\TimeDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 
 /**
@@ -142,12 +143,12 @@ final class TimeEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    public function definition() : TimeDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new TimeDefinition($this->name, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, $this->value ? clone $this->value : null, $this->metadata);
     }
@@ -183,7 +184,7 @@ final class TimeEntry implements Entry
             && date_interval_to_microseconds($thisValue) == date_interval_to_microseconds($entryValue);
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value));
     }
@@ -193,7 +194,7 @@ final class TimeEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -225,7 +226,7 @@ final class TimeEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }

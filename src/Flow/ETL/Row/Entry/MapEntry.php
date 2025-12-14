@@ -8,8 +8,9 @@ use function Flow\Types\DSL\{type_equals, type_optional};
 use Flow\ArrayComparison\ArrayComparison;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
-use Flow\Types\Type;
+use Flow\ETL\Schema\Definition\MapDefinition;
+use Flow\ETL\Schema\Metadata;
+use Flow\Types\Type\Logical\MapType;
 use Flow\Types\Type\TypeDetector;
 
 /**
@@ -25,20 +26,20 @@ final class MapEntry implements Entry
     private Metadata $metadata;
 
     /**
-     * @var Type<array<TKey, TValue>>
+     * @var MapType<TKey, TValue>
      */
-    private Type $type;
+    private MapType $type;
 
     /**
      * @param ?array<array-key, mixed> $value
-     * @param Type<array<TKey, TValue>> $type
+     * @param MapType<TKey, TValue> $type
      *
      * @throws InvalidArgumentException
      */
     public function __construct(
         private readonly string $name,
         private readonly ?array $value,
-        Type $type,
+        MapType $type,
         ?Metadata $metadata = null,
     ) {
         if ('' === $name) {
@@ -58,12 +59,15 @@ final class MapEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    /**
+     * @return MapDefinition<TKey, TValue>
+     */
+    public function definition() : MapDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new MapDefinition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : Entry
+    public function duplicate() : static
     {
         return new self($this->name, $this->value, $this->type, $this->metadata);
     }
@@ -102,7 +106,7 @@ final class MapEntry implements Entry
             && (new ArrayComparison())->equals($thisValue, \is_array($entryValue) ? $entryValue : null);
     }
 
-    public function map(callable $mapper) : Entry
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value), $this->type);
     }
@@ -112,7 +116,7 @@ final class MapEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : Entry
+    public function rename(string $name) : static
     {
         return new self($name, $this->value, $this->type);
     }
@@ -126,7 +130,10 @@ final class MapEntry implements Entry
         return \json_encode($this->value(), JSON_THROW_ON_ERROR);
     }
 
-    public function type() : Type
+    /**
+     * @return MapType<TKey, TValue>
+     */
+    public function type() : MapType
     {
         return $this->type;
     }
@@ -136,7 +143,7 @@ final class MapEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : Entry
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->type);
     }

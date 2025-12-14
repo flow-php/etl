@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_equals, type_instance_of, type_optional, type_string, type_xml_element};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\XMLElementDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 use Flow\Types\Type\Logical\XMLElementType;
 
@@ -94,12 +95,12 @@ final class XMLElementEntry implements Entry
         $this->value = (new \DOMDocument())->importNode($domDocument->documentElement, true);
     }
 
-    public function definition() : Definition
+    public function definition() : XMLElementDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new XMLElementDefinition($this->name, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, type_optional(type_instance_of(\DOMElement::class))->assert($this->value ? $this->value->cloneNode(true) : null), $this->metadata);
     }
@@ -126,7 +127,7 @@ final class XMLElementEntry implements Entry
         return $this->value?->C14N() === $entry->value?->C14N();
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         $mappedValue = $mapper($this->value());
         $mappedValue = type_optional(type_instance_of(\DOMElement::class))->assert($mappedValue);
@@ -139,7 +140,7 @@ final class XMLElementEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -164,7 +165,7 @@ final class XMLElementEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }

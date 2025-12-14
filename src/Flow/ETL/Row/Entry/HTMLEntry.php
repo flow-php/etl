@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_equals, type_html, type_optional};
 use Dom\HTMLDocument;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\HTMLDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 
 /**
@@ -46,12 +47,12 @@ final class HTMLEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    public function definition() : HTMLDefinition
     {
-        return new Definition($this->name, $this->type, null === $this->value, $this->metadata);
+        return new HTMLDefinition($this->name, null === $this->value, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, $this->value ? clone $this->value : null, $this->metadata);
     }
@@ -78,7 +79,7 @@ final class HTMLEntry implements Entry
         return $entry->value()?->saveHtml() === $this->value?->saveHtml();
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value));
     }
@@ -88,7 +89,7 @@ final class HTMLEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -112,7 +113,7 @@ final class HTMLEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }

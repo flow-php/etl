@@ -8,8 +8,9 @@ use function Flow\Types\DSL\{type_equals, type_optional};
 use Flow\ArrayComparison\ArrayComparison;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
-use Flow\Types\Type;
+use Flow\ETL\Schema\Definition\ListDefinition;
+use Flow\ETL\Schema\Metadata;
+use Flow\Types\Type\Logical\ListType;
 use Flow\Types\Type\TypeDetector;
 
 /**
@@ -24,20 +25,20 @@ final class ListEntry implements Entry
     private Metadata $metadata;
 
     /**
-     * @var Type<list<T>>
+     * @var ListType<T>
      */
-    private readonly Type $type;
+    private readonly ListType $type;
 
     /**
      * @param ?list<T> $value
-     * @param Type<list<T>> $type
+     * @param ListType<T> $type
      *
      * @throws InvalidArgumentException
      */
     public function __construct(
         private readonly string $name,
         private readonly ?array $value,
-        Type $type,
+        ListType $type,
         ?Metadata $metadata = null,
     ) {
         if ('' === $name) {
@@ -57,12 +58,15 @@ final class ListEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    /**
+     * @return ListDefinition<T>
+     */
+    public function definition() : ListDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new ListDefinition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : Entry
+    public function duplicate() : static
     {
         return new self($this->name, $this->value, $this->type, $this->metadata);
     }
@@ -101,7 +105,7 @@ final class ListEntry implements Entry
             && (new ArrayComparison())->equals($thisValue, \is_array($entryValue) ? $entryValue : null);
     }
 
-    public function map(callable $mapper) : Entry
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value), $this->type);
     }
@@ -111,7 +115,7 @@ final class ListEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : Entry
+    public function rename(string $name) : static
     {
         return new self($name, $this->value, $this->type);
     }
@@ -125,7 +129,10 @@ final class ListEntry implements Entry
         return \json_encode($this->value(), JSON_THROW_ON_ERROR);
     }
 
-    public function type() : Type
+    /**
+     * @return ListType<T>
+     */
+    public function type() : ListType
     {
         return $this->type;
     }
@@ -135,7 +142,7 @@ final class ListEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : Entry
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->type);
     }

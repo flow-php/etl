@@ -8,8 +8,9 @@ use function Flow\Types\DSL\{type_equals, type_optional};
 use Flow\ArrayComparison\ArrayComparison;
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
-use Flow\Types\Type;
+use Flow\ETL\Schema\Definition\StructureDefinition;
+use Flow\ETL\Schema\Metadata;
+use Flow\Types\Type\Logical\StructureType;
 use Flow\Types\Type\TypeDetector;
 
 /**
@@ -24,20 +25,20 @@ final class StructureEntry implements Entry
     private Metadata $metadata;
 
     /**
-     * @var Type<array<string, T>>
+     * @var StructureType<T>
      */
-    private readonly Type $type;
+    private readonly StructureType $type;
 
     /**
      * @param ?array<array-key, mixed> $value
-     * @param Type<array<string, T>> $type
+     * @param StructureType<T> $type
      *
      * @throws InvalidArgumentException
      */
     public function __construct(
         private readonly string $name,
         private readonly ?array $value,
-        Type $type,
+        StructureType $type,
         ?Metadata $metadata = null,
     ) {
         if ('' === $name) {
@@ -61,12 +62,15 @@ final class StructureEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    /**
+     * @return StructureDefinition<T>
+     */
+    public function definition() : StructureDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new StructureDefinition($this->name, $this->type, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : Entry
+    public function duplicate() : static
     {
         return new self($this->name, $this->value, $this->type, $this->metadata);
     }
@@ -100,7 +104,7 @@ final class StructureEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type) && (new ArrayComparison())->equals($thisValue, \is_array($entryValue) ? $entryValue : null);
     }
 
-    public function map(callable $mapper) : Entry
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value), $this->type);
     }
@@ -110,7 +114,7 @@ final class StructureEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : Entry
+    public function rename(string $name) : static
     {
         return new self($name, $this->value, $this->type);
     }
@@ -125,9 +129,9 @@ final class StructureEntry implements Entry
     }
 
     /**
-     * @return Type<array<string, T>>
+     * @return StructureType<T>
      */
-    public function type() : Type
+    public function type() : StructureType
     {
         return $this->type;
     }
@@ -137,7 +141,7 @@ final class StructureEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : Entry
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->type);
     }

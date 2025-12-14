@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_equals, type_optional, type_uuid};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\UuidDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 use Flow\Types\Value\Uuid;
 
@@ -59,12 +60,12 @@ final class UuidEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    public function definition() : UuidDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new UuidDefinition($this->name, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, $this->value ? new Uuid($this->value->toString()) : null, $this->metadata);
     }
@@ -97,7 +98,7 @@ final class UuidEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type) && $this->value?->isEqual($entryValue);
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value));
     }
@@ -110,7 +111,7 @@ final class UuidEntry implements Entry
     /**
      * @throws InvalidArgumentException
      */
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -134,7 +135,7 @@ final class UuidEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }

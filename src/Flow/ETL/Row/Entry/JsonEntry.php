@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_equals, type_json, type_optional};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\JsonDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 use Flow\Types\Value\Json;
 
@@ -88,15 +89,12 @@ final class JsonEntry implements Entry
         return $this->toString();
     }
 
-    /**
-     * @return Definition<Json>
-     */
-    public function definition() : Definition
+    public function definition() : JsonDefinition
     {
-        return new Definition($this->name, $this->type, $this->json === null, $this->metadata);
+        return new JsonDefinition($this->name, $this->json === null, $this->metadata);
     }
 
-    public function duplicate() : Entry
+    public function duplicate() : static
     {
         return new self($this->name, $this->json, $this->metadata);
     }
@@ -138,7 +136,7 @@ final class JsonEntry implements Entry
         return $thisJson->isEqual($entryJson);
     }
 
-    public function map(callable $mapper) : Entry
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->json), $this->metadata);
     }
@@ -148,7 +146,7 @@ final class JsonEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : Entry
+    public function rename(string $name) : static
     {
         return new self($name, $this->json, $this->metadata);
     }
@@ -175,7 +173,7 @@ final class JsonEntry implements Entry
         return $this->json;
     }
 
-    public function withValue(mixed $value) : Entry
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->cast($value), $this->metadata);
     }

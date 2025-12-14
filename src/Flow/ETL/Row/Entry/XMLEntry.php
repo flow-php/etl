@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_equals, type_instance_of, type_optional, type_string, type_xml};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\XMLDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 use Flow\Types\Type\Logical\XMLType;
 
@@ -96,12 +97,12 @@ final class XMLEntry implements Entry
         $this->value = $doc;
     }
 
-    public function definition() : Definition
+    public function definition() : XMLDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new XMLDefinition($this->name, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, $this->value ? clone $this->value : null, $this->metadata);
     }
@@ -132,7 +133,7 @@ final class XMLEntry implements Entry
         return $entry->value()?->C14N() === $this->value?->C14N();
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         $mappedValue = $mapper($this->value());
         $mappedValue = type_optional(type_instance_of(\DOMDocument::class))->assert($mappedValue);
@@ -145,7 +146,7 @@ final class XMLEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -170,7 +171,7 @@ final class XMLEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }

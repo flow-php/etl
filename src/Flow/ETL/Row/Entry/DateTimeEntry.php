@@ -7,7 +7,8 @@ namespace Flow\ETL\Row\Entry;
 use function Flow\Types\DSL\{type_datetime, type_equals, type_optional};
 use Flow\ETL\Exception\InvalidArgumentException;
 use Flow\ETL\Row\{Entry, Reference};
-use Flow\ETL\Schema\{Definition, Metadata};
+use Flow\ETL\Schema\Definition\DateTimeDefinition;
+use Flow\ETL\Schema\Metadata;
 use Flow\Types\Type;
 
 /**
@@ -59,12 +60,12 @@ final class DateTimeEntry implements Entry
         return $this->toString();
     }
 
-    public function definition() : Definition
+    public function definition() : DateTimeDefinition
     {
-        return new Definition($this->name, $this->type, $this->value === null, $this->metadata);
+        return new DateTimeDefinition($this->name, $this->value === null, $this->metadata);
     }
 
-    public function duplicate() : self
+    public function duplicate() : static
     {
         return new self($this->name, $this->value ? clone $this->value : null, $this->metadata);
     }
@@ -83,7 +84,7 @@ final class DateTimeEntry implements Entry
         return $this->is($entry->name()) && $entry instanceof self && type_equals($this->type, $entry->type) && $this->value() == $entry->value();
     }
 
-    public function map(callable $mapper) : self
+    public function map(callable $mapper) : static
     {
         return new self($this->name, $mapper($this->value));
     }
@@ -93,7 +94,7 @@ final class DateTimeEntry implements Entry
         return $this->name;
     }
 
-    public function rename(string $name) : self
+    public function rename(string $name) : static
     {
         return new self($name, $this->value);
     }
@@ -119,7 +120,7 @@ final class DateTimeEntry implements Entry
         return $this->value;
     }
 
-    public function withValue(mixed $value) : self
+    public function withValue(mixed $value) : static
     {
         return new self($this->name, type_optional($this->type())->assert($value), $this->metadata);
     }
