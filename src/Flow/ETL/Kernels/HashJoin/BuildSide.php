@@ -8,11 +8,7 @@ use Flow\ETL\Values\Join\JoinType;
 use Flow\ETL\Values\Join\Side;
 use Flow\ETL\Values\Rows;
 
-/**
- * Which side a hash join builds its table from: the other side is probed batch by batch. The output keeps left then
- * right whatever was built.
- */
-final readonly class Role
+final readonly class BuildSide
 {
     private function __construct(
         private Side $built,

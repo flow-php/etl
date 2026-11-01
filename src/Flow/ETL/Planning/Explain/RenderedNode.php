@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Planning\Explain;
 
-/**
- * What a layout prints: a numbered name with its details already rendered. Every later visit of the same source is a
- * shared reference with no children.
- */
-final readonly class Entry
+final readonly class RenderedNode
 {
     /**
      * @param object $source what this entry describes, the identity a layout reaches it by
      * @param list<string> $lines the details under the title
-     * @param list<Entry> $children
+     * @param list<RenderedNode> $children
      * @param string $suffix what goes on the title line, after the name
      */
     public function __construct(
@@ -38,7 +34,7 @@ final readonly class Entry
     /**
      * The same entry read from somewhere else in the plan: shared drops what the first visit already printed.
      *
-     * @param list<Entry> $children
+     * @param list<RenderedNode> $children
      */
     public function with(array $children, bool $shared = false): self
     {

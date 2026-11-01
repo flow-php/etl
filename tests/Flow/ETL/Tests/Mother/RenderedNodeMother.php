@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Mother;
 
-use Flow\ETL\Planning\Explain\Entry;
+use Flow\ETL\Planning\Explain\RenderedNode;
 use stdClass;
 
-final class EntryMother
+final class RenderedNodeMother
 {
     /**
-     * @param list<Entry> $children
+     * @param list<RenderedNode> $children
      * @param list<string> $lines
      */
     public static function named(
@@ -19,7 +19,7 @@ final class EntryMother
         array $children = [],
         array $lines = [],
         string $suffix = '',
-    ): Entry {
-        return new Entry(new stdClass(), $name, $lines, $number, false, $children, $suffix);
+    ): RenderedNode {
+        return new RenderedNode(new stdClass(), $name, $lines, $number, false, $children, $suffix);
     }
 }

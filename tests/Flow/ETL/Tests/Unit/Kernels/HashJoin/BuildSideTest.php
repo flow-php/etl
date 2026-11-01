@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Kernels\HashJoin;
 
-use Flow\ETL\Kernels\HashJoin\Role;
+use Flow\ETL\Kernels\HashJoin\BuildSide;
 use Flow\ETL\Kernels\HashJoin\RowMerger;
 use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Values\Join\JoinType;
@@ -15,7 +15,7 @@ use function Flow\ETL\DSL\array_to_rows;
 use function Flow\ETL\DSL\int_schema;
 use function Flow\ETL\DSL\schema;
 
-final class RoleTest extends FlowTestCase
+final class BuildSideTest extends FlowTestCase
 {
     #[TestWith([JoinType::inner, false, false])]
     #[TestWith([JoinType::left, true, false])]
@@ -26,10 +26,10 @@ final class RoleTest extends FlowTestCase
         bool $buildLeft,
         bool $buildRight,
     ): void {
-        static::assertSame(Side::left, Role::buildLeft($type)->built());
-        static::assertSame(Side::right, Role::buildRight($type)->built());
-        static::assertSame($buildLeft, Role::buildLeft($type)->tracksUnmatched());
-        static::assertSame($buildRight, Role::buildRight($type)->tracksUnmatched());
+        static::assertSame(Side::left, BuildSide::buildLeft($type)->built());
+        static::assertSame(Side::right, BuildSide::buildRight($type)->built());
+        static::assertSame($buildLeft, BuildSide::buildLeft($type)->tracksUnmatched());
+        static::assertSame($buildRight, BuildSide::buildRight($type)->tracksUnmatched());
     }
 
     public function test_the_merge_keeps_left_then_right_whatever_was_built(): void
@@ -40,11 +40,11 @@ final class RoleTest extends FlowTestCase
 
         static::assertSame(
             [['l' => 1, 'r' => 2]],
-            Role::buildRight(JoinType::inner)->merge($merger, $left, $right)->toArray(),
+            BuildSide::buildRight(JoinType::inner)->merge($merger, $left, $right)->toArray(),
         );
         static::assertSame(
             [['l' => 1, 'r' => 2]],
-            Role::buildLeft(JoinType::inner)->merge($merger, $right, $left)->toArray(),
+            BuildSide::buildLeft(JoinType::inner)->merge($merger, $right, $left)->toArray(),
         );
     }
 }
