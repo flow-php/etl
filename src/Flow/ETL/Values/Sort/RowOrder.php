@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Kernels\Sort;
+namespace Flow\ETL\Values\Sort;
 
 use Flow\ETL\Values\Column\ComparableValues;
 use Flow\ETL\Values\NullsOrder;

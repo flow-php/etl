@@ -8,6 +8,7 @@ use Flow\ETL\Foundation\Describe\Describable;
 use Flow\ETL\Foundation\Describe\Description;
 use Flow\ETL\Foundation\Describe\Rebuild;
 use Flow\ETL\Foundation\Exception\InvalidArgumentException;
+use Flow\ETL\Functions\Conjuncts;
 use Flow\ETL\Functions\ReferenceResolver;
 use Flow\ETL\Functions\ScalarFunction;
 use Flow\ETL\Values\Column\Backend;
@@ -36,10 +37,14 @@ final readonly class Filter implements Describable
     public static function bind(Schema $schema, ScalarFunction ...$predicates): self
     {
         $resolver = new ReferenceResolver();
+        $conjuncts = new Conjuncts();
         $resolved = [];
 
         foreach ($predicates as $predicate) {
-            $resolved[] = $resolver->bind($predicate, $schema, 'filter', type_boolean());
+            // a row an All keeps is TRUE for every conjunct, and each conjunct alone evaluates natively, an All does not
+            foreach ($conjuncts->of($resolver->bind($predicate, $schema, 'filter', type_boolean())) as $conjunct) {
+                $resolved[] = $conjunct;
+            }
         }
 
         return new self($resolved);
@@ -56,7 +61,7 @@ final readonly class Filter implements Describable
     }
 
     /**
-     * The rows every predicate is TRUE for: each is evaluated only on the rows the ones before it kept.
+     * The rows every predicate is TRUE for, in order; a source may have applied the ones it answers before.
      */
     public function filter(Rows $rows, Backend $backend): Rows
     {
@@ -71,13 +76,7 @@ final readonly class Filter implements Describable
                 break;
             }
 
-            $truths = array_keys(
-                (new Selection($kept))
-                    ->evaluate($predicate, $rows, $backend)
-                    ->physicals(),
-                true,
-                true,
-            );
+            $truths = array_keys((new Selection($kept))->truths($predicate, $rows, $backend), true, true);
 
             if (count($kept) === $rows->count()) {
                 $kept = $truths;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Tests\Unit\Kernels\Sort;
+namespace Flow\ETL\Tests\Unit\Values\Sort;
 
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeZone;
 use Flow\ETL\Foundation\Exception\InvalidArgumentException;
-use Flow\ETL\Kernels\Sort\RowOrder;
 use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Tests\Mother\SortDatasetMother;
 use Flow\ETL\Values\NullsOrder;
+use Flow\ETL\Values\Sort\RowOrder;
 use Flow\Types\Value\Uuid;
 
 use function Flow\ETL\DSL\array_to_rows;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Kernels\Bucketing;
+namespace Flow\ETL\Values\Grouping;
 
-use Flow\ETL\Kernels\Comparison\ValueEquality;
 use Flow\ETL\Values\Column\ComparableValues;
+use Flow\ETL\Values\Column\ValueEquality;
 use Flow\ETL\Values\Rows;
 use Flow\ETL\Values\Schema;
 use Flow\Types\Type;

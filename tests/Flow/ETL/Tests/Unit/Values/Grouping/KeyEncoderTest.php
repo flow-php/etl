@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Flow\ETL\Tests\Unit\Kernels\Bucketing;
+namespace Flow\ETL\Tests\Unit\Values\Grouping;
 
 use DateTimeImmutable;
 use Flow\ETL\Foundation\Exception\InvalidArgumentException;
-use Flow\ETL\Kernels\Bucketing\KeyEncoder;
 use Flow\ETL\Tests\FlowTestCase;
+use Flow\ETL\Values\Grouping\KeyEncoder;
 
 use function array_merge;
 use function array_unique;

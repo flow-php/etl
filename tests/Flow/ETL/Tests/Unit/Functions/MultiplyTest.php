@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Functions;
 
 use Flow\ETL\Foundation\Exception\EvaluationException;
+use Flow\ETL\Tests\Context\BackendsContext;
 use Flow\ETL\Tests\Context\FunctionContext;
 use Flow\ETL\Tests\FlowTestCase;
+use Flow\ETL\Values\Column\Backend;
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 
+use function Flow\ETL\DSL\config_builder;
 use function Flow\ETL\DSL\float_schema;
 use function Flow\ETL\DSL\flow_context;
 use function Flow\ETL\DSL\int_schema;
@@ -53,5 +58,40 @@ final class MultiplyTest extends FlowTestCase
             ['a' => PHP_INT_MAX, 'b' => 2],
             schema(int_schema('a'), int_schema('b')),
         );
+    }
+
+    /**
+     * @return Generator<string, array{array<string, ?int>, string}>
+     */
+    public static function refusals(): Generator
+    {
+        yield 'integer overflow' => [['a' => PHP_INT_MAX, 'b' => 2], 'Multiply function integer overflow (row 0)'];
+        yield 'null operand' => [['a' => null, 'b' => 1], 'Multiply function requires non-null values (row 0)'];
+    }
+
+    /**
+     * @return Generator<string, list<mixed>>
+     */
+    public static function refusalsPerBackend(): Generator
+    {
+        return BackendsContext::perBackend(self::refusals());
+    }
+
+    /**
+     * @param array<string, ?int> $row
+     */
+    #[DataProvider('refusalsPerBackend')]
+    public function test_a_refusal_message(Backend $backend, array $row, string $message): void
+    {
+        try {
+            (new FunctionContext(flow_context(config_builder()->backend($backend)->build())))->eval(
+                ref('a')->multiply(ref('b')),
+                $row,
+                schema(int_schema('a', nullable: true), int_schema('b', nullable: true)),
+            );
+            static::fail('the operands must be refused');
+        } catch (EvaluationException $e) {
+            static::assertSame($message, $e->getMessage());
+        }
     }
 }

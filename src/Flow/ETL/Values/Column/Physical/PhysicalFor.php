@@ -70,13 +70,14 @@ use Flow\Types\Type\Native\NullType;
 use Flow\Types\Type\Native\StringType;
 use UnitEnum;
 
+use function array_count_values;
 use function array_key_exists;
+use function array_keys;
+use function array_map;
 use function Flow\Types\DSL\type_bare;
+use function gettype;
 use function in_array;
 use function is_array;
-use function is_bool;
-use function is_float;
-use function is_int;
 use function is_string;
 use function sprintf;
 use function strlen;
@@ -314,29 +315,7 @@ final readonly class PhysicalFor
      */
     public function accepts(Type $type, mixed $physical): bool
     {
-        if ($physical === null) {
-            return true;
-        }
-
-        $base = $type instanceof OptionalType ? $type->base() : $type;
-
-        return match (true) {
-            $base instanceof IntegerType,
-            $base instanceof PositiveIntegerType,
-            $base instanceof DateTimeType,
-            $base instanceof DateType,
-            $base instanceof TimeType,
-                => is_int($physical),
-            $base instanceof FloatType => is_float($physical),
-            $base instanceof BooleanType => is_bool($physical),
-            $base instanceof UuidType => is_string($physical) && strlen($physical) === 16,
-            $base instanceof NullType => true,
-            $base instanceof ListType => is_array($physical) && $this->acceptsAll($base->element(), $physical),
-            $base instanceof MapType => is_array($physical) && $this->acceptsAll($base->value(), $physical),
-            $base instanceof StructureType => is_array($physical) && $this->acceptsElements($base, $physical),
-            $base instanceof ArrayType => is_array($physical),
-            default => is_string($physical),
-        };
+        return $this->acceptsAll($type, [$physical]);
     }
 
     /**
@@ -345,9 +324,57 @@ final readonly class PhysicalFor
      */
     public function acceptsAll(Type $type, array $physicals): bool
     {
+        $base = $type instanceof OptionalType ? $type->base() : $type;
+
+        if ($base instanceof NullType) {
+            return true;
+        }
+
+        $kind = match (true) {
+            $base instanceof IntegerType,
+            $base instanceof PositiveIntegerType,
+            $base instanceof DateTimeType,
+            $base instanceof DateType,
+            $base instanceof TimeType,
+                => 'integer',
+            $base instanceof FloatType => 'double',
+            $base instanceof BooleanType => 'boolean',
+            $base instanceof ListType,
+            $base instanceof MapType,
+            $base instanceof StructureType,
+            $base instanceof ArrayType,
+                => 'array',
+            default => 'string',
+        };
+
+        // one C-level pass over the list: a PHP loop per value costs more than storing the values
+        $kinds = array_count_values(array_map(gettype(...), $physicals));
+        unset($kinds['NULL']);
+
+        if ($kinds !== [] && array_keys($kinds) !== [$kind]) {
+            return false;
+        }
+
+        if (
+            !$base instanceof UuidType
+            && !$base instanceof ListType
+            && !$base instanceof MapType
+            && !$base instanceof StructureType
+        ) {
+            return true;
+        }
+
         // @mago-ignore analysis:mixed-assignment
         foreach ($physicals as $physical) {
-            if (!$this->accepts($type, $physical)) {
+            if (
+                $physical !== null
+                && !match (true) {
+                    $base instanceof UuidType => is_string($physical) && strlen($physical) === 16,
+                    $base instanceof ListType => is_array($physical) && $this->acceptsAll($base->element(), $physical),
+                    $base instanceof MapType => is_array($physical) && $this->acceptsAll($base->value(), $physical),
+                    default => is_array($physical) && $this->acceptsElements($base, $physical),
+                }
+            ) {
                 return false;
             }
         }

@@ -24,9 +24,6 @@ final readonly class FileConstants
     ) {}
 
     /**
-     * The file's value of every column this file adds - `_input_file_uri` when metadata columns are on, then each
-     * partition column (null when the path does not carry it).
-     *
      * @return array<string, mixed>
      */
     public function values(): array
@@ -40,10 +37,6 @@ final readonly class FileConstants
         return $values;
     }
 
-    /**
-     * values() over a batch the reader already matched to the file's body schema, adopting $declared - the schema
-     * FileColumns::declare() built over that body schema. A batch with nothing to add is returned as it is.
-     */
     public function fillRows(Rows $rows, Schema $declared, Backend $backend): Rows
     {
         if ($this->uri === null && $this->partitionNames === []) {
@@ -57,6 +50,15 @@ final readonly class FileConstants
             $added[$name] = $backend->constant($declared->get($name), $value, $rows->count());
         }
 
-        return $rows->withColumns($declared, $added);
+        $present = [];
+
+        // a source may leave out a declared column no node above it reads
+        foreach ($declared->names() as $name) {
+            if (array_key_exists($name, $added) || $rows->schema()->findDefinition($name) !== null) {
+                $present[] = $name;
+            }
+        }
+
+        return $rows->withColumns($declared->keep(...$present), $added);
     }
 }
