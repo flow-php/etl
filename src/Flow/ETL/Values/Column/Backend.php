@@ -102,6 +102,15 @@ interface Backend
      */
     public function modulo(Column $left, Column $right): Column;
 
+    /** Both columns hold strings and have the same count. A row is null where either side is null. */
+    public function startsWith(Column $haystack, Column $needle): Column;
+
+    /** Both columns hold strings and have the same count. A row is null where either side is null. */
+    public function endsWith(Column $haystack, Column $needle): Column;
+
+    /** Both columns hold strings and have the same count. A row is null where either side is null. */
+    public function contains(Column $haystack, Column $needle): Column;
+
     /**
      * @param list<SortColumn> $columns
      */
@@ -154,4 +163,7 @@ interface Backend
     public function allocatedPeakBytes(): int;
 
     public function resetAllocatedPeak(): void;
+
+    /** Returns memory this backend has freed to the operating system. */
+    public function releaseFreedMemory(): void;
 }

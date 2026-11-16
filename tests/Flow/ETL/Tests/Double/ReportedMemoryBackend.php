@@ -24,6 +24,8 @@ use Flow\Types\Type\Comparison\Operator;
  */
 final class ReportedMemoryBackend implements Backend
 {
+    public int $releases = 0;
+
     public function __construct(
         public int $reported = 0,
         public readonly PhpBackend $php = new PhpBackend(),
@@ -49,6 +51,12 @@ final class ReportedMemoryBackend implements Backend
     public function resetAllocatedPeak(): void
     {
         $this->reportedPeak = $this->reported;
+    }
+
+    public function releaseFreedMemory(): void
+    {
+        $this->releases++;
+        $this->php->releaseFreedMemory();
     }
 
     public function builder(Definition $definition): ColumnBuilder
@@ -94,6 +102,21 @@ final class ReportedMemoryBackend implements Backend
     public function modulo(Column $left, Column $right): Column
     {
         return $this->php->modulo($left, $right);
+    }
+
+    public function startsWith(Column $haystack, Column $needle): Column
+    {
+        return $this->php->startsWith($haystack, $needle);
+    }
+
+    public function endsWith(Column $haystack, Column $needle): Column
+    {
+        return $this->php->endsWith($haystack, $needle);
+    }
+
+    public function contains(Column $haystack, Column $needle): Column
+    {
+        return $this->php->contains($haystack, $needle);
     }
 
     /**

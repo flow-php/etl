@@ -22,6 +22,7 @@ use Flow\ETL\Tests\Double\ThrowingRemoveRowsStorage;
 use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Tests\Mother\ExternalSortMother;
 use Flow\ETL\Tests\Mother\SortDatasetMother;
+use Flow\ETL\Values\BatchSize;
 use Flow\ETL\Values\Column\AdaptiveBackend;
 use Flow\ETL\Values\Column\PhpBackend;
 use Flow\ETL\Values\Memory\MemoryBudget;
@@ -29,12 +30,16 @@ use Flow\ETL\Values\Memory\Unit;
 use Flow\ETL\Values\Rows;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use WeakReference;
 
+use function array_chunk;
 use function array_filter;
 use function array_map;
 use function array_merge;
 use function array_sum;
+use function array_unique;
 use function array_values;
+use function count;
 use function Flow\ETL\DSL\array_to_rows;
 use function Flow\ETL\DSL\config;
 use function Flow\ETL\DSL\external_sort;
@@ -114,6 +119,27 @@ final class ExternalSortTest extends FlowTestCase
                 ),
             ),
         );
+    }
+
+    public function test_the_last_run_spilled_after_the_input_ends_returns_freed_memory_too(): void
+    {
+        $storage = new RecordingRowsStorage(new MemoryRowsStorage());
+        $backend = new ReportedMemoryBackend();
+        $budget = new MemoryBudget($backend, Unit::fromBytes(1_000_000), null);
+        $rows = (static function () use ($backend): Generator {
+            // the first batch alone passes the limit, so it spills in the loop; the second stays under it
+            $backend->reported = 600_000;
+
+            yield from IdRows::batches([4, 2]);
+            yield from IdRows::batches([3, 1]);
+        })();
+
+        static::assertSame(
+            [1, 2, 3, 4],
+            IdRows::ids(ExternalSortMother::with([ref('id')->asc()], $storage)->sort($rows, $backend, $budget)),
+        );
+        static::assertCount(2, array_unique($storage->appended));
+        static::assertSame(2, $backend->releases);
     }
 
     public function test_data_over_the_limit_spills_and_merges(): void
@@ -626,5 +652,271 @@ final class ExternalSortTest extends FlowTestCase
             $id,
             'sort-merge-',
         )));
+    }
+
+    public function test_merge_gives_the_rows_of_every_stream_in_order(): void
+    {
+        $backend = new PhpBackend();
+
+        static::assertSame(
+            [1, 2, 3, 4, 5, 6, 7, 8],
+            IdRows::ids(ExternalSortMother::with([ref('id')->asc()])->merge(
+                [IdRows::batches([1, 4], [7]), IdRows::batches([2, 5]), IdRows::batches([3, 6], [8])],
+                $backend,
+                new MemoryBudget($backend, Unit::fromGb(1), null),
+                new BatchSize(3),
+            )),
+        );
+    }
+
+    public function test_merge_of_no_stream_and_of_empty_streams_gives_nothing(): void
+    {
+        $backend = new PhpBackend();
+        $sort = ExternalSortMother::with([ref('id')->asc()]);
+
+        static::assertSame(
+            [],
+            IdRows::ids($sort->merge(
+                [],
+                $backend,
+                new MemoryBudget($backend, Unit::fromGb(1), null),
+                new BatchSize(3),
+            )),
+        );
+        static::assertSame(
+            [],
+            IdRows::ids($sort->merge(
+                [IdRows::batches(), IdRows::batches()],
+                $backend,
+                new MemoryBudget($backend, Unit::fromGb(1), null),
+                new BatchSize(3),
+            )),
+        );
+    }
+
+    public function test_merge_holds_the_frames_its_budget_allows_for_each_stream(): void
+    {
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0];
+        $streams = [
+            IdRows::reportedFrames($backend, $yields[0], [0], [1], [2], [3], [4]),
+            IdRows::reportedFrames($backend, $yields[1], [10], [11], [12], [13], [14]),
+            IdRows::reportedFrames($backend, $yields[2], [20], [21], [22], [23], [24]),
+            IdRows::reportedFrames($backend, $yields[3], [30], [31], [32], [33], [34]),
+        ];
+
+        ExternalSortMother::with([ref('id')->asc()])->merge(
+            $streams,
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(28_000_000), null),
+            new BatchSize(1),
+        )->current();
+
+        static::assertSame(3, $yields[3]);
+    }
+
+    public function test_merge_gives_the_streams_half_of_its_budget(): void
+    {
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0];
+        $streams = [
+            IdRows::reportedFrames($backend, $yields[0], [0], [1], [2], [3], [4], [5], [6], [7]),
+            IdRows::reportedFrames($backend, $yields[1], [10], [11], [12], [13], [14], [15], [16], [17]),
+            IdRows::reportedFrames($backend, $yields[2], [20], [21], [22], [23], [24], [25], [26], [27]),
+            IdRows::reportedFrames($backend, $yields[3], [30], [31], [32], [33], [34], [35], [36], [37]),
+        ];
+
+        ExternalSortMother::with([ref('id')->asc()])->merge(
+            $streams,
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(28_000_000), null),
+            new BatchSize(1),
+        )->current();
+
+        static::assertSame(3, $yields[3]);
+    }
+
+    public function test_coalesced_releases_its_frames_before_it_hands_the_batch_over(): void
+    {
+        $frames = [];
+        $rows = (static function () use (&$frames): Generator {
+            foreach ([1, 2, 3, 4] as $id) {
+                $frame = array_to_rows([['id' => $id]], schema(int_schema('id')));
+                $frames[] = WeakReference::create($frame);
+
+                yield $frame;
+            }
+        })();
+
+        $coalesced = ExternalSort::coalesced($rows, 3, new PhpBackend());
+        $coalesced->current();
+
+        static::assertLessThanOrEqual(
+            1,
+            count(array_filter($frames, static fn(WeakReference $frame): bool => $frame->get() !== null)),
+        );
+    }
+
+    public function test_merge_holds_one_frame_for_each_stream_when_no_more_fits(): void
+    {
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0];
+        $streams = [
+            IdRows::reportedFrames($backend, $yields[0], [0], [1], [2], [3], [4]),
+            IdRows::reportedFrames($backend, $yields[1], [10], [11], [12], [13], [14]),
+            IdRows::reportedFrames($backend, $yields[2], [20], [21], [22], [23], [24]),
+            IdRows::reportedFrames($backend, $yields[3], [30], [31], [32], [33], [34]),
+        ];
+
+        ExternalSortMother::with([ref('id')->asc()])->merge(
+            $streams,
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(9_000_000), null),
+            new BatchSize(1),
+        )->current();
+
+        static::assertSame(1, $yields[3]);
+    }
+
+    public function test_merge_never_holds_more_than_the_cursor_rows_for_a_stream(): void
+    {
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0];
+        $streams = [
+            IdRows::reportedFrames($backend, $yields[0], ...array_chunk(range(0, 24_575), 8_192)),
+            IdRows::reportedFrames($backend, $yields[1], ...array_chunk(range(100_000, 124_575), 8_192)),
+        ];
+
+        ExternalSortMother::with([ref('id')->asc()])->merge(
+            $streams,
+            $backend,
+            new MemoryBudget($backend, Unit::fromGb(1), null),
+            new BatchSize(1),
+        )->current();
+
+        static::assertSame(2, $yields[1]);
+    }
+
+    public function test_streams_that_do_not_fit_with_one_frame_each_are_merged_in_groups_first(): void
+    {
+        $storage = new RecordingRowsStorage(new MemoryRowsStorage());
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0, 0];
+
+        static::assertSame(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            IdRows::ids(ExternalSortMother::with([ref('id')->asc()], $storage)->merge(
+                [
+                    IdRows::reportedFrames($backend, $yields[0], [0], [5]),
+                    IdRows::reportedFrames($backend, $yields[1], [1], [6]),
+                    IdRows::reportedFrames($backend, $yields[2], [2], [7]),
+                    IdRows::reportedFrames($backend, $yields[3], [3], [8]),
+                    IdRows::reportedFrames($backend, $yields[4], [4], [9]),
+                ],
+                $backend,
+                new MemoryBudget($backend, Unit::fromBytes(5_000_000), null),
+                new BatchSize(2),
+            )),
+        );
+        static::assertNotSame([], array_filter($storage->appended, static fn(string $id): bool => str_starts_with(
+            $id,
+            'sort-merge-',
+        )));
+    }
+
+    public function test_the_runs_a_sort_merges_in_groups_are_numbered_in_the_order_they_are_made(): void
+    {
+        // scripted, so every batch spills as its own run whatever the test process holds
+        $backend = new ReportedMemoryBackend();
+        $yields = 0;
+        $sort = ExternalSortMother::with([ref('id')->asc()], mergeFanIn: 2);
+        $sorted = $sort->sort(
+            IdRows::reportedFrames($backend, $yields, [8], [7], [6], [5], [4], [3], [2], [1]),
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(1), null),
+        );
+        $sorted->current();
+
+        // the first pass made 0 to 3 and its runs are merged again, so the runs that remain are the second pass's
+        static::assertSame([4, 5], array_map(static fn(Bucket $bucket): int => $bucket->index, $sort->merge->all()));
+    }
+
+    public function test_the_streams_merge_reduces_in_groups_are_numbered_in_the_order_they_are_made(): void
+    {
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0, 0];
+        $sort = ExternalSortMother::with([ref('id')->asc()]);
+        $merged = $sort->merge(
+            [
+                IdRows::reportedFrames($backend, $yields[0], [0], [5]),
+                IdRows::reportedFrames($backend, $yields[1], [1], [6]),
+                IdRows::reportedFrames($backend, $yields[2], [2], [7]),
+                IdRows::reportedFrames($backend, $yields[3], [3], [8]),
+                IdRows::reportedFrames($backend, $yields[4], [4], [9]),
+            ],
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(5_000_000), null),
+            new BatchSize(2),
+        );
+        $merged->current();
+
+        static::assertSame(
+            [0, 1, 2, 3, 4],
+            array_map(static fn(Bucket $bucket): int => $bucket->index, $sort->merge->all()),
+        );
+    }
+
+    public function test_merge_removes_the_runs_it_merged(): void
+    {
+        $storage = new SpyRowsStorage(new MemoryRowsStorage());
+        $backend = new ReportedMemoryBackend();
+        $yields = [0, 0, 0, 0, 0];
+
+        IdRows::ids(ExternalSortMother::with([ref('id')->asc()], $storage)->merge(
+            [
+                IdRows::reportedFrames($backend, $yields[0], [0], [5]),
+                IdRows::reportedFrames($backend, $yields[1], [1], [6]),
+                IdRows::reportedFrames($backend, $yields[2], [2], [7]),
+                IdRows::reportedFrames($backend, $yields[3], [3], [8]),
+                IdRows::reportedFrames($backend, $yields[4], [4], [9]),
+            ],
+            $backend,
+            new MemoryBudget($backend, Unit::fromBytes(2_500_000), null),
+            new BatchSize(2),
+        ));
+
+        static::assertNotSame(
+            [],
+            array_filter($storage->readBucketIds(), static fn(string $id): bool => str_starts_with($id, 'sort-merge-')),
+        );
+        static::assertSame(
+            [],
+            array_filter($storage->liveBucketIds(), static fn(string $id): bool => str_starts_with($id, 'sort-merge-')),
+        );
+    }
+
+    public function test_coalesced_joins_batches_up_to_the_size_and_flushes_the_rest(): void
+    {
+        static::assertSame(
+            [ExternalSort::MERGE_CURSOR_ROWS, 2],
+            array_map(
+                static fn(Rows $rows): int => $rows->count(),
+                iterator_to_array(
+                    ExternalSort::coalesced(
+                        IdRows::batches([1], range(2, ExternalSort::MERGE_CURSOR_ROWS), [0], [-1]),
+                        ExternalSort::MERGE_CURSOR_ROWS,
+                        new PhpBackend(),
+                    ),
+                    false,
+                ),
+            ),
+        );
+        static::assertSame(
+            [],
+            iterator_to_array(
+                ExternalSort::coalesced(IdRows::batches(), ExternalSort::MERGE_CURSOR_ROWS, new PhpBackend()),
+                false,
+            ),
+        );
     }
 }

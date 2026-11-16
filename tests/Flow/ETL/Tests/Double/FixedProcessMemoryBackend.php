@@ -47,6 +47,11 @@ final readonly class FixedProcessMemoryBackend implements Backend
 
     public function resetAllocatedPeak(): void {}
 
+    public function releaseFreedMemory(): void
+    {
+        $this->php->releaseFreedMemory();
+    }
+
     public function builder(Definition $definition): ColumnBuilder
     {
         return $this->php->builder($definition);
@@ -90,6 +95,21 @@ final readonly class FixedProcessMemoryBackend implements Backend
     public function modulo(Column $left, Column $right): Column
     {
         return $this->php->modulo($left, $right);
+    }
+
+    public function startsWith(Column $haystack, Column $needle): Column
+    {
+        return $this->php->startsWith($haystack, $needle);
+    }
+
+    public function endsWith(Column $haystack, Column $needle): Column
+    {
+        return $this->php->endsWith($haystack, $needle);
+    }
+
+    public function contains(Column $haystack, Column $needle): Column
+    {
+        return $this->php->contains($haystack, $needle);
     }
 
     /**
