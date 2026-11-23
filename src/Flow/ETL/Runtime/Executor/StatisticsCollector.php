@@ -57,7 +57,7 @@ final class StatisticsCollector
             $this->schema = $this->analyze->collectSchema() ? new Schema() : null;
         }
 
-        $this->counts = new RunCounts();
+        $this->counts = new RunCounts($this->analyze?->newOutputHasher());
 
         if ($this->readsColumns() && $this->context->config->launcher() !== null) {
             $this->context
@@ -92,6 +92,8 @@ final class StatisticsCollector
                 $this->columnStatistics->add($definition, $rows->column($name));
             }
         }
+
+        $this->counts->hashOutput($rows, $this->context->backend());
     }
 
     /**
@@ -134,6 +136,7 @@ final class StatisticsCollector
                 $this->counts->processes(Unit::processPeak()),
             ),
             $this->analyze->collectSourceStatistics() ? $this->counts->statistics() : null,
+            $this->counts->outputHash(),
         );
     }
 }

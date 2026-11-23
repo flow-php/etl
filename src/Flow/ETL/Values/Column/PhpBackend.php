@@ -24,6 +24,7 @@ use Flow\ETL\Values\Column\Php\ConstantColumn;
 use Flow\ETL\Values\Column\Php\ListColumn;
 use Flow\ETL\Values\Column\Php\MapColumn;
 use Flow\ETL\Values\Column\Php\PhpGroupedCounts;
+use Flow\ETL\Values\Column\Php\PhpGroupedMultisetHashes;
 use Flow\ETL\Values\Column\Php\PhpGroupedTotals;
 use Flow\ETL\Values\Column\Php\ScalarColumn;
 use Flow\ETL\Values\Column\Php\StructColumn;
@@ -52,6 +53,8 @@ use function Flow\Types\DSL\type_bare;
 use function Flow\Types\DSL\type_boolean;
 use function Flow\Types\DSL\type_float;
 use function Flow\Types\DSL\type_integer;
+use function Flow\Types\DSL\type_string;
+use function hash;
 use function intdiv;
 use function is_float;
 use function is_int;
@@ -665,6 +668,24 @@ final readonly class PhpBackend implements Backend, Describable
     public function groupedCounts(): GroupedCounts
     {
         return new PhpGroupedCounts();
+    }
+
+    public function rowHashes(array $columns, int $count): Column
+    {
+        return new ScalarColumn(
+            type_string(),
+            (new PhysicalFor())->physical(type_string()),
+            array_map(
+                static fn(string $bytes): string => hash('xxh128', $bytes),
+                (new CanonicalEncoding())->named($columns, $count),
+            ),
+            0,
+        );
+    }
+
+    public function groupedMultisetHashes(MultisetHashAlgorithm $algorithm): GroupedMultisetHashes
+    {
+        return new PhpGroupedMultisetHashes($algorithm);
     }
 
     public function groupTable(array $columns, Schema $declared): GroupTable

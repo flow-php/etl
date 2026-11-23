@@ -17,12 +17,13 @@ final readonly class Report
         private ?Schema $schema,
         private Statistics $statistics,
         private ?array $sources,
+        private ?DatasetHash $datasetHash = null,
     ) {}
 
     /**
      * The JSON form for CI: the same values as the typed getters, memory in bytes.
      *
-     * @return array{schema: null|array<array-key, mixed>, statistics: array<string, mixed>, sources: null|list<array<string, mixed>>}
+     * @return array{schema: null|array<array-key, mixed>, statistics: array<string, mixed>, sources: null|list<array<string, mixed>>, dataset_hash: null|array{algorithm: string, total: array{rows: int, value: string}, partitions: list<array{partitions: array<string, ?string>, hash: array{rows: int, value: string}}>}}
      */
     public function normalize(): array
     {
@@ -32,7 +33,13 @@ final readonly class Report
             'sources' => $this->sources === null
                 ? null
                 : array_map(static fn(SourceStatistics $source): array => $source->normalize(), $this->sources),
+            'dataset_hash' => $this->datasetHash?->normalize(),
         ];
+    }
+
+    public function datasetHash(): ?DatasetHash
+    {
+        return $this->datasetHash;
     }
 
     /**

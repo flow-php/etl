@@ -4,24 +4,39 @@ declare(strict_types=1);
 
 namespace Flow\ETL\Tests\Unit\Runtime\Executor;
 
+use Flow\ETL\Foundation\Exception\InvalidArgumentException;
 use Flow\ETL\IO\Extractor\Criteria;
 use Flow\ETL\IO\Extractor\Signal;
 use Flow\ETL\IO\Extractor\Statistics;
+use Flow\ETL\Runtime\Executor\PartitionedOutputHasher;
 use Flow\ETL\Runtime\Executor\RunCounts;
+use Flow\ETL\Runtime\Executor\WholeOutputHasher;
+use Flow\ETL\Runtime\Metrics\DatasetHash;
+use Flow\ETL\Runtime\Metrics\Hash;
+use Flow\ETL\Runtime\Metrics\PartitionHash;
 use Flow\ETL\Runtime\Metrics\Processes;
 use Flow\ETL\Runtime\Metrics\SourceStatistics;
 use Flow\ETL\Tests\Double\CountingExtractor;
 use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Values\Cardinality;
+use Flow\ETL\Values\Column\MultisetDigest;
+use Flow\ETL\Values\Column\MultisetHashAlgorithm;
+use Flow\ETL\Values\Column\PhpBackend;
 use Flow\ETL\Values\Memory\Unit;
 use Flow\ETL\Values\Rows;
+use Flow\Filesystem\Partition;
+use Flow\Filesystem\Partitions;
 
 use function Flow\ETL\DSL\array_to_rows;
 use function Flow\ETL\DSL\flow_context;
 use function Flow\ETL\DSL\from_array;
 use function Flow\ETL\DSL\int_schema;
+use function Flow\ETL\DSL\refs;
 use function Flow\ETL\DSL\schema;
+use function Flow\ETL\DSL\str_schema;
+use function hash;
 use function iterator_to_array;
+use function unpack;
 
 final class RunCountsTest extends FlowTestCase
 {
@@ -329,5 +344,197 @@ final class RunCountsTest extends FlowTestCase
         static::assertNotSame($read, $sources->open($other, false));
         static::assertSame(5, $sources->statistics()[0]->rows);
         static::assertFalse($sources->statistics()[0]->complete);
+    }
+
+    public function test_absorb_leaves_the_output_hash_alone(): void
+    {
+        $counts = new RunCounts(new WholeOutputHasher(MultisetHashAlgorithm::xxh128));
+        $other = new RunCounts(new WholeOutputHasher(MultisetHashAlgorithm::xxh128));
+        $other->absorbOutputHash(
+            new DatasetHash(new Hash(1, '00000000000000020000000000000001'), [], MultisetHashAlgorithm::xxh128),
+        );
+
+        $counts->absorb($other);
+        $counts->absorbWorkers($other);
+
+        static::assertEquals(
+            new DatasetHash(new Hash(0, '00000000000000000000000000000000'), [], MultisetHashAlgorithm::xxh128),
+            $counts->outputHash(),
+        );
+    }
+
+    public function test_without_a_hasher_nothing_is_hashed_and_no_hash_is_given(): void
+    {
+        $counts = new RunCounts();
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 3), new PhpBackend());
+        $counts->absorbOutputHash(
+            new DatasetHash(new Hash(1, '00000000000000020000000000000001'), [], MultisetHashAlgorithm::xxh128),
+        );
+
+        static::assertNull($counts->outputHasher());
+        static::assertNull($counts->outputHash());
+    }
+
+    public function test_rows_with_columns_are_hashed(): void
+    {
+        $hasher = new WholeOutputHasher(MultisetHashAlgorithm::xxh128);
+        $counts = new RunCounts($hasher);
+        $counts->hashOutput(array_to_rows([['a' => 2]], schema(int_schema('a'))), new PhpBackend());
+        $counts->hashOutput(array_to_rows([['a' => 1]], schema(int_schema('a'))), new PhpBackend());
+
+        static::assertSame($hasher, $counts->outputHasher());
+        static::assertSame('721f4650154ebb88ac4ec50a605901df', $counts->outputHash()?->total->value);
+    }
+
+    public function test_rows_without_columns_hash_as_empty_rows(): void
+    {
+        /** @var array{1: int, 2: int} $lanes */
+        $lanes = unpack('J2', hash('xxh128', '', true));
+        $empty = new MultisetDigest($lanes[2], $lanes[1]);
+        $counts = new RunCounts(new WholeOutputHasher(MultisetHashAlgorithm::xxh128));
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 3), new PhpBackend());
+
+        static::assertSame($empty->plus($empty)->plus($empty)->hex(), $counts->outputHash()?->total->value);
+    }
+
+    public function test_rows_without_columns_that_absorbed_digests_cover_are_hashed_only_by_those_digests(): void
+    {
+        $first = new WholeOutputHasher(MultisetHashAlgorithm::xxh128);
+        $first->add(array_to_rows([['a' => 2]], schema(int_schema('a'))), new PhpBackend());
+        $second = new WholeOutputHasher(MultisetHashAlgorithm::xxh128);
+        $second->add(array_to_rows([['a' => 1]], schema(int_schema('a'))), new PhpBackend());
+        $counts = new RunCounts(new WholeOutputHasher(MultisetHashAlgorithm::xxh128));
+        $counts->absorbOutputHash($first->hash());
+        $counts->absorbOutputHash($second->hash());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
+
+        static::assertSame('721f4650154ebb88ac4ec50a605901df', $counts->outputHash()?->total->value);
+    }
+
+    public function test_rows_without_columns_beyond_the_covered_rows_hash_as_empty_rows(): void
+    {
+        /** @var array{1: int, 2: int} $lanes */
+        $lanes = unpack('J2', hash('xxh128', '', true));
+        $empty = new MultisetDigest($lanes[2], $lanes[1]);
+        $worker = new WholeOutputHasher(MultisetHashAlgorithm::xxh128);
+        $worker->add(array_to_rows([['a' => 1], ['a' => 2], ['a' => 3]], schema(int_schema('a'))), new PhpBackend());
+        $counts = new RunCounts(new WholeOutputHasher(MultisetHashAlgorithm::xxh128));
+        $counts->absorbOutputHash($worker->hash());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 2), new PhpBackend());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 2), new PhpBackend());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
+
+        static::assertSame(
+            MultisetDigest::fromHex($worker->hash()->total->value)->plus($empty)->plus($empty)->hex(),
+            $counts->outputHash()?->total->value,
+        );
+    }
+
+    public function test_a_partitioned_hash_takes_the_partitions_of_the_covered_rows_from_the_partial(): void
+    {
+        $worker = new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128);
+        $worker->add(
+            array_to_rows([['country' => 'PL', 'id' => 1]], schema(str_schema('country'), int_schema('id'))),
+            new PhpBackend(),
+        );
+        $counts = new RunCounts(new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128));
+        $counts->absorbOutputHash($worker->hash());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
+
+        static::assertEquals($worker->hash(), $counts->outputHash());
+    }
+
+    public function test_a_partitioned_hash_refuses_rows_without_columns_that_no_partial_covers(): void
+    {
+        $counts = new RunCounts(new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'analyze()->withDatasetHash() groups by "country", but a batch has no column "country".',
+        );
+
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
+    }
+
+    public function test_a_partitioned_hash_refuses_the_uncovered_part_of_partly_covered_rows_before_a_first_batch(): void
+    {
+        $worker = new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128);
+        $worker->add(
+            array_to_rows([['country' => 'PL', 'id' => 1]], schema(str_schema('country'), int_schema('id'))),
+            new PhpBackend(),
+        );
+        $counts = new RunCounts(new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128));
+        $counts->absorbOutputHash($worker->hash());
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'analyze()->withDatasetHash() groups by "country", but a batch has no column "country".',
+        );
+
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 2), new PhpBackend());
+    }
+
+    public function test_a_partitioned_hash_puts_uncovered_rows_without_columns_into_the_null_partition_after_a_nullable_first_batch(): void
+    {
+        /** @var array{1: int, 2: int} $lanes */
+        $lanes = unpack('J2', hash('xxh128', '', true));
+        $empty = new MultisetDigest($lanes[2], $lanes[1]);
+        $nulls = new WholeOutputHasher(MultisetHashAlgorithm::xxh128);
+        $nulls->add(
+            array_to_rows(
+                [['country' => null, 'id' => 1]],
+                schema(str_schema('country', nullable: true), int_schema('id')),
+            ),
+            new PhpBackend(),
+        );
+        $worker = new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128);
+        $worker->add(
+            array_to_rows(
+                [['country' => 'PL', 'id' => 2]],
+                schema(str_schema('country', nullable: true), int_schema('id')),
+            ),
+            new PhpBackend(),
+        );
+        $counts = new RunCounts(new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128));
+        $counts->hashOutput(
+            array_to_rows(
+                [['country' => null, 'id' => 1]],
+                schema(str_schema('country', nullable: true), int_schema('id')),
+            ),
+            new PhpBackend(),
+        );
+        $counts->absorbOutputHash($worker->hash());
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 3), new PhpBackend());
+
+        static::assertEquals(
+            [
+                new PartitionHash(new Partitions(new Partition('country', 'PL')), $worker->hash()->total),
+                new PartitionHash(
+                    new Partitions(new Partition('country', null)),
+                    new Hash(
+                        3,
+                        MultisetDigest::fromHex($nulls->hash()->total->value)->plus($empty)->plus($empty)->hex(),
+                    ),
+                ),
+            ],
+            $counts->outputHash()?->partitions,
+        );
+    }
+
+    public function test_a_partitioned_hash_refuses_uncovered_rows_without_columns_after_a_not_null_first_batch(): void
+    {
+        $counts = new RunCounts(new PartitionedOutputHasher(refs('country'), MultisetHashAlgorithm::xxh128));
+        $counts->hashOutput(
+            array_to_rows([['country' => 'PL', 'id' => 1]], schema(str_schema('country'), int_schema('id'))),
+            new PhpBackend(),
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'analyze()->withDatasetHash() groups by "country", but a batch has no column "country".',
+        );
+
+        $counts->hashOutput(Rows::fromColumns(schema(), [], 1), new PhpBackend());
     }
 }

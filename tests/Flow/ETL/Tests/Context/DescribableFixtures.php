@@ -46,7 +46,7 @@ use Flow\ETL\IO\Loader\SchemaValidationLoader;
 use Flow\ETL\IO\Loader\StreamLoader;
 use Flow\ETL\IO\Loader\StreamLoader\Output;
 use Flow\ETL\IO\Loader\StreamLoader\Type;
-use Flow\ETL\Kernels\Hash\NativePHPHash;
+use Flow\ETL\Kernels\Hash\PhpAlgorithm;
 use Flow\ETL\Kernels\Hash\PlainText;
 use Flow\ETL\Kernels\Sort\ExternalSortConfig;
 use Flow\ETL\Kernels\Sort\MemorySortConfig;
@@ -99,6 +99,8 @@ use Flow\ETL\Runtime\ErrorHandler\IgnoreError;
 use Flow\ETL\Runtime\ErrorHandler\SkipRows;
 use Flow\ETL\Runtime\ErrorHandler\ThrowError;
 use Flow\ETL\Runtime\Executor\OfferedFailure;
+use Flow\ETL\Runtime\Executor\PartitionedOutputHasher;
+use Flow\ETL\Runtime\Executor\WholeOutputHasher;
 use Flow\ETL\Runtime\Heartbeat\HeartbeatStage;
 use Flow\ETL\Runtime\Heartbeat\ScheduledHeartbeat;
 use Flow\ETL\Storage\BucketingConfig;
@@ -113,6 +115,7 @@ use Flow\ETL\Tests\Double\StaticExtractorFactory;
 use Flow\ETL\Values\BatchSize;
 use Flow\ETL\Values\Column\AdaptiveBackend;
 use Flow\ETL\Values\Column\Frame\NoopCodec;
+use Flow\ETL\Values\Column\MultisetHashAlgorithm;
 use Flow\ETL\Values\Column\PhpBackend;
 use Flow\ETL\Values\Join\JoinType;
 use Flow\ETL\Values\Memory\Unit;
@@ -338,7 +341,7 @@ final class DescribableFixtures
             MemoryLoader::class => static fn(): Describable => new MemoryLoader(new ArrayMemory()),
             MemorySortConfig::class => static fn(): Describable => new MemorySortConfig(),
             MergedAggregate::class => static fn(): Describable => new MergedAggregate(sum(ref('amount'))),
-            NativePHPHash::class => static fn(): Describable => new NativePHPHash('sha256', true, ['seed' => 3]),
+            PhpAlgorithm::class => static fn(): Describable => new PhpAlgorithm('sha256', true, ['seed' => 3]),
             NativePHPRandomValueGenerator::class => static fn(): Describable => new NativePHPRandomValueGenerator(),
             PartialAggregate::class => static fn(): Describable => new PartialAggregate(sum(ref('amount'))),
             PeerFrame::class => static fn(): Describable => new PeerFrame([ref('id')->desc()]),
@@ -390,6 +393,13 @@ final class DescribableFixtures
                 config()->serializer(),
             ),
             OfferedFailure::class => static fn(): Describable => new OfferedFailure(new SkipRows()),
+            PartitionedOutputHasher::class => static fn(): Describable => new PartitionedOutputHasher(
+                refs('date', 'country'),
+                MultisetHashAlgorithm::xxh128,
+            ),
+            WholeOutputHasher::class => static fn(): Describable => new WholeOutputHasher(
+                MultisetHashAlgorithm::xxh128,
+            ),
             SkipRows::class => static fn(): Describable => new SkipRows(),
             SortColumn::class => static fn(): Describable => new SortColumn('id', SortOrder::DESC, NullsOrder::FIRST),
             StreamLoader::class => static fn(): Describable => new StreamLoader(

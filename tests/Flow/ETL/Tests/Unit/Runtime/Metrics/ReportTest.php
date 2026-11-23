@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Flow\ETL\Tests\Unit\Runtime\Metrics;
 
 use Flow\ETL\IO\Extractor\Statistics;
+use Flow\ETL\Runtime\Metrics\DatasetHash;
+use Flow\ETL\Runtime\Metrics\Hash;
+use Flow\ETL\Runtime\Metrics\PartitionHash;
 use Flow\ETL\Runtime\Metrics\Processes;
 use Flow\ETL\Runtime\Metrics\SourceStatistics;
 use Flow\ETL\Runtime\Metrics\Statistics\Columns;
@@ -12,7 +15,10 @@ use Flow\ETL\Tests\FlowTestCase;
 use Flow\ETL\Tests\Mother\ColumnMother;
 use Flow\ETL\Tests\Mother\ReportMother;
 use Flow\ETL\Values\Cardinality;
+use Flow\ETL\Values\Column\MultisetHashAlgorithm;
 use Flow\ETL\Values\Memory\Unit;
+use Flow\Filesystem\Partition;
+use Flow\Filesystem\Partitions;
 
 use function Flow\ETL\DSL\float_schema;
 use function Flow\ETL\DSL\int_schema;
@@ -31,7 +37,12 @@ final class ReportTest extends FlowTestCase
         $source = new SourceStatistics('ArrayExtractor', new Statistics(Cardinality::exact(2)), 2, true);
         $report = ReportMother::of(new Processes(Unit::fromBytes(25), [Unit::fromBytes(
             40,
-        )]), 2, schema(int_schema('id')), [$source]);
+        )]), 2, schema(int_schema('id')), [$source], datasetHash: new DatasetHash(new Hash(2, '721f4650154ebb88ac4ec50a605901df'), [
+            new PartitionHash(
+                new Partitions(new Partition('country', null)),
+                new Hash(2, '721f4650154ebb88ac4ec50a605901df'),
+            ),
+        ], MultisetHashAlgorithm::xxh128));
 
         $normalized = $report->normalize();
 
@@ -46,9 +57,20 @@ final class ReportTest extends FlowTestCase
                     'columns' => null,
                 ],
                 'sources' => [$source->normalize()],
+                'dataset_hash' => [
+                    'algorithm' => 'xxh128',
+                    'total' => ['rows' => 2, 'value' => '721f4650154ebb88ac4ec50a605901df'],
+                    'partitions' => [
+                        [
+                            'partitions' => ['country' => null],
+                            'hash' => ['rows' => 2, 'value' => '721f4650154ebb88ac4ec50a605901df'],
+                        ],
+                    ],
+                ],
             ],
             $normalized,
         );
+        static::assertSame('721f4650154ebb88ac4ec50a605901df', $report->datasetHash()?->total->value);
         // JSON keeps the values, not a float's ".0"
         static::assertEquals($normalized, json_decode(
             json_encode($normalized, JSON_THROW_ON_ERROR),
@@ -63,6 +85,7 @@ final class ReportTest extends FlowTestCase
 
         static::assertNull($normalized['schema']);
         static::assertNull($normalized['sources']);
+        static::assertNull($normalized['dataset_hash']);
     }
 
     public function test_a_report_holding_infinite_and_nan_values_encodes_as_json(): void
