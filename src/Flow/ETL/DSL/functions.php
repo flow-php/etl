@@ -77,6 +77,7 @@ use Flow\ETL\Foundation\Calculator\Rounding;
 use Flow\ETL\Foundation\Clock\SystemClock;
 use Flow\ETL\Foundation\Exception\InvalidArgumentException;
 use Flow\ETL\Foundation\Exception\RuntimeException;
+use Flow\ETL\Foundation\Hash\HashAlgorithm;
 use Flow\ETL\Foundation\NativePHPRandomValueGenerator;
 use Flow\ETL\Foundation\RandomValueGenerator;
 use Flow\ETL\Functions\AggregatingFunction;
@@ -197,8 +198,6 @@ use Flow\ETL\IO\Loader\MemoryLoader;
 use Flow\ETL\IO\Loader\Partitioning;
 use Flow\ETL\IO\Loader\StreamLoader;
 use Flow\ETL\IO\Loader\StreamLoader\Output;
-use Flow\ETL\Kernels\Hash\Algorithm;
-use Flow\ETL\Kernels\Hash\PhpAlgorithm;
 use Flow\ETL\Operators\Constraint;
 use Flow\ETL\Operators\Constraint\SortedByConstraint;
 use Flow\ETL\Operators\Constraint\UniqueConstraint;
@@ -255,6 +254,7 @@ use Flow\ETL\Values\Schema\Definition\UuidDefinition;
 use Flow\ETL\Values\Schema\Definition\XMLDefinition;
 use Flow\ETL\Values\Schema\Definition\XMLElementDefinition;
 use Flow\ETL\Values\Schema\Definitions;
+use Flow\ETL\Values\Schema\FingerprintOptions;
 use Flow\ETL\Values\Schema\Metadata;
 use Flow\ETL\Values\Schema\SortingStrategy;
 use Flow\ETL\Values\Schema\SortingStrategy\AlphabeticalStrategy;
@@ -1173,22 +1173,10 @@ function concat_ws(ScalarFunction|string $separator, ScalarFunction|string ...$f
     return new ConcatWithSeparator($separator, ...$functions);
 }
 
-/**
- * @param Algorithm|string $algorithm a hash_algos() name, or an Algorithm such as hash_algorithm('xxh64', options: [...])
- */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
-function hash(mixed $value, Algorithm|string $algorithm = 'xxh128'): Hash
+function hash(mixed $value, HashAlgorithm $algorithm = HashAlgorithm::xxh128): Hash
 {
     return new Hash($value, $algorithm);
-}
-
-/**
- * @param array<array-key, mixed> $options the options of PHP's hash(), for example ['seed' => 7]
- */
-#[DocumentationDSL(module: Module::CORE, type: DSLType::HELPER)]
-function hash_algorithm(string $name = 'xxh128', bool $binary = false, array $options = []): Algorithm
-{
-    return new PhpAlgorithm($name, $binary, $options);
 }
 
 #[DocumentationDSL(module: Module::CORE, type: DSLType::SCALAR_FUNCTION)]
@@ -1700,12 +1688,18 @@ function schema_from_json(string $schema): Schema
 }
 
 /**
- * @param array<string, array<bool|float|int|string>|bool|float|int|string> $metadata
+ * @param array<string, array<array-key, mixed>|bool|float|int|string> $metadata
  */
 #[DocumentationDSL(module: Module::CORE, type: DSLType::HELPER)]
 function schema_metadata(array $metadata = []): Metadata
 {
     return Metadata::fromArray($metadata);
+}
+
+#[DocumentationDSL(module: Module::CORE, type: DSLType::SCHEMA)]
+function schema_fingerprint_options(): FingerprintOptions
+{
+    return new FingerprintOptions();
 }
 
 /**

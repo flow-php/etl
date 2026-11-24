@@ -8,12 +8,12 @@ use DateTimeInterface;
 use DateTimeZone;
 use Flow\ETL\Foundation\Calculator\Rounding;
 use Flow\ETL\Foundation\Exception\InvalidArgumentException;
+use Flow\ETL\Foundation\Hash\HashAlgorithm;
 use Flow\ETL\Functions;
 use Flow\ETL\Functions\ArrayExpand\ArrayExpand;
 use Flow\ETL\Functions\ArraySort\Sort;
 use Flow\ETL\Functions\Between\Boundary;
 use Flow\ETL\Functions\String\StringStyles;
-use Flow\ETL\Kernels\Hash\Algorithm;
 use Flow\ETL\Values\Schema;
 use Flow\Types\Type;
 use Flow\Types\Type\Comparison\Operator;
@@ -375,7 +375,7 @@ trait ScalarFunctionChain
         return new Comparison($this, Operator::GREATER_THAN_EQUAL, $ref);
     }
 
-    public function hash(Algorithm|string $algorithm = 'xxh128'): Hash
+    public function hash(HashAlgorithm $algorithm = HashAlgorithm::xxh128): Hash
     {
         return new Hash($this, $algorithm);
     }
